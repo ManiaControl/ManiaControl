@@ -6,7 +6,7 @@ namespace ManiaControl\Callbacks;
  * Callbacks Interface
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
- * @copyright 2014-2019 ManiaControl Team
+ * @copyright 2014-2020 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 interface Callbacks {
@@ -16,7 +16,9 @@ interface Callbacks {
 	const ONINIT     = 'Callbacks.OnInit';
 	const AFTERINIT  = 'Callbacks.AfterInit';
 	const ONSHUTDOWN = 'Callbacks.OnShutdown';
+	/** @deprecated */
 	const ONRESTART  = 'Callbacks.OnRestart';
+	const ONREBOOT   = 'Callbacks.OnReboot';
 	const PRELOOP    = 'Callbacks.PreLoop';
 	const AFTERLOOP  = 'Callbacks.AfterLoop';
 

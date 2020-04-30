@@ -9,7 +9,6 @@ use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\Callbacks;
 use ManiaControl\Callbacks\Structures\Common\StatusCallbackStructure;
-use ManiaControl\Callbacks\Structures\TrackMania\OnPointsRepartitionStructure;
 use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\Commands\CommandListener;
 use ManiaControl\Logger;
@@ -22,24 +21,24 @@ use Maniaplanet\DedicatedServer\Xmlrpc\GameModeException;
  * Class offering various Commands related to the Dedicated Server
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
- * @copyright 2014-2019 ManiaControl Team
+ * @copyright 2014-2020 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class Commands implements CallbackListener, CommandListener, ManialinkPageAnswerListener, TimerListener {
 	/*
 	 * Constants
 	 */
-	const ACTION_SET_PAUSE                                = 'ServerCommands.SetPause';
-	const ACTION_EXTEND_WARMUP                            = 'ServerCommands.ExtendWarmup';
-	const ACTION_END_WARMUP                               = 'ServerCommands.EndWarmup';
-	const ACTION_CANCEL_VOTE                              = 'ServerCommands.CancelVote';
-	const CB_VOTE_CANCELLED                               = 'ServerCommands.VoteCancelled';
-	const SETTING_PERMISSION_CANCEL_VOTE                  = 'Cancel Vote';
-	const SETTING_PERMISSION_SET_PAUSE                    = 'Set Pause';
-	const SETTING_PERMISSION_HANDLE_WARMUP                = 'Handle Warmup';
-	const SETTING_PERMISSION_SHOW_SYSTEMINFO              = 'Show SystemInfo';
-	const SETTING_PERMISSION_SHUTDOWN_SERVER              = 'Shutdown Server';
-	const SETTING_PERMISSION_CHANGE_SERVERSETTINGS        = 'Change ServerSettings';
+	const ACTION_SET_PAUSE                         = 'ServerCommands.SetPause';
+	const ACTION_EXTEND_WARMUP                     = 'ServerCommands.ExtendWarmup';
+	const ACTION_END_WARMUP                        = 'ServerCommands.EndWarmup';
+	const ACTION_CANCEL_VOTE                       = 'ServerCommands.CancelVote';
+	const CB_VOTE_CANCELLED                        = 'ServerCommands.VoteCancelled';
+	const SETTING_PERMISSION_CANCEL_VOTE           = 'Cancel Vote';
+	const SETTING_PERMISSION_SET_PAUSE             = 'Set Pause';
+	const SETTING_PERMISSION_HANDLE_WARMUP         = 'Handle Warmup';
+	const SETTING_PERMISSION_SHOW_SYSTEMINFO       = 'Show SystemInfo';
+	const SETTING_PERMISSION_SHUTDOWN_SERVER       = 'Shutdown Server';
+	const SETTING_PERMISSION_CHANGE_SERVERSETTINGS = 'Change ServerSettings';
 
 	/*
 	 * Private properties
@@ -235,13 +234,12 @@ class Commands implements CallbackListener, CommandListener, ManialinkPageAnswer
 
 			//Especially for chase, force end of the round to reach a draw
 			$this->maniaControl->getClient()->sendModeScriptCommands(array('Command_ForceEndRound' => true));
-		} catch (GameModeException $ex) {
+		} catch (GameModeException $e) {
 		}
 
 		//TODO verify if not everything is replaced through the new pause
 		$this->maniaControl->getModeScriptEventManager()->startPause();
 		$this->maniaControl->getChat()->sendInformation('$f8fVote to $fffpause the current Game$f8f has been successful!');
-
 	}
 
 	/**

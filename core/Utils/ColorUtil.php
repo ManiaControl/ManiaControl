@@ -9,7 +9,7 @@ use ManiaControl\General\UsageInformationTrait;
  * Utility Class offering Methods to convert and use ManiaPlanet Colors
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
- * @copyright 2014-2019 ManiaControl Team
+ * @copyright 2014-2020 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 abstract class ColorUtil implements UsageInformationAble {
@@ -21,7 +21,7 @@ abstract class ColorUtil implements UsageInformationAble {
 	 * @param float $value
 	 * @return string
 	 */
-	public static function floatToStatusColor($value) {
+	public static function floatToStatusColor($value, $addBlue = true) {
 		$value = floatval($value);
 		$red   = 1.;
 		$green = 1.;
@@ -33,7 +33,12 @@ abstract class ColorUtil implements UsageInformationAble {
 		}
 		$red   = ColorUtil::floatToCode($red);
 		$green = ColorUtil::floatToCode($green);
-		return $red . $green . '0';
+
+		if ($addBlue) {
+			return $red . $green . '0';
+		} else {
+			return $red . $green;
+		}
 	}
 
 	/**
@@ -55,7 +60,7 @@ abstract class ColorUtil implements UsageInformationAble {
 		if ($value < 10) {
 			return (string) $value;
 		}
-		$codes = array(10 => 'a', 11 => 'b', 12 => 'c', 13 => 'd', 14 => 'e', 15 => 'f');
+		static $codes = array(10 => 'a', 11 => 'b', 12 => 'c', 13 => 'd', 14 => 'e', 15 => 'f');
 		return $codes[$value];
 	}
 }

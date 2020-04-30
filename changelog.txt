@@ -1,7 +1,39 @@
-##v0.16x###
-# Additions
+###v0.253###
+#Changes
+- //restart got replaced by //reboot
+- Unified Creations of a Karma-Gauge in new Manialinks\ElementBuilder
+
+###v0.252###
+#Additions
+- Ingame-Changelog
+- New customizations for Join&Leave-Messages
+- Symbolic Link resolving in ServerManager
+- Times in Map Widget
+
+#Bug Fixes
+- GReplay for Dedimania-Records not being sent
+- non-numeric value warning on self-triggered debug notice
+
+###v0.250###
+#Additions
+- AuthenticationManager allows permissions to be stored inside Plugins
+- CallQueue to balance performance-heavy functions
+- Commands can be disabled by Plugins
+- /delrec can delete your personal local record (Permission-Setting)
+- simple DB-Installation-Script (Unix-only)
+
+#Bug Fixes
+- //delrec can delete every local record (Permission-Setting)
+- Replaced deprecated code
+
+#Changes
+- Format milliseconds with dot instead of double colon (1:02:375 -> 1:02.375)
+- Notification-System of Local Records
+
+###v0.16x###
+#Additions
 - updated mx links to https
-# Changes
+#Changes
 - CommunicationMethod SET_SERVER_OPTIONS sets the changed values also in database on call
 - Changed Copyright label to 2014-2016
 
@@ -12,7 +44,7 @@
 - added Scriptcallbacks SCORESREADY / SCORES
 - added SSL support as well as http Redirections of the FileReader
 
-# Bug fixes
+#Bug Fixes
 - Banning of not connected Players now possible
 
 ###v0.162###

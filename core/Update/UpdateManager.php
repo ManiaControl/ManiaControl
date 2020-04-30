@@ -16,12 +16,14 @@ use ManiaControl\Logger;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
+use ManiaControl\Settings\Setting;
+use ManiaControl\Settings\SettingManager;
 
 /**
  * Manager checking for ManiaControl Core Updates
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
- * @copyright 2014-2019 ManiaControl Team
+ * @copyright 2014-2020 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class UpdateManager implements CallbackListener, CommandListener, TimerListener, CommunicationListener {
@@ -72,6 +74,7 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener,
 		$this->maniaControl->getTimerManager()->registerTimerListening($this, 'hourlyUpdateCheck', 1000 * 60 * 60 * $updateInterval);
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(PlayerManager::CB_PLAYERCONNECT, $this, 'handlePlayerJoined');
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(PlayerManager::CB_PLAYERDISCONNECT, $this, 'handlePlayerDisconnect');
+		$this->maniaControl->getCallbackManager()->registerCallbackListener(SettingManager::CB_SETTING_CHANGED, $this, 'handleSettingChanged');
 
 		// Permissions
 		$this->maniaControl->getAuthenticationManager()->definePermissionLevel(self::SETTING_PERMISSION_UPDATE, AuthenticationManager::AUTH_LEVEL_ADMIN);
@@ -399,13 +402,13 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener,
 			// Set the build date
 			$this->setBuildDate($updateData->releaseDate);
 
-			$message = 'Update finished!';
+			$message = 'Update finished! See what we updated with $<$fff//chatlog$>!';
 			if ($player) {
 				$this->maniaControl->getChat()->sendSuccess($message, $player);
 			}
 			Logger::log($message);
 
-			$this->maniaControl->restart();
+			$this->maniaControl->reboot();
 		});
 
 		$asyncHttpRequest->getData();
@@ -453,6 +456,14 @@ class UpdateManager implements CallbackListener, CommandListener, TimerListener,
 	 */
 	public function handlePlayerDisconnect(Player $player) {
 		$this->checkAutoUpdate();
+	}
+
+	public function handleSettingChanged(Setting $setting) {
+		if (!$setting->setting != self::SETTING_UPDATECHECK_INTERVAL) {
+			return;
+		}
+
+		$this->maniaControl->getTimerManager()->updateTimerListening($this, 'hourlyUpdateCheck', 1000 * 60 * 60);
 	}
 
 	/**

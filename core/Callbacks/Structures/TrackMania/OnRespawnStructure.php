@@ -6,14 +6,14 @@ namespace ManiaControl\Callbacks\Structures\TrackMania;
 use ManiaControl\Callbacks\Models\RecordCallback;
 use ManiaControl\Callbacks\Structures\Common\BasePlayerTimeStructure;
 use ManiaControl\ManiaControl;
-use ManiaControl\Utils\Formatter;
+
 
 /**
  * Structure Class for the On Respawn Structure Callback
  *
  * @api
  * @author    ManiaControl Team <mail@maniacontrol.com>
- * @copyright 2014-2019 ManiaControl Team
+ * @copyright 2014-2020 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class OnRespawnStructure extends BasePlayerTimeStructure {

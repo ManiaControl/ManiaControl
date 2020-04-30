@@ -10,7 +10,7 @@ use ManiaControl\Utils\ClassUtil;
  * ManiaControl Setting Model Class
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
- * @copyright 2014-2019 ManiaControl Team
+ * @copyright 2014-2020 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class Setting implements UsageInformationAble {
@@ -111,7 +111,7 @@ class Setting implements UsageInformationAble {
 		if (is_int($value)) {
 			return self::TYPE_INT;
 		}
-		if (is_real($value)) {
+		if (is_float($value)) {
 			return self::TYPE_REAL;
 		}
 		if (is_bool($value)) {

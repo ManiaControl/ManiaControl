@@ -17,7 +17,7 @@ use Maniaplanet\DedicatedServer\Xmlrpc\UnavailableFeatureException;
  * Class offering various Admin Commands related to Players
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
- * @copyright 2014-2019 ManiaControl Team
+ * @copyright 2014-2020 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class PlayerCommands implements CommandListener, ManialinkPageAnswerListener, CallbackListener {

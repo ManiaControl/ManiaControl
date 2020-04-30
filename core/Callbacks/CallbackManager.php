@@ -15,7 +15,7 @@ use Maniaplanet\DedicatedServer\Xmlrpc\UnknownPlayerException;
  * Class for managing Server and ManiaControl Callbacks
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
- * @copyright 2014-2019 ManiaControl Team
+ * @copyright 2014-2020 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class CallbackManager implements UsageInformationAble {
@@ -31,6 +31,8 @@ class CallbackManager implements UsageInformationAble {
 	const CB_MP_ENDMATCH                  = 'ManiaPlanet.EndMatch';
 	const CB_MP_BEGINMAP                  = 'ManiaPlanet.BeginMap';
 	const CB_MP_ENDMAP                    = 'ManiaPlanet.EndMap';
+	const CB_MP_BEGINROUND                = 'ManiaPlanet.BeginRound';
+	const CB_MP_ENDROUND                  = 'ManiaPlanet.EndRound';
 	const CB_MP_MAPLISTMODIFIED           = 'ManiaPlanet.MapListModified';
 	const CB_MP_ECHO                      = 'ManiaPlanet.Echo';
 	const CB_MP_BILLUPDATED               = 'ManiaPlanet.BillUpdated';

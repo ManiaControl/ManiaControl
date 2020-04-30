@@ -37,13 +37,14 @@ use MCTeam\LocalRecordsPlugin;
  * MapList Widget Class
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
- * @copyright 2014-2018 ManiaControl Team
+ * @copyright 2014-2020 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	/*
 	 * Constants
 	 */
+
 	const ACTION_UPDATE_MAP            = 'MapList.UpdateMap';
 	const ACTION_REMOVE_MAP            = 'MapList.RemoveMap';
 	const ACTION_SWITCH_MAP            = 'MapList.SwitchMap';
@@ -528,63 +529,14 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			}
 
 			// Display Karma bar
-			if ($karmaPlugin) {
-				$displayMxKarma = $this->maniaControl->getSettingManager()->getSettingValue($karmaPlugin, $karmaPlugin::SETTING_WIDGET_DISPLAY_MX);
-
-				//Display Mx Karma
-				if ($displayMxKarma && $map->mx) {
-					$karma = $map->mx->ratingVoteAverage / 100;
-					$votes = array("count" => $map->mx->ratingVoteCount);
-
-					//Display Local Karma
-				} else {
-					$karma = $karmaPlugin->getMapKarma($map);
-					$votes = $karmaPlugin->getMapVotes($map);
-				}
-
-				if (is_numeric($karma) && $votes['count'] > 0) {
-					if ($this->maniaControl->getSettingManager()->getSettingValue($karmaPlugin, $karmaPlugin::SETTING_NEWKARMA)) {
-						$karmaText = '  ' . round($karma * 100.) . '% (' . $votes['count'] . ')';
-					} else {
-						$min  = 0;
-						$plus = 0;
-						foreach ($votes as $vote) {
-							if (isset($vote->vote)) {
-								if ($vote->vote !== 0.5) {
-									if ($vote->vote < 0.5) {
-										$min = $min + $vote->count;
-									} else {
-										$plus = $plus + $vote->count;
-									}
-								}
-							}
-						}
-						$endKarma  = $plus - $min;
-						$karmaText = '  ' . $endKarma . ' (' . $votes['count'] . 'x / ' . round($karma * 100.) . '%)';
-					}
-
-					$karmaGauge = new Gauge();
-					$mapFrame->addChild($karmaGauge);
-					$karmaGauge->setZ(0.2);
-					$karmaGauge->setX($posX + 120);
-					$karmaGauge->setY(0.2);
-					$karmaGauge->setSize(20, 10);
-					$karmaGauge->setDrawBackground(false);
-					$karma = floatval($karma);
-					$karmaGauge->setRatio($karma + 0.15 - $karma * 0.15);
-					$karmaColor = ColorUtil::floatToStatusColor($karma);
-					$karmaGauge->setColor($karmaColor . '9');
-
-					$karmaLabel = new Label();
-					$mapFrame->addChild($karmaLabel);
-					$karmaLabel->setZ(2);
-					$karmaLabel->setX($posX + 120);
-					$karmaLabel->setSize(20 * 0.9, 5);
-					$karmaLabel->setY(-0.2);
-					$karmaLabel->setTextSize(0.9);
-					$karmaLabel->setTextColor('000');
-					$karmaLabel->setText($karmaText);
-				}
+			$karmaGauge = $this->maniaControl->getManialinkManager()->getElementBuilder()->buildKarmaGauge(
+				$map,
+				20,
+				10
+			);
+			if ($karmaGauge) {
+				$mapFrame->addChild($karmaGauge);
+				$karmaGauge->setX($posX + 120);
 			}
 
 			$posY -= 4;

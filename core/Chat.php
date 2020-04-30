@@ -17,7 +17,7 @@ use Maniaplanet\DedicatedServer\Xmlrpc\UnknownPlayerException;
  * Chat Utility Class
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
- * @copyright 2014-2019 ManiaControl Team
+ * @copyright 2014-2020 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class Chat implements CallbackListener, CommunicationListener, UsageInformationAble {
@@ -26,13 +26,14 @@ class Chat implements CallbackListener, CommunicationListener, UsageInformationA
 	/*
 	 * Constants
 	 */
-	const SETTING_PUBLIC_PREFIX      = 'Public Messages Prefix';
-	const SETTING_PRIVATE_PREFIX     = 'Privat Messages Prefix';
+	const SETTING_FORMAT_ERROR       = 'Error Format';
 	const SETTING_FORMAT_INFORMATION = 'Information Format';
 	const SETTING_FORMAT_SUCCESS     = 'Success Format';
-	const SETTING_FORMAT_ERROR       = 'Error Format';
 	const SETTING_FORMAT_USAGEINFO   = 'UsageInfo Format';
+	const SETTING_PUBLIC_PREFIX      = 'Public Messages Prefix';
+	const SETTING_PRIVATE_PREFIX     = 'Privat Messages Prefix';
 	const CHAT_BUFFER_SIZE           = 200;
+
 	/*
 	 * Private properties
 	 */
@@ -49,12 +50,12 @@ class Chat implements CallbackListener, CommunicationListener, UsageInformationA
 		$this->maniaControl = $maniaControl;
 
 		// Settings
-		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_PUBLIC_PREFIX, '» ');
-		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_PRIVATE_PREFIX, '»» ');
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_FORMAT_ERROR, '$f30');
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_FORMAT_INFORMATION, '$fff');
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_FORMAT_SUCCESS, '$0f0');
-		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_FORMAT_ERROR, '$f30');
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_FORMAT_USAGEINFO, '$f80');
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_PUBLIC_PREFIX, '» ');
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_PRIVATE_PREFIX, '»» ');
 
 		//Callbacks
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(CallbackManager::CB_MP_PLAYERCHAT, $this, 'onPlayerChat');

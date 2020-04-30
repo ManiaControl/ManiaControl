@@ -1,8 +1,12 @@
-.idea
-*.iml
-/configs/server.xml
+.*
+!/.git
+!/.gitignore
+!/.idea
+/configs/*
+!/configs/server.default.xml
 /logs/
 /ManiaControl.log
 /ManiaControl.pid
-!/.idea/encodings.xml
-!/.idea/codeStyleSettings.xml
+!/plugins/
+/plugins/*
+!/plugins/MCTeam/

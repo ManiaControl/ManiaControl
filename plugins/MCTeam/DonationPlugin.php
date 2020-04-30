@@ -10,7 +10,6 @@ use FML\Controls\Quads\Quad_BgRaceScore2;
 use FML\Controls\Quads\Quad_BgsPlayerCard;
 use FML\ManiaLink;
 use FML\Script\Features\Paging;
-use ManiaControl\Admin\ActionsMenu;
 use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Bills\BillManager;
 use ManiaControl\Callbacks\CallbackListener;
@@ -24,12 +23,14 @@ use ManiaControl\Manialinks\SidebarMenuManager;
 use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
 use ManiaControl\Plugins\Plugin;
+use ManiaControl\Settings\Setting;
+use ManiaControl\Settings\SettingManager;
 
 /**
  * ManiaControl Donation Plugin
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
- * @copyright 2014-2019 ManiaControl Team
+ * @copyright 2014-2020 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class DonationPlugin implements CallbackListener, CommandListener, Plugin, SidebarMenuEntryListener {
@@ -37,7 +38,7 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin, Sideb
 	 * Constants
 	 */
 	const ID                               = 3;
-	const VERSION                          = 0.1;
+	const VERSION                          = 0.11;
 	const AUTHOR                           = 'MCTeam';
 	const NAME                             = 'Donation Plugin';
 	const SETTING_ANNOUNCE_SERVER_DONATION = 'Enable Server-Donation Announcements';
@@ -113,11 +114,12 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin, Sideb
 		// Register for callbacks
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(PlayerManager::CB_PLAYERCONNECT, $this, 'handlePlayerConnect');
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(CallbackManager::CB_MP_PLAYERMANIALINKPAGEANSWER, $this, 'handleManialinkPageAnswer');
+		$this->maniaControl->getCallbackManager()->registerCallbackListener(SettingManager::CB_SETTING_CHANGED, $this, 'handleSettingChanged');
 
 		// Define player stats
 		$this->maniaControl->getStatisticManager()->defineStatMetaData(self::STAT_PLAYER_DONATIONS);
 
-		$this->maniaControl->getManialinkManager()->getSidebarMenuManager()->addMenuEntry(SidebarMenuManager::ORDER_PLAYER_MENU + 5,self::DONATIONPLUGIN_MENU_ID,$this,'displayDonateWidget');
+		$this->maniaControl->getManialinkManager()->getSidebarMenuManager()->addMenuEntry(SidebarMenuManager::ORDER_PLAYER_MENU + 5, self::DONATIONPLUGIN_MENU_ID, $this, 'displayDonateWidget');
 
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_DONATE_WIDGET_ACTIVATED, true);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_DONATION_VALUES, "20,50,100,500,1000,2000");
@@ -137,6 +139,8 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin, Sideb
 	public function displayWidget() {
 		if ($this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_DONATE_WIDGET_ACTIVATED)) {
 			$this->displayDonateWidget();
+		} else {
+			$this->maniaControl->getManialinkManager()->hideManialink(self::MLID_DONATE_WIDGET);
 		}
 	}
 
@@ -235,6 +239,20 @@ class DonationPlugin implements CallbackListener, CommandListener, Plugin, Sideb
 	 */
 	public function unload() {
 		$this->maniaControl->getManialinkManager()->hideManialink(self::MLID_DONATE_WIDGET);
+	}
+
+	/**
+	 * Handle Setting Changed Callback
+	 *
+	 * @internal
+	 * @param Setting $setting
+	 */
+	public function handleSettingChanged(Setting $setting) {
+		if (!$setting->belongsToClass($this)) {
+			return;
+		}
+
+		$this->displayWidget();
 	}
 
 	/**

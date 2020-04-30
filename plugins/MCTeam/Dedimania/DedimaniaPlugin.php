@@ -28,7 +28,7 @@ use MCTeam\Common\RecordWidget;
  * ManiaControl Dedimania Plugin
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
- * @copyright 2014-2019 ManiaControl Team
+ * @copyright 2014-2020 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListener, Plugin {
@@ -36,21 +36,22 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	 * Constants
 	 */
 	const ID             = 8;
-	const VERSION        = 0.5;
+	const VERSION        = 0.61;
 	const AUTHOR         = 'MCTeam';
 	const NAME           = 'Dedimania Plugin';
 	const MLID_DEDIMANIA = 'Dedimania.ManialinkId';
 
-	const SETTING_WIDGET_ENABLE       = 'Enable Dedimania Widget';
-	const SETTING_WIDGET_TITLE        = 'Widget Title';
-	const SETTING_WIDGET_POSX         = 'Widget Position: X';
-	const SETTING_WIDGET_POSY         = 'Widget Position: Y';
-	const SETTING_WIDGET_WIDTH        = 'Widget Width';
-	const SETTING_WIDGET_LINE_COUNT   = 'Widget Displayed Lines Count';
-	const SETTING_WIDGET_LINE_HEIGHT  = 'Widget Line Height';
-	const SETTING_DEDIMANIA_CODE      = '$l[http://dedimania.net/tm2stats/?do=register]Dedimania Code for ';
-	const SETTING_NOTIFY_BEST_RECORDS = 'Notify Publicly only for the X Best Records';
-	const SETTING_MAX_RECORDS         = 'Max Records, only increase if you bought a rank update from Dedimania!';
+	const SETTING_WIDGET_ENABLE               = 'Enable Dedimania Widget';
+	const SETTING_WIDGET_TITLE                = 'Widget Title';
+	const SETTING_WIDGET_POSX                 = 'Widget Position: X';
+	const SETTING_WIDGET_POSY                 = 'Widget Position: Y';
+	const SETTING_WIDGET_WIDTH                = 'Widget Width';
+	const SETTING_WIDGET_LINE_COUNT           = 'Widget Displayed Lines Count';
+	const SETTING_WIDGET_LINE_HEIGHT          = 'Widget Line Height';
+	const SETTING_DEDIMANIA_CODE              = '$l[http://dedimania.net/tm2stats/?do=register]Dedimania Code for ';
+	const SETTING_NOTIFY_BEST_RECORDS_PUBLIC  = 'Notify Publicly only for the X Best Records';
+	const SETTING_NOTIFY_BEST_RECORDS_PRIVATE = 'Notify Privately only for the X Best Records';
+	const SETTING_MAX_RECORDS                 = 'Max Records, only increase if you bought a rank update from Dedimania!';
 
 	const CB_DEDIMANIA_CHANGED        = 'Dedimania.Changed';
 	const CB_DEDIMANIA_UPDATED        = 'Dedimania.Updated';
@@ -103,7 +104,8 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_WIDGET_WIDTH, 40);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_WIDGET_LINE_HEIGHT, 4);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_WIDGET_LINE_COUNT, 12);
-		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_NOTIFY_BEST_RECORDS, 30);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_NOTIFY_BEST_RECORDS_PRIVATE, 30);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_NOTIFY_BEST_RECORDS_PUBLIC, 15);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_MAX_RECORDS, 30);
 
 		// Callbacks
@@ -151,8 +153,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 
 		$this->recordWidget = new RecordWidget($this->maniaControl);
 		
-		if ($this->maniaControl->getServer()->getGameMode() == 0)
-		{
+		if ($this->maniaControl->getServer()->getGameMode() == 0) {
 			$gameMode = $this->maniaControl->getClient()->getScriptName()['CurrentValue'];
 			$this->isMultilap = ($gameMode == 'Laps.Script.txt' || $this->maniaControl->getMapManager()->getCurrentMap()->nbLaps > 0);
 			$this->isRounds = ($gameMode == 'Rounds.Script.txt');			
@@ -176,6 +177,8 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 
 		if ($this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_WIDGET_ENABLE)) {
 			$this->sendManialink();
+		} else {
+			$this->maniaControl->getManialinkManager()->hideManialink(self::MLID_DEDIMANIA);
 		}
 	}
 
@@ -361,8 +364,6 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 
 				$this->maniaControl->getCallbackManager()->triggerCallback(self::CB_DEDIMANIA_CHANGED, $newRecord);
 
-				$notifyOnlyBestRecords = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_NOTIFY_BEST_RECORDS);
-
 				// Announce record
 				if ($oldRecord->nullRecord || $newRecord->rank < $oldRecord->rank) {
 					// Gained rank
@@ -372,21 +373,23 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 					$improvement = 'improved the';
 				}
 
-				if ($newRecord->rank <= $notifyOnlyBestRecords) {
+				$notifyName = '';
+				$notifyOnlyBestRecordsPrivate = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_NOTIFY_BEST_RECORDS_PRIVATE);
+				$notifyOnlyBestRecordsPublic = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_NOTIFY_BEST_RECORDS_PUBLIC);
+				if ($newRecord->rank <= $notifyOnlyBestRecordsPublic) {
 					$notifyName = $player->nickname;
-				} else {
+				} elseif ($newRecord->rank <= $notifyOnlyBestRecordsPrivate) {
 					$notifyName = 'You';
 				}
-
 
 				$message = '$390$<$fff' . $notifyName . '$> ' . $improvement . ' $<$ff0' . $newRecord->rank . '.$> Dedimania Record: $<$fff' . Formatter::formatTime($newRecord->best) . '$>';
 				if (!$oldRecord->nullRecord) {
 					$message .= ' ($<$ff0' . $oldRecord->rank . '.$> $<$fff-' . Formatter::formatTime(($oldRecord->best - $recTime)) . '$>)';
 				}
 
-				if ($newRecord->rank <= $notifyOnlyBestRecords) {
+				if ($newRecord->rank <= $notifyOnlyBestRecordsPublic) {
 					$this->maniaControl->getChat()->sendInformation($message . '!');
-				} else {
+				} elseif ($newRecord->rank <= $notifyOnlyBestRecordsPrivate) {
 					$this->maniaControl->getChat()->sendInformation($message . '!', $player);
 				}
 
@@ -746,6 +749,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	 * @see \ManiaControl\Plugins\Plugin::unload()
 	 */
 	public function unload() {
+		$this->maniaControl->getManialinkManager()->hideManialink(self::MLID_DEDIMANIA);
 	}
 
 	/**

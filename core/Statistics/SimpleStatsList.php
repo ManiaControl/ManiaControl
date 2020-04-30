@@ -3,7 +3,7 @@
 namespace ManiaControl\Statistics;
 
 use FML\Controls\Frame;
-use FML\Controls\Label;
+
 use FML\Controls\Labels\Label_Text;
 use FML\Controls\Quad;
 use FML\Controls\Quads\Quad_BgsPlayerCard;
@@ -15,7 +15,7 @@ use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Callbacks\Callbacks;
 use ManiaControl\Commands\CommandListener;
-use ManiaControl\Logger;
+
 use ManiaControl\ManiaControl;
 use ManiaControl\Manialinks\LabelLine;
 use ManiaControl\Manialinks\ManialinkManager;
@@ -28,7 +28,7 @@ use ManiaControl\Utils\Formatter;
  * Simple Stats List Class
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
- * @copyright 2014-2019 ManiaControl Team
+ * @copyright 2014-2020 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, CommandListener {
@@ -237,7 +237,7 @@ class SimpleStatsList implements ManialinkPageAnswerListener, CallbackListener, 
 		}
 
 		//Slice Array to chunk length
-		$statRankings[$order] = array_slice($statRankings{$order}, $playerBeginIndex, self::MAX_PAGES_PER_CHUNK * self::MAX_PLAYERS_PER_PAGE, true);
+		$statRankings[$order] = array_slice($statRankings[$order], $playerBeginIndex, self::MAX_PAGES_PER_CHUNK * self::MAX_PLAYERS_PER_PAGE, true);
 		$pageNumber           = 1 + $chunkIndex * self::MAX_PAGES_PER_CHUNK;
 		foreach ($statRankings[$order] as $playerId => $value) {
 			if ($index % self::MAX_PLAYERS_PER_PAGE === 1) {

@@ -14,7 +14,7 @@ use Maniaplanet\DedicatedServer\Xmlrpc\ChangeInProgressException;
  * ManiaControl Map Actions Class
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
- * @copyright 2014-2019 ManiaControl Team
+ * @copyright 2014-2020 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class MapActions implements CommunicationListener, UsageInformationAble {
@@ -107,7 +107,7 @@ class MapActions implements CommunicationListener, UsageInformationAble {
 		//TODO message
 
 		// Force an EndMap on the MapQueue to set the next Map
-		$this->maniaControl->getMapManager()->getMapQueue()->endMap(null);
+		$this->maniaControl->getMapManager()->getMapQueue()->endMap();
 
 		// Ignore EndMap on MapQueue
 		$this->maniaControl->getMapManager()->getMapQueue()->dontQueueNextMapChange();

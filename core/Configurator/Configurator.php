@@ -25,7 +25,7 @@ use ManiaControl\Server\VoteRatiosMenu;
  * Class managing ingame ManiaControl Configuration
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
- * @copyright 2014-2019 ManiaControl Team
+ * @copyright 2014-2020 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class Configurator implements CallbackListener, CommandListener, ManialinkPageAnswerListener {
@@ -54,8 +54,8 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 	private $serverOptionsMenu = null;
 	/** @var ServerUIPropertiesMenu $serverUIPropertiesMenu */
 	private $serverUIPropertiesMenu = null;
-	/** @var ScriptSettings $scriptSettings */
-	private $scriptSettings = null;
+	/** @var GameModeSettings $gameModeSettings */
+	private $gameModeSettings = null;
 	/** @var VoteRatiosMenu $voteRatiosMenu */
 	private $voteRatiosMenu = null;
 	/** @var ManiaControlSettings $maniaControlSettings */
@@ -101,8 +101,8 @@ class Configurator implements CallbackListener, CommandListener, ManialinkPageAn
 		$this->addMenu($this->serverUIPropertiesMenu);
 
 		// Create script settings
-		$this->scriptSettings = new ScriptSettings($maniaControl);
-		$this->addMenu($this->scriptSettings);
+		$this->gameModeSettings = new GameModeSettings($maniaControl);
+		$this->addMenu($this->gameModeSettings);
 
 		// Create vote ratios menu
 		$this->voteRatiosMenu = new VoteRatiosMenu($maniaControl);

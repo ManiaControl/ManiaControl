@@ -15,7 +15,6 @@ use FML\Controls\Quads\Quad_Icons64x64_1;
 use FML\Controls\Quads\Quad_UIConstruction_Buttons;
 use FML\ManiaLink;
 use FML\Script\Features\KeyAction;
-use ManiaControl\Admin\ActionsMenu;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Callbacks\Callbacks;
@@ -44,7 +43,7 @@ use Maniaplanet\DedicatedServer\Xmlrpc\GameModeException;
  * ManiaControl Custom-Votes Plugin
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
- * @copyright 2014-2019 ManiaControl Team
+ * @copyright 2014-2020 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class CustomVotesPlugin implements SidebarMenuEntryListener, CommandListener, CallbackListener, ManialinkPageAnswerListener, TimerListener, Plugin {
@@ -162,7 +161,7 @@ class CustomVotesPlugin implements SidebarMenuEntryListener, CommandListener, Ca
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_SPECTATOR_ALLOW_START_VOTE, true);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_VOTE_TIME, 40);
 
-		$this->maniaControl->getManialinkManager()->getSidebarMenuManager()->addMenuEntry(SidebarMenuManager::ORDER_PLAYER_MENU + 5, self::CUSTOMVOTES_MENU_ID,$this,'showIcon');
+		$this->maniaControl->getManialinkManager()->getSidebarMenuManager()->addMenuEntry(SidebarMenuManager::ORDER_PLAYER_MENU + 5, self::CUSTOMVOTES_MENU_ID, $this, 'showIcon');
 		//Define Votes
 		$this->defineVote("teambalance", "Vote for Team Balance");
 		$this->defineVote("skipmap", "Vote for Skip Map")->setStopCallback(Callbacks::ENDMAP);

@@ -1,12 +1,10 @@
 <?php
 
-use ManiaControl\ManiaControl;
-
 /**
  * PHP Unit Test for Custom UI Manager
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
- * @copyright 2014-2018 ManiaControl Team
+ * @copyright 2014-2020 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class CustomUIManagerTest extends PHPUnit_Framework_TestCase {

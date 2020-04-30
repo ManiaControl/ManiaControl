@@ -9,7 +9,7 @@ use ManiaControl\General\UsageInformationTrait;
  * Model Class for a Timer Listening
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
- * @copyright 2014-2019 ManiaControl Team
+ * @copyright 2014-2020 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class TimerListening extends Listening implements UsageInformationAble {
@@ -55,6 +55,16 @@ class TimerListening extends Listening implements UsageInformationAble {
 		} else {
 			$this->lastTrigger += $this->deltaTime;
 		}
+	}
+
+	/**
+	 * Set the deltaTime
+	 * 
+	 * @param float $milliSeconds
+	 */
+	public function setDeltaTime($milliSeconds) {
+		$this->deltaTime = $milliSeconds / 1000.;
+		$this->lastTrigger = null;
 	}
 
 	/**

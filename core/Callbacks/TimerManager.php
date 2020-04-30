@@ -10,7 +10,7 @@ use ManiaControl\ManiaControl;
  * Class for managing Timed Callbacks
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
- * @copyright 2014-2019 ManiaControl Team
+ * @copyright 2014-2020 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class TimerManager implements UsageInformationAble {
@@ -73,6 +73,24 @@ class TimerManager implements UsageInformationAble {
 	 */
 	public function addTimerListening(TimerListening $timerListening) {
 		array_push($this->timerListenings, $timerListening);
+	}
+
+	/**
+	 * Update the deltaTime of a Timer Listening
+	 * 
+	 * @param TimerListener   $listener
+	 * @param string|callable $method
+	 * @param float           $milliSeconds
+	 */
+	public function updateTimerListening(TimerListener $listener, $method, $milliSeconds) {
+		$updated = false;
+		foreach ($this->timerListenings as $key => &$listening) {
+			if ($listening->listener === $listener && $listening->method === $method) {
+				$listening->setDeltaTime($milliSeconds);
+				$updated = true;
+			}
+		}
+		return $updated;
 	}
 
 	/**
