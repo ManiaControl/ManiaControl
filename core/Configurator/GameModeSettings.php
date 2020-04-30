@@ -133,11 +133,24 @@ class GameModeSettings implements ConfiguratorMenu, CallbackListener, Communicat
 		if ($this->maniaControl->getServer()->getScriptManager()->isScriptMode()) {
 			return $this->maniaControl->getClient()->getModeScriptSettings();
 		} else {
-			$gameModeSettings = get_object_vars($this->maniaControl->getClient()->getCurrentGameInfo());
-			foreach ($gameModeSettings as $name => $value) {
-				unset($gameModeSettings[$name]);
-				$gameModeSettings[ucfirst($name)] = $value;
+			$gameModeSettings = $this->maniaControl->getClient()->getGameInfos();
+
+			$currentGameModeSettings = get_object_vars($gameModeSettings['CurrentGameInfos']);
+			unset($gameModeSettings['CurrentGameInfos']);
+			foreach ($currentGameModeSettings as $name => $value) {
+				unset($currentGameModeSettings[$name]);
+				$currentGameModeSettings[ucfirst($name)] = $value;
 			}
+			$gameModeSettings[0] = $currentGameModeSettings;
+
+			$nextGameModeSettings = get_object_vars($gameModeSettings['NextGameInfos']);
+			unset($gameModeSettings['NextGameInfos']);
+			foreach ($nextGameModeSettings as $name => $value) {
+				unset($nextGameModeSettings[$name]);
+				$nextGameModeSettings[ucfirst($name)] = $value;
+			}
+			$gameModeSettings[1] = $nextGameModeSettings;
+
 			return $gameModeSettings;
 		}
 	}
@@ -176,6 +189,9 @@ class GameModeSettings implements ConfiguratorMenu, CallbackListener, Communicat
 		$gameModeSettings = null;
 		try {
 			$gameModeSettings = $this->getGameModeSettingsArray();
+			if (!$this->maniaControl->getServer()->getScriptManager()->isScriptMode()) {
+				$gameModeSettings = $gameModeSettings[0];
+			}
 		} catch (\Exception $e) {
 			return false;
 		}
@@ -239,7 +255,7 @@ class GameModeSettings implements ConfiguratorMenu, CallbackListener, Communicat
 				$scriptInfo = $this->maniaControl->getClient()->getModeScriptInfo();
 				$scriptParams = $scriptInfo->paramDescs;
 			} else {
-				$scriptParams = $gameModeSettings;
+				$scriptParams = $gameModeSettings[0];
 			}
 		} catch (\Exception $e) {
 			$label = new Label();
@@ -278,6 +294,18 @@ class GameModeSettings implements ConfiguratorMenu, CallbackListener, Communicat
 
 		$paging->setLabel($pageCountLabel);
 
+		if (!$this->maniaControl->getServer()->getScriptManager()->isScriptMode()) {
+			$descriptionLabel = new Label();
+			$frame->addChild($descriptionLabel);
+			$descriptionLabel->setHorizontalAlign($descriptionLabel::LEFT);
+			$descriptionLabel->setPosition($width * -0.45, $height * -0.44);
+			$descriptionLabel->setSize($width * 0.7, $settingHeight);
+			$descriptionLabel->setText('Changes only apply with map skip/restart');
+			$descriptionLabel->setTextColor('ff0');
+			$descriptionLabel->setTextSize($labelTextSize);
+			$descriptionLabel->setTranslate(true);
+		}
+
 		// Setting pages
 		$pageFrame = null;
 		$posY      = 0.;
@@ -285,20 +313,28 @@ class GameModeSettings implements ConfiguratorMenu, CallbackListener, Communicat
 
 		foreach ($scriptParams as $key => $scriptParam) {
 			$settingName = null;
+			$settingValue = null;
 			if ($this->maniaControl->getServer()->getScriptManager()->isScriptMode()) {
 				$settingName = $scriptParam->name;
+				if (!isset($gameModeSettings[$settingName])) {
+					continue;
+				}
+				$settingValue = $gameModeSettings[$settingName];
 			} else {
 				$settingName = $key;
-			}
-
-			if (!isset($gameModeSettings[$settingName])) {
-				continue;
+				if (!isset($gameModeSettings[0][$settingName]) && !isset($gameModeSettings[1][$settingName])) {
+					continue;
+				}
+				$settingValue = array(
+					0 => $gameModeSettings[0][$settingName],
+					1 => $gameModeSettings[1][$settingName]
+				);
 			}
 
 			if ($index % 13 === 0) {
 				$pageFrame = new Frame();
 				$frame->addChild($pageFrame);
-				$posY = $height * 0.41;
+				$posY = 0.41 * $height;
 				$paging->addPageControl($pageFrame);
 			}
 
@@ -309,19 +345,44 @@ class GameModeSettings implements ConfiguratorMenu, CallbackListener, Communicat
 			$nameLabel = new Label_Text();
 			$settingFrame->addChild($nameLabel);
 			$nameLabel->setHorizontalAlign($nameLabel::LEFT);
-			$nameLabel->setSize($width * 0.4, $settingHeight);
+			$nameLabel->setSize(0.4 * $width, $settingHeight);
 			$nameLabel->setStyle($nameLabel::STYLE_TextCardSmall);
 			$nameLabel->setText($settingName);
 			$nameLabel->setTextSize($labelTextSize);
-			$nameLabel->setX($width * -0.46);
+			$nameLabel->setX(-0.46 * $width);
 
-			$settingValue = $gameModeSettings[$settingName];
+			if (!$this->maniaControl->getServer()->getScriptManager()->isScriptMode()) {
+				if (is_bool($settingValue[0])) {
+					$activeQuad = new Quad_Icons64x64_1();
+					$settingFrame->addChild($activeQuad);
+					$activeQuad->setSize(0.9 * $settingHeight, 0.9 * $settingHeight);
+					if ($settingValue[0]) {
+						$activeQuad->setSubStyle(Quad_Icons64x64_1::SUBSTYLE_LvlGreen);
+					} else {
+						$activeQuad->setSubStyle(Quad_Icons64x64_1::SUBSTYLE_LvlRed);
+					}
+					$activeQuad->setX(0.1 * $width);
+				} else {
+					$currentLabel = new Label_Text();
+					$settingFrame->addChild($currentLabel);
+					$currentLabel->setHorizontalAlign(Label_Text::RIGHT);
+					$currentLabel->setSize(0.2 * $width, 0.9 * $settingHeight);
+					$currentLabel->setStyle(Label_Text::STYLE_TextValueSmall);
+					$currentLabel->setText($settingValue[0]);
+					$currentLabel->setTextColor('aaa');
+					$currentLabel->setTextPrefix('$i');
+					$currentLabel->setTextSize(1);
+					$currentLabel->setX(0.11 * $width);
+				}
+
+				$settingValue = $settingValue[1];
+			}
 
 			if (is_bool($settingValue)) {
 				// Boolean checkbox
 				$quad = new Quad();
 				$quad->setSize(4, 4);
-				$quad->setX($width / 2 * 0.545);
+				$quad->setX(0.27 * $width);
 				$checkBox = new CheckBox(self::ACTION_PREFIX_SETTING . $settingName, $settingValue, $quad);
 				$settingFrame->addChild($checkBox);
 			} else {
@@ -330,18 +391,18 @@ class GameModeSettings implements ConfiguratorMenu, CallbackListener, Communicat
 				$settingFrame->addChild($entry);
 				$entry->setDefault($settingValue);
 				$entry->setName(self::ACTION_PREFIX_SETTING . $settingName);
-				$entry->setSize($width * 0.3, $settingHeight * 0.9);
+				$entry->setSize(0.3 * $width, 0.9 * $settingHeight);
 				$entry->setStyle(Label_Text::STYLE_TextValueSmall);
 				$entry->setTextSize(1);
-				$entry->setX($width / 2 * 0.55);
+				$entry->setX(0.275 * $width);
 			}
 
 			if ($this->maniaControl->getServer()->getScriptManager()->isScriptMode()) {
 				$descriptionLabel = new Label();
 				$pageFrame->addChild($descriptionLabel);
 				$descriptionLabel->setHorizontalAlign($descriptionLabel::LEFT);
-				$descriptionLabel->setPosition($width * -0.45, $height * -0.44);
-				$descriptionLabel->setSize($width * 0.7, $settingHeight);
+				$descriptionLabel->setPosition(-0.45 * $width, -0.44 * $height);
+				$descriptionLabel->setSize(0.7 * $width, $settingHeight);
 				$descriptionLabel->setTextSize($labelTextSize);
 				$descriptionLabel->setTranslate(true);
 				$nameLabel->addTooltipLabelFeature($descriptionLabel, $scriptParam->desc);
@@ -369,6 +430,9 @@ class GameModeSettings implements ConfiguratorMenu, CallbackListener, Communicat
 		$gameModeSettings = null;
 		try {
 			$gameModeSettings = $this->getGameModeSettingsArray();
+			if (!$this->maniaControl->getServer()->getScriptManager()->isScriptMode()) {
+				$gameModeSettings = $gameModeSettings[0];
+			}
 		} catch (\Exception $e) {
 			return;
 		}
@@ -518,6 +582,9 @@ class GameModeSettings implements ConfiguratorMenu, CallbackListener, Communicat
 			$gameModeSettings = null;
 			try {
 				$gameModeSettings = $this->getGameModeSettingsArray();
+				if (!$this->maniaControl->getServer()->getScriptManager()->isScriptMode()) {
+					$gameModeSettings = $gameModeSettings[0];
+				}
 			} catch (\Exception $e) {
 				return new CommunicationAnswer($e->getMessage(), true);
 			}
