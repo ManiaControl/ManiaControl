@@ -510,10 +510,6 @@ class GameModeSettings implements ConfiguratorMenu, CallbackListener, Communicat
 		$statement->bind_param('iss', $this->maniaControl->getServer()->index, $settingName, $settingValue);
 
 		// Notifications
-		if (!$this->maniaControl->getServer()->getScriptManager()->isScriptMode()) {
-			$this->maniaControl->getChat()->sendInformation('Changes will only take effect after a map skip or restart!', $player);
-		}
-
 		$settingsCount = count($newSettings);
 		$settingIndex  = 0;
 		$title         = $this->maniaControl->getAuthenticationManager()->getAuthLevelName($player);
