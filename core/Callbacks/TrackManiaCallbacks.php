@@ -109,8 +109,6 @@ class TrackManiaCallbacks implements CallbackListener {
 			$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::TM_ONFINISHLINE, $structure);
 		} else if ($structure->getIsEndLap()) {
 			$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::TM_ONLAPFINISH, $structure);
-		} else {
-			$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::TM_ONWAYPOINT, $structure);
 		}
 	}
 }
