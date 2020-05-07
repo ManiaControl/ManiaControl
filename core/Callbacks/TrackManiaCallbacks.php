@@ -41,6 +41,7 @@ class TrackManiaCallbacks implements CallbackListener {
 
 		// Register for script callbacks
 		$callbackManager->registerCallbackListener(Callbacks::SCRIPTCALLBACK, $this, 'handleScriptCallbacks');
+		$callbackManager->registerCallbackListener(Callbacks::TM_ONWAYPOINT, $this, 'handleWayPointCallback');
 	}
 
 	/**
@@ -73,9 +74,7 @@ class TrackManiaCallbacks implements CallbackListener {
 				$this->maniaControl->getCallbackManager()->triggerCallback($name, new BasePlayerTimeStructure($this->maniaControl, $data));
 				break;
 			case Callbacks::TM_ONWAYPOINT:
-				$this->handleWayPointCallback(new OnWayPointEventStructure($this->maniaControl, $data));
-
-				//$this->maniaControl->getCallbackManager()->triggerCallback($name, $wayPointStructure);
+				$this->maniaControl->getCallbackManager()->triggerCallback($name, new OnWayPointEventStructure($this->maniaControl, $data));
 				break;
 			case Callbacks::TM_ONRESPAWN:
 				$this->maniaControl->getCallbackManager()->triggerCallback($name, new OnRespawnStructure($this->maniaControl, $data));
@@ -103,9 +102,11 @@ class TrackManiaCallbacks implements CallbackListener {
 	/**
 	 * Trigger the three different Types of Callbacks
 	 *
-	 * @param \ManiaControl\Callbacks\Structures\TrackMania\OnWayPointEventStructure $structure
+	 * @param $data
 	 */
-	private function handleWayPointCallback(OnWayPointEventStructure $structure) {
+	public function handleWayPointCallback($data) {
+		$structure = new OnWayPointEventStructure($this->maniaControl, $data);
+
 		if ($structure->getIsEndRace()) {
 			$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::TM_ONFINISHLINE, $structure);
 		} else if ($structure->getIsEndLap()) {
