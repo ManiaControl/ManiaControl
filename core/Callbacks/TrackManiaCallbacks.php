@@ -102,11 +102,9 @@ class TrackManiaCallbacks implements CallbackListener {
 	/**
 	 * Trigger the three different Types of Callbacks
 	 *
-	 * @param $data
+	 * @param \ManiaControl\Callbacks\Structures\TrackMania\OnWayPointEventStructure $structure
 	 */
-	public function handleWayPointCallback($data) {
-		$structure = new OnWayPointEventStructure($this->maniaControl, $data);
-
+	public function handleWayPointCallback(OnWayPointEventStructure $structure) {
 		if ($structure->getIsEndRace()) {
 			$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::TM_ONFINISHLINE, $structure);
 		} else if ($structure->getIsEndLap()) {
