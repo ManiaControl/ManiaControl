@@ -153,37 +153,26 @@ class StyleManager implements UsageInformationAble {
 		}
 
 		//Search for Map-Name
-		$label = new Label_Button();
-		$frame->addChild($label);
-		$label->setPosition(-$width / 2 + 63, 0);
-		$label->setText('MapName');
-		$label->setTextSize(1.3);
-
-		$quad = new Quad_BgsPlayerCard();
-		$frame->addChild($quad);
-		$quad->setPosition(-$width / 2 + 63, 0);
-		$quad->setSubStyle($quad::SUBSTYLE_BgPlayerCardBig);
-		$quad->setSize(18, 5);
-		$quad->setAction($actionMapNameSearch);
-		$quad->setZ(-0.1);
+		$mapNameButton = $this->maniaControl->getManialinkManager()->getElementBuilder()->buildRoundTextButton(
+			'MapName',
+			18,
+			5,
+			$actionMapNameSearch
+		);
+		$frame->addChild($mapNameButton);
+		$mapNameButton->setX(-$width / 2 + 63);
 
 		//Search for Author
-		$label = new Label_Button();
-		$frame->addChild($label);
-		$label->setPosition(-$width / 2 + 82, 0);
-		$label->setText('Author');
-		$label->setTextSize(1.3);
-
-		$quad = new Quad_BgsPlayerCard();
-		$frame->addChild($quad);
-		$quad->setPosition(-$width / 2 + 82, 0);
-		$quad->setSubStyle($quad::SUBSTYLE_BgPlayerCardBig);
-		$quad->setSize(18, 5);
-		$quad->setAction($actionAuthorSearch);
-		$quad->setZ(-0.1);
+		$authorButton = $this->maniaControl->getManialinkManager()->getElementBuilder()->buildRoundTextButton(
+			'Author',
+			18,
+			5,
+			$actionAuthorSearch
+		);
+		$frame->addChild($authorButton);
+		$authorButton->setX(-$width / 2 + 82);
 
 		return $frame;
-
 	}
 
 	/**

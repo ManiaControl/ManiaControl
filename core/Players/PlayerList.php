@@ -50,7 +50,9 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 	const ACTION_KICK_PLAYER          = 'PlayerList.KickPlayer';
 	const ACTION_KICK_PLAYER_VOTE     = 'PlayerList.KickPlayerVote';
 	const ACTION_BAN_PLAYER           = 'PlayerList.BanPlayer';
+	/** @deprecated */
 	const ACTION_ADD_AS_MASTER        = 'PlayerList.PlayerAddAsMaster';
+	const ACTION_ADD_AS_SUPER         = 'PlayerList.PlayerAddAsSuper';
 	const ACTION_ADD_AS_ADMIN         = 'PlayerList.PlayerAddAsAdmin';
 	const ACTION_ADD_AS_MOD           = 'PlayerList.PlayerAddAsModerator';
 	const ACTION_REVOKE_RIGHTS        = 'PlayerList.RevokeRights';
@@ -289,9 +291,10 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 			// Level Quad
 			$rightQuad = new Quad_BgRaceScore2();
 			$playerFrame->addChild($rightQuad);
-			$rightQuad->setX($posX + 13);
+			// TODO colorize to player personally
 			$rightQuad->setSize(7, 3.5);
 			$rightQuad->setSubStyle($rightQuad::SUBSTYLE_CupFinisher);
+			$rightQuad->setX($posX + 13);
 
 			$rightLabel = new Label_Text();
 			$playerFrame->addChild($rightLabel);
@@ -496,8 +499,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 		$label->setText('Advanced Actions');
 		$label->setTextColor($textColor);
 
-
-		//Nickname background
+		// Nickname background
 		$quad = new Quad();
 		$frame->addChild($quad);
 		$quad->setPosition(0, $height / 2 - 10, -0.1);
@@ -515,129 +517,105 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 		$label->setTextColor($textColor);
 		$label->setHorizontalAlign($label::CENTER);
 
+		// Buttons
+		$buttonHeight = 5;
 		$buttonSpacing = 6.5;
-
-		// Background for Buttons
+		$buttonWidth = $quadWidth;
 		$posY = $height / 2 - 20;
-		$quad = new Quad_BgsPlayerCard();
-		$frame->addChild($quad);
-		$quad->setX(0);
-		$quad->setY($posY);
-		$quad->setZ(-0.1);
-		$quad->setSubStyle($quad::SUBSTYLE_BgPlayerCardBig);
-		$quad->setSize($quadWidth, 5);
 
-		// Mute Button
-		$label = new Label_Text();
-		$frame->addChild($label);
-		$label->setX(0);
-		$label->setY($posY);
-		$label->setStyle($label::STYLE_TextCardSmall);
-		$label->setTextSize($textSize);
-		$label->setTextColor($textColor);
-
-		if (!$player->isMuted()) {
-			$label->setText('Mute');
-			$quad->setAction(self::ACTION_MUTE_PLAYER . '.' . $login);
-		} else {
-			$label->setText('UnMute');
-			$quad->setAction(self::ACTION_UNMUTE_PLAYER . '.' . $login);
-		}
-
-		// Warn Player
-		$posY -= $buttonSpacing;
-		$quad = clone $quad;
-		$frame->addChild($quad);
-		$quad->setY($posY);
-		$quad->setAction(self::ACTION_WARN_PLAYER . '.' . $login);
-
-		$label = clone $label;
-		$frame->addChild($label);
-		$label->setY($posY);
-		$label->setText('Warn');
-		$label->setTextColor($textColor);
+		$muteUnmuteButtonDescription =  $player->isMuted() ?             'UnMute'       :             'Mute';
+		$muteUnmuteButtonAction      = ($player->isMuted() ? self::ACTION_UNMUTE_PLAYER : self::ACTION_MUTE_PLAYER) . '.' . $login;
+		$muteUnmuteButton = $this->maniaControl->getManialinkManager()->getElementBuilder()->buildRoundTextButton(
+			$muteUnmuteButtonDescription,
+			$buttonWidth,
+			$buttonHeight,
+			$muteUnmuteButtonAction
+		);
+		$frame->addChild($muteUnmuteButton);
+		$muteUnmuteButton->setY($posY);
 
 		$posY -= $buttonSpacing;
 
-		// Show Kick
-		$quad = clone $quad;
-		$frame->addChild($quad);
-		$quad->setY($posY);
-		$quad->setAction(self::ACTION_KICK_PLAYER . '.' . $login);
-
-		$label = clone $label;
-		$frame->addChild($label);
-		$label->setY($posY);
-		$label->setText('Kick');
-		$label->setTextColor('f90');
+		$warnButton = $this->maniaControl->getManialinkManager()->getElementBuilder()->buildRoundTextButton(
+			'Warn',
+			$buttonWidth,
+			$buttonHeight,
+			self::ACTION_WARN_PLAYER . '.' . $login
+		);
+		$frame->addChild($warnButton);
+		$warnButton->setY($posY);
 
 		$posY -= $buttonSpacing;
-		// Show Ban
-		$quad = clone $quad;
-		$frame->addChild($quad);
-		$quad->setY($posY);
-		$quad->setAction(self::ACTION_BAN_PLAYER . '.' . $login);
 
-		$label = clone $label;
-		$frame->addChild($label);
-		$label->setY($posY);
-		$label->setText('Ban');
-		$label->setTextColor('700');
-
-		$posY -= $buttonSpacing * 2;
-		// Show Add as Master-Admin
-		$quad = clone $quad;
-		$frame->addChild($quad);
-		$quad->setY($posY);
-		$quad->setAction(self::ACTION_ADD_AS_MASTER . '.' . $login);
-
-		$label = clone $label;
-		$frame->addChild($label);
-		$label->setY($posY);
-		$label->setText('Set SuperAdmin');
-		$label->setTextColor($textColor);
+		$kickButton = $this->maniaControl->getManialinkManager()->getElementBuilder()->buildRoundTextButton(
+			'$f90Kick',
+			$buttonWidth,
+			$buttonHeight,
+			self::ACTION_KICK_PLAYER . '.' . $login
+		);
+		$frame->addChild($kickButton);
+		$kickButton->setY($posY);
 
 		$posY -= $buttonSpacing;
-		// Show Add as Admin
-		$quad = clone $quad;
-		$frame->addChild($quad);
-		$quad->setY($posY);
-		$quad->setAction(self::ACTION_ADD_AS_ADMIN . '.' . $login);
 
-		$label = clone $label;
-		$frame->addChild($label);
-		$label->setY($posY);
-		$label->setText('Set Admin');
-		$label->setTextColor($textColor);
+		$banButton = $this->maniaControl->getManialinkManager()->getElementBuilder()->buildRoundTextButton(
+			'$700Kick',
+			$buttonWidth,
+			$buttonHeight,
+			self::ACTION_BAN_PLAYER . '.' . $login
+		);
+		$frame->addChild($banButton);
+		$banButton->setY($posY);
+
+		$posY -= 2 * $buttonSpacing;
+
+		$superColor = $this->maniaControl->getColorManager()->getColorByLevel(AuthenticationManager::AUTH_LEVEL_SUPERADMIN);
+		$superButton = $this->maniaControl->getManialinkManager()->getElementBuilder()->buildRoundTextButton(
+			"{$superColor}Set SuperAdmin",
+			$buttonWidth,
+			$buttonHeight,
+			self::ACTION_ADD_AS_SUPER . '.' . $login
+		);
+		$frame->addChild($superButton);
+		$superButton->setY($posY);
 
 		$posY -= $buttonSpacing;
-		// Show Add as Moderator
-		$quad = clone $quad;
-		$frame->addChild($quad);
-		$quad->setY($posY);
-		$quad->setAction(self::ACTION_ADD_AS_MOD . '.' . $login);
 
-		$label = clone $label;
-		$frame->addChild($label);
-		$label->setY($posY);
-		$label->setText('Set Moderator');
-		$label->setTextColor($textColor);
+		$adminColor = $this->maniaControl->getColorManager()->getColorByLevel(AuthenticationManager::AUTH_LEVEL_ADMIN);
+		$adminButton = $this->maniaControl->getManialinkManager()->getElementBuilder()->buildRoundTextButton(
+			"{$adminColor}Set Admin",
+			$buttonWidth,
+			$buttonHeight,
+			self::ACTION_ADD_AS_ADMIN . '.' . $login
+		);
+		$frame->addChild($adminButton);
+		$adminButton->setY($posY);
+
+		$posY -= $buttonSpacing;
+
+		$modColor = $this->maniaControl->getColorManager()->getColorByLevel(AuthenticationManager::AUTH_LEVEL_MODERATOR);
+		$modButton = $this->maniaControl->getManialinkManager()->getElementBuilder()->buildRoundTextButton(
+			"{$modColor}Set Moderator",
+			$buttonWidth,
+			$buttonHeight,
+			self::ACTION_ADD_AS_MOD . '.' . $login
+		);
+		$frame->addChild($modButton);
+		$modButton->setY($posY);
 
 		if ($player->authLevel > 0
 		    && $this->maniaControl->getAuthenticationManager()->checkRight($admin, $player->authLevel + 1)
 		) {
 			$posY -= $buttonSpacing;
-			// Revoke Rights
-			$quad = clone $quad;
-			$frame->addChild($quad);
-			$quad->setY($posY);
-			$quad->setAction(self::ACTION_REVOKE_RIGHTS . '.' . $login);
 
-			$label = clone $label;
-			$frame->addChild($label);
-			$label->setY($posY);
-			$label->setText('Revoke Rights');
-			$label->setTextColor('700');
+			$revokeButton = $this->maniaControl->getManialinkManager()->getElementBuilder()->buildRoundTextButton(
+				'$700Revoke Rights',
+				$buttonWidth,
+				$buttonHeight,
+				self::ACTION_REVOKE_RIGHTS . '.' . $login
+			);
+			$frame->addChild($revokeButton);
+			$revokeButton->setY($posY);
 		}
 
 		return $frame;
@@ -735,6 +713,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 					$this->advancedPlayerWidget($admin, $targetLogin);
 					break;
 				case self::ACTION_ADD_AS_MASTER:
+				case self::ACTION_ADD_AS_SUPER:
 					$this->maniaControl->getPlayerManager()->getPlayerActions()->grandAuthLevel($adminLogin, $targetLogin, AuthenticationManager::AUTH_LEVEL_SUPERADMIN);
 					break;
 				case self::ACTION_ADD_AS_ADMIN:

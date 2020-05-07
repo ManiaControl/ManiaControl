@@ -6,6 +6,7 @@ use FML\Controls\Frame;
 use FML\Controls\Gauge;
 use FML\Controls\Labels\Label_Button;
 use FML\Controls\Labels\Label_Text;
+use FML\Controls\Quad;
 use FML\Controls\Quads\Quad_BgsPlayerCard;
 use FML\ManiaLink;
 use FML\Script\Features\Paging;
@@ -123,6 +124,45 @@ class ElementBuilder {
 	 */
 	public function addRows(array $rows) {
 		$this->rowData = array_merge($this->rowData, $rows);
+	}
+
+	/**
+	 * Build Round Text Button
+	 * @param string $description
+	 * @param float $width
+	 * @param float $height
+	 * @param string $action
+	 * @param string $logoUrl
+	 */
+	public function buildRoundTextButton($description, $width, $height, $action, $logoUrl = null) {
+		$frame = new Frame();
+
+		$quad = new Quad_BgsPlayerCard();
+		$frame->addChild($quad);
+		$quad->setAction($action);
+		$quad->setSize($width, $height);
+		$quad->setSubStyle($quad::SUBSTYLE_BgPlayerCardBig);
+		$quad->setZ(-1);
+
+		$label = new Label_Button();
+		$frame->addChild($label);
+		$label->setText($description);
+		$label->setTextSize($height / 4);
+		$label->setZ(1);
+
+		if ($logoUrl) {
+			$logoQuad = new Quad();
+			$frame->addChild($logoQuad);
+			$logoQuad->setImageUrl($logoUrl);
+			$logoQuad->setSize(0.75*$height, 0.75*$height);
+			$logoQuad->setX(-$width/2 + 0.75*$height);
+			$logoQuad->setZ(1);
+
+			$label->setHorizontalAlign($label::RIGHT);
+			$label->setX($width/2 - 0.5*$height);
+		}
+
+		return $frame;
 	}
 
 	/**

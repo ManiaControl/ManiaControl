@@ -1,18 +1,31 @@
+###v0.254###
+#Additions
+- added first support of Legacy-Modes
+
+#Bug Fixes
+- solved Finish-/Lap-Callback not getting triggered when Waypoint-Callback is not registered
+
+#Changes
+- additional Waypoint-Callback on Finish-/Lap-Callback
+- renamed all occurrences of Script-Settings to GameMode-Settings
+	- includes a renamed database
+- unified Creations of round Text-Buttons
+
 ###v0.253###
 #Changes
 - //restart got replaced by //reboot
-- Unified Creations of a Karma-Gauge in new Manialinks\ElementBuilder
+- unified Creations of a Karma-Gauge in new Manialinks\ElementBuilder
 
 ###v0.252###
 #Additions
 - Ingame-Changelog
-- New customizations for Join&Leave-Messages
-- Symbolic Link resolving in ServerManager
+- new customizations for Join&Leave-Messages
+- symbolic Link resolving in ServerManager
 - Times in Map Widget
 
 #Bug Fixes
-- GReplay for Dedimania-Records not being sent
-- non-numeric value warning on self-triggered debug notice
+- GReplay for Dedimania-Records are now being sent
+- solved non-numeric value warning on self-triggered debug notice
 
 ###v0.250###
 #Additions
@@ -24,18 +37,19 @@
 
 #Bug Fixes
 - //delrec can delete every local record (Permission-Setting)
-- Replaced deprecated code
+- replaced deprecated code
 
 #Changes
-- Format milliseconds with dot instead of double colon (1:02:375 -> 1:02.375)
+- format milliseconds with dot instead of double colon (1:02:375 -> 1:02.375)
 - Notification-System of Local Records
 
 ###v0.16x###
 #Additions
 - updated mx links to https
+
 #Changes
 - CommunicationMethod SET_SERVER_OPTIONS sets the changed values also in database on call
-- Changed Copyright label to 2014-2016
+- changed Copyright label to 2014-2016
 
 ###v0.163###
 #Additions
