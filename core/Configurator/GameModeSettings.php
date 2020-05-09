@@ -162,12 +162,27 @@ class GameModeSettings implements ConfiguratorMenu, CallbackListener, Communicat
 	 * @return bool
 	 */
 	public function setGameModeSettingsArray(array $settings) {
+		static $settingToMethodReplace = array(
+			'LapsNbLaps'        => 'SetNbLaps',
+			'RoundsForcedLaps'  => 'SetRoundForcedLaps',
+			'RoundsPointsLimit' => 'SetRoundPointsLimit',
+			'RoundsUseNewRules' => 'SetUseNewRulesRound',
+			'TeamMaxPoints'     => 'SetMaxPointsTeam',
+			'TeamUseNewRules'   => 'SetUseNewRulesTeam',
+		);
+
 		if ($this->maniaControl->getServer()->getScriptManager()->isScriptMode()) {
 			return $this->maniaControl->getClient()->setModeScriptSettings($settings);
 		} else {
 			$success = true;
 			foreach ($settings as $key => $value) {
-				$success &= $this->maniaControl->getClient()->execute('Set'.$key, array($value));
+				if (array_key_exists($key, $settingToMethodReplace)) {
+					$key = $settingToMethodReplace[$key];
+				} else {
+					$key = 'Set'.$key;
+				}
+
+				$success &= $this->maniaControl->getClient()->execute($key, array($value));
 			}
 			return $success;
 		}
