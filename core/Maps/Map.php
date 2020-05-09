@@ -51,6 +51,7 @@ class Map implements Dumpable, UsageInformationAble {
 	public $startTime   = -1;
 	public $lastUpdate  = 0;
 	public $karma       = null;
+	public $bestTime    = null;
 
 	/**
 	 * Construct a new map instance from xmlrpc data

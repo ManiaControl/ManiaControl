@@ -31,6 +31,7 @@ use Maniaplanet\DedicatedServer\Xmlrpc\NextMapException;
 use Maniaplanet\DedicatedServer\Xmlrpc\NotInListException;
 use MCTeam\CustomVotesPlugin;
 use MCTeam\KarmaPlugin;
+use MCTeam\LocalRecordsPlugin;
 
 /**
  * MapList Widget Class
@@ -43,23 +44,33 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	/*
 	 * Constants
 	 */
-	const ACTION_UPDATE_MAP          = 'MapList.UpdateMap';
-	const ACTION_REMOVE_MAP          = 'MapList.RemoveMap';
-	const ACTION_SWITCH_MAP          = 'MapList.SwitchMap';
-	const ACTION_START_SWITCH_VOTE   = 'MapList.StartMapSwitchVote';
-	const ACTION_QUEUED_MAP          = 'MapList.QueueMap';
-	const ACTION_UNQUEUE_MAP         = 'MapList.UnQueueMap';
-	const ACTION_CHECK_UPDATE        = 'MapList.CheckUpdate';
-	const ACTION_CLEAR_MAPQUEUE      = 'MapList.ClearMapQueue';
-	const ACTION_PAGING_CHUNKS       = 'MapList.PagingChunk.';
-	const ACTION_SEARCH_MAP_NAME     = 'MapList.SearchMapName';
-	const ACTION_SEARCH_AUTHOR       = 'MapList.SearchAuthor';
-	const ACTION_RESET               = 'MapList.ResetMapList';
-	const MAX_MAPS_PER_PAGE          = 13;
-	const MAX_PAGES_PER_CHUNK        = 2;
-	const DEFAULT_CUSTOM_VOTE_PLUGIN = 'MCTeam\CustomVotesPlugin';
-	const CACHE_CURRENT_PAGE         = 'CurrentPage';
-	const WIDGET_NAME                = 'MapList';
+
+	const ACTION_UPDATE_MAP            = 'MapList.UpdateMap';
+	const ACTION_REMOVE_MAP            = 'MapList.RemoveMap';
+	const ACTION_SWITCH_MAP            = 'MapList.SwitchMap';
+	const ACTION_START_SWITCH_VOTE     = 'MapList.StartMapSwitchVote';
+	const ACTION_QUEUED_MAP            = 'MapList.QueueMap';
+	const ACTION_UNQUEUE_MAP           = 'MapList.UnQueueMap';
+	const ACTION_CHECK_UPDATE          = 'MapList.CheckUpdate';
+	const ACTION_CLEAR_MAPQUEUE        = 'MapList.ClearMapQueue';
+	const ACTION_PAGING_CHUNKS         = 'MapList.PagingChunk.';
+	const ACTION_SEARCH_MAP_NAME       = 'MapList.SearchMapName';
+	const ACTION_SEARCH_AUTHOR         = 'MapList.SearchAuthor';
+	const ACTION_RESET                 = 'MapList.ResetMapList';
+	const ACTION_SORT_BY_NAME          = 'MapList.SortByName';
+	const ACTION_SORT_BY_AUTHOR        = 'MapList.SortByAuthor';
+	const ACTION_SORT_BY_LOCAL_RECORD  = 'MapList.SortByLocalRecord';
+	const ACTION_SORT_BY_KARMA         = 'MapList.SortByKarma';
+	const MAX_MAPS_PER_PAGE            = 13;
+	const MAX_PAGES_PER_CHUNK          = 2;
+	const DEFAULT_KARMA_PLUGIN         = 'MCTeam\KarmaPlugin';
+	const DEFAULT_LOCAL_RECORDS_PLUGIN = 'MCTeam\LocalRecordsPlugin';
+	const DEFAULT_CUSTOM_VOTE_PLUGIN   = 'MCTeam\CustomVotesPlugin';
+	const CACHE_CURRENT_PAGE           = 'CurrentPage';
+	const CACHE_DISPLAYED_MAP_LIST     = 'DisplayedMapList';
+	const CACHE_LAST_SORT              = 'LastSort';
+	const CACHE_LAST_SORT_ORDER        = 'LastSortOrder';
+	const WIDGET_NAME                  = 'MapList';
 
 	/*
 	 * Private properties
@@ -140,8 +151,14 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 
 		// Get Maps
 		if (!is_array($mapList)) {
-			$mapList = $this->maniaControl->getMapManager()->getMaps();
+			$cachedMapList = $player->getCache($this, self::CACHE_DISPLAYED_MAP_LIST);
+			if (!is_array($cachedMapList)) {
+				$mapList = $this->maniaControl->getMapManager()->getMaps();
+			} else {
+				$mapList = $cachedMapList;
+			}
 		}
+		$player->setCache($this, self::CACHE_DISPLAYED_MAP_LIST, $mapList);
 		$mapList = array_slice($mapList, $mapsBeginIndex, self::MAX_PAGES_PER_CHUNK * self::MAX_MAPS_PER_PAGE);
 
 		$totalMapsCount = $this->maniaControl->getMapManager()->getMapsCount();
@@ -201,11 +218,61 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$headFrame->setY($height / 2 - 5);
 		$posX = -$width / 2;
 
+		/** @var KarmaPlugin $karmaPlugin */
+		$karmaPlugin = $this->maniaControl->getPluginManager()->getPlugin(self::DEFAULT_KARMA_PLUGIN);
+		/** @var LocalRecordsPlugin $localRecordsPlugin */
+		$localRecordsPlugin = $this->maniaControl->getPluginManager()->getPlugin(self::DEFAULT_LOCAL_RECORDS_PLUGIN);
+
+		// Predefine description Label
+		$descriptionLabel = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultDescriptionLabel();
+		$frame->addChild($descriptionLabel);
+
 		$labelLine = new LabelLine($headFrame);
 		$labelLine->addLabelEntryText('Id', $posX + 5);
 		$labelLine->addLabelEntryText('Mx Id', $posX + 10);
-		$labelLine->addLabelEntryText('Map Name', $posX + 20);
-		$labelLine->addLabelEntryText('Author', $posX + 68);
+		
+		$label = new Label_Text();
+		$headFrame->addChild($label);
+		$label->setText('Map Name');
+		$label->setX($posX + 20);
+		$label->setSize(47, 0);
+		$label->setAction(self::ACTION_SORT_BY_NAME);
+		$description = 'Sort maps by map name';
+		$label->addTooltipLabelFeature($descriptionLabel, $description);
+		$labelLine->addLabel($label);
+
+		$label = new Label_Text();
+		$headFrame->addChild($label);
+		$label->setText('Author');
+		$label->setX($posX + 68);
+		$label->setSize(30, 0);
+		$label->setAction(self::ACTION_SORT_BY_AUTHOR);
+		$description = 'Sort maps by author login';
+		$label->addTooltipLabelFeature($descriptionLabel, $description);
+		$labelLine->addLabel($label);
+		
+		if ($localRecordsPlugin) {
+			$label = new Label_Text();
+			$headFrame->addChild($label);
+			$label->setText('Rec');
+			$label->setX($posX + 100);
+			$label->setSize(10, 0);
+			$label->setAction(self::ACTION_SORT_BY_LOCAL_RECORD);
+			$description = 'Sort maps by local record';
+			$label->addTooltipLabelFeature($descriptionLabel, $description);
+			$labelLine->addLabel($label);
+		}
+		if ($karmaPlugin) {
+			$label = new Label_Text();
+			$headFrame->addChild($label);
+			$label->setText('Karma');
+			$label->setX($posX + 113);
+			$label->setSize(20, 0);
+			$label->setAction(self::ACTION_SORT_BY_KARMA);
+			$description = 'Sort maps by karma';
+			$label->addTooltipLabelFeature($descriptionLabel, $description);
+			$labelLine->addLabel($label);
+		}
 		$labelLine->addLabelEntryText('Actions', $width / 2 - 16);
 		$labelLine->setY(-7);
 		$labelLine->render();
@@ -213,9 +280,6 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$searchFrame = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultMapSearch(self::ACTION_SEARCH_MAP_NAME, self::ACTION_SEARCH_AUTHOR, self::ACTION_RESET);
 		$headFrame->addChild($searchFrame);
 
-		// Predefine description Label
-		$descriptionLabel = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultDescriptionLabel();
-		$frame->addChild($descriptionLabel);
 
 		$queuedMaps = $this->maniaControl->getMapManager()->getMapQueue()->getQueuedMapsRanking();
 
@@ -305,6 +369,14 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			$labelLine->addLabelEntryText($mapListId, $posX + 5, 5);
 			$labelLine->addLabelEntryText($mxId, $posX + 10, 10);
 			$labelLine->addLabelEntryText(Formatter::stripDirtyCodes($map->name), $posX + 20, 42);
+			if ($localRecordsPlugin) {
+				$rec = '-';
+				$local = $localRecordsPlugin->getLocalRecord($map, $player);
+				if ($local) {
+					$rec = $local->rank;
+				}
+				$labelLine->addLabelEntryText($rec, $posX + 100, 10);
+			}
 
 			$label = new Label_Text();
 			$mapFrame->addChild($label);
@@ -541,6 +613,9 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		// unset when another main widget got opened
 		if ($openedWidget !== self::WIDGET_NAME) {
 			$player->destroyCache($this, self::CACHE_CURRENT_PAGE);
+			$player->destroyCache($this, self::CACHE_DISPLAYED_MAP_LIST);
+			$player->destroyCache($this, self::CACHE_LAST_SORT);
+			$player->destroyCache($this, self::CACHE_LAST_SORT_ORDER);
 		}
 	}
 
@@ -552,6 +627,9 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	public function closeWidget(Player $player) {
 		// TODO: resolve duplicate with 'playerCloseWidget'
 		$player->destroyCache($this, self::CACHE_CURRENT_PAGE);
+		$player->destroyCache($this, self::CACHE_DISPLAYED_MAP_LIST);
+		$player->destroyCache($this, self::CACHE_LAST_SORT);
+		$player->destroyCache($this, self::CACHE_LAST_SORT_ORDER);
 	}
 
 	/**
@@ -562,14 +640,22 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	public function handleManialinkPageAnswer(array $callback) {
 		$actionId    = $callback[1][2];
 		$actionArray = explode('.', $actionId);
-		if (count($actionArray) <= 2) {
+		if (count($actionArray) < 2) {
 			return;
 		}
-
 		$action = $actionArray[0] . '.' . $actionArray[1];
+		if (count($actionArray) == 2) {
+			$allowed = array(self::ACTION_SORT_BY_AUTHOR, self::ACTION_SORT_BY_NAME, self::ACTION_SORT_BY_LOCAL_RECORD, self::ACTION_SORT_BY_KARMA);
+			if (!in_array($action, $allowed)) {
+				return;
+			}
+			$mapUid = null;
+		} else {
+			$mapUid = $actionArray[2];
+		}
+
 		$login  = $callback[1][1];
 		$player = $this->maniaControl->getPlayerManager()->getPlayer($login);
-		$mapUid = $actionArray[2];
 
 		switch ($action) {
 			case self::ACTION_UPDATE_MAP:
@@ -582,6 +668,17 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				} catch (FileException $e) {
 					$this->maniaControl->getChat()->sendException($e, $player);
 				}
+				$maps = $player->getCache($this, self::CACHE_DISPLAYED_MAP_LIST);
+				$index = 0;
+				foreach ($maps as $map) {
+					if ($map->uid == $mapUid) {
+						unset($maps[$index]);
+						break;
+					}
+					$index++;
+				}
+				$this->playerCloseWidget($player);
+				$this->showMapList($player, $maps);
 				break;
 			case self::ACTION_SWITCH_MAP:
 				// Don't queue on Map-Change
@@ -642,8 +739,80 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$this->maniaControl->getMapManager()->getMapQueue()->removeFromMapQueue($player, $mapUid);
 				$this->showMapList($player);
 				break;
+			case self::ACTION_SORT_BY_AUTHOR:
+				$maps = $player->getCache($this, self::CACHE_DISPLAYED_MAP_LIST);
+				$lastSort = $player->getCache($this, self::CACHE_LAST_SORT);
+				$commands = array('list');
+				$ascending = true;
+				if ($lastSort) {
+					if ($lastSort == self::ACTION_SORT_BY_AUTHOR) {
+						$ascending = !$player->getCache($this, self::CACHE_LAST_SORT_ORDER);
+					}
+				}
+				if ($ascending) {
+					$commands[] = 'authoraz';
+				} else {
+					$commands[] = 'authorza';
+				}
+				$this->playerCloseWidget($player);
+				$this->maniaControl->getMapManager()->getMapCommands()->showGivenMapList($commands, $player, $maps);
+				break;
+			case self::ACTION_SORT_BY_NAME:
+				$maps = $player->getCache($this, self::CACHE_DISPLAYED_MAP_LIST);
+				$lastSort = $player->getCache($this, self::CACHE_LAST_SORT);
+				$commands = array('list');
+				$ascending = true;
+				if ($lastSort) {
+					if ($lastSort == self::ACTION_SORT_BY_NAME) {
+						$ascending = !$player->getCache($this, self::CACHE_LAST_SORT_ORDER);
+					}
+				}
+				if ($ascending) {
+					$commands[] = 'first';
+				} else {
+					$commands[] = 'last';
+				}
+				$this->playerCloseWidget($player);
+				$this->maniaControl->getMapManager()->getMapCommands()->showGivenMapList($commands, $player, $maps);
+				break;
+			case self::ACTION_SORT_BY_LOCAL_RECORD:
+				$maps = $player->getCache($this, self::CACHE_DISPLAYED_MAP_LIST);
+				$lastSort = $player->getCache($this, self::CACHE_LAST_SORT);
+				$commands = array('list');
+				$ascending = true;
+				if ($lastSort) {
+					if ($lastSort == self::ACTION_SORT_BY_LOCAL_RECORD) {
+						$ascending = !$player->getCache($this, self::CACHE_LAST_SORT_ORDER);
+					}
+				}
+				if ($ascending) {
+					$commands[] = 'bestrecs';
+				} else {
+					$commands[] = 'worstrecs';
+				}
+				$this->playerCloseWidget($player);
+				$this->maniaControl->getMapManager()->getMapCommands()->showGivenMapList($commands, $player, $maps);
+				break;
+			case self::ACTION_SORT_BY_KARMA:
+				$maps = $player->getCache($this, self::CACHE_DISPLAYED_MAP_LIST);
+				$lastSort = $player->getCache($this, self::CACHE_LAST_SORT);
+				$commands = array('list');
+				$ascending = true;
+				if ($lastSort) {
+					if ($lastSort == self::ACTION_SORT_BY_KARMA) {
+						$ascending = !$player->getCache($this, self::CACHE_LAST_SORT_ORDER);
+					}
+				}
+				if ($ascending) {
+					$commands[] = 'best';
+				} else {
+					$commands[] = 'worst';
+				}
+				$this->playerCloseWidget($player);
+				$this->maniaControl->getMapManager()->getMapCommands()->showGivenMapList($commands, $player, $maps);
+				break;
 			default:
-				if (substr($actionId, 0, strlen(self::ACTION_PAGING_CHUNKS)) === self::ACTION_PAGING_CHUNKS) {
+				if (substr($actionId, 0, strlen(self::ACTION_PAGING_CHUNKS)) == self::ACTION_PAGING_CHUNKS) {
 					// Paging chunks
 					$neededPage = (int) substr($actionId, strlen(self::ACTION_PAGING_CHUNKS));
 					$this->showMapList($player, null, $neededPage - 1);
@@ -661,7 +830,11 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	public function resetMapList(array $callback) {
 		$login  = $callback[1][1];
 		$player = $this->maniaControl->getPlayerManager()->getPlayer($login);
-		$this->showMapList($player);
+		$player->destroyCache($this, self::CACHE_DISPLAYED_MAP_LIST);
+		$player->destroyCache($this, self::CACHE_CURRENT_PAGE);
+		$player->destroyCache($this, self::CACHE_LAST_SORT);
+		$player->destroyCache($this, self::CACHE_LAST_SORT_ORDER);
+		$this->showMapList($player, null, 1);
 	}
 
 	/**
@@ -722,8 +895,9 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$players = $this->maniaControl->getPlayerManager()->getPlayers();
 		foreach ($players as $player) {
 			$currentPage = $player->getCache($this, self::CACHE_CURRENT_PAGE);
+			$currentMapList = $player->getCache($this, self::CACHE_DISPLAYED_MAP_LIST);
 			if ($currentPage !== null) {
-				$this->showMapList($player, null, $currentPage);
+				$this->showMapList($player, $currentMapList, $currentPage);
 			}
 		}
 	}
