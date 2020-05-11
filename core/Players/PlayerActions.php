@@ -628,7 +628,7 @@ class PlayerActions implements EchoListener, CommunicationListener, UsageInforma
 
 		//Todo Validate (Problem: Not connected player isFakePlayer)
 		if ($target->isOfficial && $target->isFakePlayer()) {
-			$this->maniaControl->getChat()->sendError('It is not possible to Ban a bot', $admin);
+			$this->maniaControl->getChat()->sendError('It is not possible to Ban a bot!', $admin);
 			return;
 		}
 
@@ -658,6 +658,17 @@ class PlayerActions implements EchoListener, CommunicationListener, UsageInforma
 		$admin = $this->maniaControl->getPlayerManager()->getPlayer($adminLogin);
 		if (!$this->maniaControl->getAuthenticationManager()->checkPermission($admin, self::SETTING_PERMISSION_BAN_PLAYER)) {
 			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($admin);
+			return;
+		}
+
+		$target = $this->maniaControl->getPlayerManager()->getPlayer($targetLogin);
+		if (!$target) {
+			return;
+		}
+
+		//Todo Validate (Problem: Not connected player isFakePlayer)
+		if ($target->isOfficial && $target->isFakePlayer()) {
+			$this->maniaControl->getChat()->sendError('It is not possible to unban a bot!', $admin);
 			return;
 		}
 
