@@ -11,6 +11,7 @@ use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Commands\CommandListener;
 use ManiaControl\Logger;
 use ManiaControl\ManiaControl;
+use ManiaControl\Manialinks\ElementBuilder;
 use ManiaControl\Manialinks\IconManager;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Players\Player;
@@ -427,7 +428,7 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 	 */
 	private function showMapListKarma($best, Player $player) {
 		/** @var \MCTeam\KarmaPlugin $karmaPlugin */
-		$karmaPlugin    = $this->maniaControl->getPluginManager()->getPlugin(MapList::DEFAULT_KARMA_PLUGIN);
+		$karmaPlugin = $this->maniaControl->getPluginManager()->getPlugin(ElementBuilder::DEFAULT_KARMA_PLUGIN);
 
 		if ($karmaPlugin) {
 			$displayMxKarma = $this->maniaControl->getSettingManager()->getSettingValue($karmaPlugin, $karmaPlugin::SETTING_WIDGET_DISPLAY_MX);
