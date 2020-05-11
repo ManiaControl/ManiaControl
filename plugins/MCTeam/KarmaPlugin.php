@@ -926,8 +926,10 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 			0.95*$width,
 			0.95*$height
 		);
-		$karmaGauge->setY(-0.15*$height);
-		$frame->addChild($karmaGauge);
+		if ($karmaGauge) {
+			$frame->addChild($karmaGauge);
+			$karmaGauge->setY(-0.15*$height);
+		}
 
 		$this->maniaControl->getManialinkManager()->sendManialink($manialink);
 	}

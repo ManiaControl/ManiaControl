@@ -314,8 +314,10 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 				20,
 				10
 			);
-			$mapFrame->addChild($karmaGauge);
-			$karmaGauge->setX($posX + 87);
+			if ($karmaGauge) {
+				$mapFrame->addChild($karmaGauge);
+				$karmaGauge->setX($posX + 87);
+			}
 
 
 			$posY -= 4;
