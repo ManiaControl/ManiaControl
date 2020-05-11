@@ -87,15 +87,26 @@ class GameModeSettings implements ConfiguratorMenu, CallbackListener, Communicat
 	 */
 	private function initTables() {
 		$mysqli = $this->maniaControl->getDatabase()->getMysqli();
-		$query  = "CREATE TABLE IF NOT EXISTS `" . self::TABLE_GAMEMODE_SETTINGS . "` (
+
+		$renameQuery = "ALTER TABLE `" . self::TABLE_SCRIPT_SETTINGS . "` RENAME TO `" . self::TABLE_GAMEMODE_SETTINGS . "`;";
+		$result      = $mysqli->query($renameQuery);
+		if (!$result) {
+			if ($mysqli->error === "Table '" . self::TABLE_GAMEMODE_SETTINGS . "' already exists") {
+				return true;
+			} else {
+				trigger_error($mysqli->error);
+				// can't rename, so continue
+			}
+		}
+
+		$query = "CREATE TABLE IF NOT EXISTS `" . self::TABLE_GAMEMODE_SETTINGS . "` (
 				`index` int(11) NOT NULL AUTO_INCREMENT,
 				`serverIndex` int(11) NOT NULL,
 				`settingName` varchar(100) NOT NULL DEFAULT '',
 				`settingValue` varchar(500) NOT NULL DEFAULT '',
 				PRIMARY KEY (`index`),
 				UNIQUE KEY `setting` (`serverIndex`, `settingName`)
-				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Mode Settings' AUTO_INCREMENT=1;";
-
+				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='GameMode-Settings' AUTO_INCREMENT=1;";
 		$statement = $mysqli->prepare($query);
 		if ($mysqli->error) {
 			trigger_error($mysqli->error, E_USER_ERROR);
@@ -106,15 +117,8 @@ class GameModeSettings implements ConfiguratorMenu, CallbackListener, Communicat
 			trigger_error($statement->error, E_USER_ERROR);
 			return false;
 		}
-
-		$dropQuery = "DROP TABLE IF EXISTS `" . self::TABLE_SCRIPT_SETTINGS . "`;";
-		$result    = $mysqli->query($dropQuery);
-		if (!$result) {
-			trigger_error($mysqli->error);
-			return false;
-		}
-
 		$statement->close();
+
 		return true;
 	}
 
