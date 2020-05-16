@@ -1,12 +1,15 @@
 ###v0.254###
 #Additions
-- added first support of Legacy-Modes
+- added small scale support for Legacy-Modes
 
 #Bug Fixes
+- fixed crashes of MX-List with deactivated Karma-Plugin
 - solved Finish-/Lap-Callback not getting triggered when Waypoint-Callback is not registered
+- //unban without login crashed
 
 #Changes
 - additional Waypoint-Callback on Finish-/Lap-Callback
+- moved constant DEFAULT_KARMA_PLUGIN
 - renamed all occurrences of Script-Settings to GameMode-Settings
 	- includes a renamed database
 - unified Creations of round Text-Buttons
@@ -42,6 +45,71 @@
 #Changes
 - format milliseconds with dot instead of double colon (1:02:375 -> 1:02.375)
 - Notification-System of Local Records
+
+###v0.226###
+#Bug Fixes
+- Dedimania Plugin, everything should work now
+- moved overlapping widgets in TM
+
+#Changes
+- improved Async Webrequest Handling
+- improved Error Handler
+- improved Page Chunking
+- updated FML
+
+###v0.220###
+#Additions
+- Local Records Plugin can capture Lap Records
+- Plugins for Rounds and Cup (commands for setting point distribution, endround etc.)
+
+#Bug Fixes
+- performance improvements (200+ player servers run fine now)
+- MX list filters by environment of server
+
+#Changes
+- reworked Dedimania Plugin
+- newly designed Local Record Widget
+
+###v0.205###
+#Bug Fixes
+- stability improvements
+- fixed wrong namespace
+
+#Changes
+- reorder admin menu items
+
+###v0.203###
+#Additions
+- admin and player helpall icon
+- map search feature in maplist
+- new Script Callbacks and Methods (including Trackmania)
+
+#Bug Fixes
+- z-Value fixes in UI
+
+#Changes
+- removed MP3 Callbacks
+- updated Pause/WarmUp-System
+
+###v0.201###
+#Additions
+- full support for new LibXmlRpc Callbacks
+- min & max plugin-version on maniacontrol.com
+- new ModeScriptEventManager class
+- new version of LabelLine
+- UsageInformationAble interface, plugin authors can use ->getUsageInformation() on nearly every class to be provided with infos about the class
+
+#Bug Fixes
+- small design fixes
+- stability improvements
+- wrong link on installing a plugin
+
+#Changes
+- deprecated old Callbacks
+- minimum dedicated server version updated to MP4 version
+- removed deprecates in ManiaControl class
+- updated Manialink to version 3 (including FML)
+- updated internal HTTP requests to new AsyncHttpRequest
 
 ###v0.16x###
 #Additions
