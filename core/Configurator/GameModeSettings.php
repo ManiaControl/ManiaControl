@@ -91,13 +91,23 @@ class GameModeSettings implements ConfiguratorMenu, CallbackListener, Communicat
 		$renameQuery = "ALTER TABLE `" . self::TABLE_SCRIPT_SETTINGS . "` RENAME TO `" . self::TABLE_GAMEMODE_SETTINGS . "`;";
 		$result      = $mysqli->query($renameQuery);
 		if (!$result) {
-			if ($mysqli->error === "Table '" . self::TABLE_GAMEMODE_SETTINGS . "' already exists") {
-				return true;
+			if (strpos($mysqli->error, "doesn't exist") !== false) {
+				// old doesn't exist, good, continue to force creation
+			} elseif (strpos($mysqli->error, "already exists") !== false) {
+				// new one exists, drop the old table, get out
+				$dropQuery = "DROP TABLE `" . self::TABLE_SCRIPT_SETTINGS . "`;";
+				$result    = $mysqli->query($dropQuery);
+				if (!$result) {
+					trigger_error($mysqli->error, E_USER_ERROR);
+					return false;
+				}
 			} else {
-				trigger_error($mysqli->error);
-				// can't rename, so continue
+				// other error (successful rename would not have us got here)
+				trigger_error($mysqli->error, E_USER_ERROR);
+				return false;
 			}
 		}
+		// else rename happened, continue to force creation
 
 		$query = "CREATE TABLE IF NOT EXISTS `" . self::TABLE_GAMEMODE_SETTINGS . "` (
 				`index` int(11) NOT NULL AUTO_INCREMENT,
