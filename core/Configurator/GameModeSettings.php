@@ -35,20 +35,26 @@ class GameModeSettings implements ConfiguratorMenu, CallbackListener, Communicat
 	/*
 	 * Constants
 	 */
-	const ACTION_PREFIX_SETTING                     = 'GameModeSetting.';
-	const CB_GAMEMODESETTING_CHANGED                = 'GameModeSettings.SettingChanged';
-	const CB_GAMEMODESETTINGS_CHANGED               = 'GameModeSettings.SettingsChanged';
+	const ACTION_PREFIX_SETTING       = 'GameModeSetting.';
+	const CB_GAMEMODESETTING_CHANGED  = 'GameModeSettings.SettingChanged';
+	const CB_GAMEMODESETTINGS_CHANGED = 'GameModeSettings.SettingsChanged';
 	/** @deprecated */
-	const CB_SCRIPTSETTING_CHANGED                  = 'GameModeSettings.SettingChanged';
+	const CB_SCRIPTSETTING_CHANGED    = 'GameModeSettings.SettingChanged';
 	/** @deprecated */
-	const CB_SCRIPTSETTINGS_CHANGED                 = 'GameModeSettings.SettingsChanged';
-	const TABLE_GAMEMODE_SETTINGS                   = 'mc_gamemodesettings';
+	const CB_SCRIPTSETTINGS_CHANGED   = 'GameModeSettings.SettingsChanged';
+
+	const TABLE_GAMEMODE_SETTINGS = 'mc_gamemodesettings';
 	/** @deprecated */
-	const TABLE_SCRIPT_SETTINGS                     = 'mc_scriptsettings';
-	const SETTING_LOAD_DEFAULT_SETTINGS_MAP_BEGIN   = 'Load Stored GameMode-Settings on Map-Begin';
-	const SETTING_PERMISSION_CHANGE_MODE_SETTINGS   = 'Change GameMode-Settings';
+	const TABLE_SCRIPT_SETTINGS   = 'mc_scriptsettings';
+
+	const DESCRIPTION_HIDDEN = '<hidden>';
+
+	const SETTING_HIDE_SETTINGS_WITH_DESCRIPTION_HIDDEN = 'Hide Settings with Description "' . self::DESCRIPTION_HIDDEN . '"';
+	const SETTING_LOAD_DEFAULT_SETTINGS_MAP_BEGIN       = 'Load Stored GameMode-Settings on Map-Begin';
+	const SETTING_PERMISSION_CHANGE_MODE_SETTINGS       = 'Change GameMode-Settings';
 	/** @deprecated */
-	const SETTING_PERMISSION_CHANGE_SCRIPT_SETTINGS = 'Change Script-Settings';
+	const SETTING_PERMISSION_CHANGE_SCRIPT_SETTINGS     = 'Change Script-Settings';
+	const SETTING_SORT_SETTINGS                         = 'Sort Settings';
 
 	/*
 	 * Private properties
@@ -70,7 +76,9 @@ class GameModeSettings implements ConfiguratorMenu, CallbackListener, Communicat
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::BEGINMAP, $this, 'onBeginMap');
 
 		// Settings
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_HIDE_SETTINGS_WITH_DESCRIPTION_HIDDEN, true);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_LOAD_DEFAULT_SETTINGS_MAP_BEGIN, false);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_SORT_SETTINGS, true);
 
 		// Permissions
 		$this->maniaControl->getAuthenticationManager()->definePermissionLevel(self::SETTING_PERMISSION_CHANGE_MODE_SETTINGS, AuthenticationManager::AUTH_LEVEL_ADMIN);
@@ -270,6 +278,8 @@ class GameModeSettings implements ConfiguratorMenu, CallbackListener, Communicat
 	 * @see \ManiaControl\Configurator\ConfiguratorMenu::getMenu()
 	 */
 	public function getMenu($width, $height, Script $script, Player $player) {
+		$isScriptMode = $this->maniaControl->getServer()->getScriptManager()->isScriptMode();
+
 		$paging = new Paging();
 		$script->addFeature($paging);
 		$frame = new Frame();
@@ -280,11 +290,22 @@ class GameModeSettings implements ConfiguratorMenu, CallbackListener, Communicat
 		try {
 			$gameModeSettings = $this->getGameModeSettingsArray();
 
-			if ($this->maniaControl->getServer()->getScriptManager()->isScriptMode()) {
+			if ($isScriptMode) {
 				$scriptInfo = $this->maniaControl->getClient()->getModeScriptInfo();
 				$scriptParams = $scriptInfo->paramDescs;
+
+				$hideSettingsWithDescriptionHidden = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_HIDE_SETTINGS_WITH_DESCRIPTION_HIDDEN);
+				if ($hideSettingsWithDescriptionHidden) {
+					$scriptParams = array_filter($scriptParams, function ($scriptParam) {
+						return $scriptParam->desc !== self::DESCRIPTION_HIDDEN;
+					});
+				}
+				usort($scriptParams, function ($a, $b) {
+					return $a->name === $b->name ? 0 : ($a->name < $b->name ? -1 : 1);
+				});
 			} else {
 				$scriptParams = $gameModeSettings[0];
+				ksort($scriptParams);
 			}
 		} catch (\Exception $e) {
 			$label = new Label();
@@ -323,7 +344,7 @@ class GameModeSettings implements ConfiguratorMenu, CallbackListener, Communicat
 
 		$paging->setLabel($pageCountLabel);
 
-		if (!$this->maniaControl->getServer()->getScriptManager()->isScriptMode()) {
+		if (!$isScriptMode) {
 			$descriptionLabel = new Label();
 			$frame->addChild($descriptionLabel);
 			$descriptionLabel->setHorizontalAlign($descriptionLabel::LEFT);
@@ -343,7 +364,7 @@ class GameModeSettings implements ConfiguratorMenu, CallbackListener, Communicat
 		foreach ($scriptParams as $key => $scriptParam) {
 			$settingName = null;
 			$settingValue = null;
-			if ($this->maniaControl->getServer()->getScriptManager()->isScriptMode()) {
+			if ($isScriptMode) {
 				$settingName = $scriptParam->name;
 				if (!isset($gameModeSettings[$settingName])) {
 					continue;
@@ -380,7 +401,7 @@ class GameModeSettings implements ConfiguratorMenu, CallbackListener, Communicat
 			$nameLabel->setTextSize($labelTextSize);
 			$nameLabel->setX(-0.46 * $width);
 
-			if (!$this->maniaControl->getServer()->getScriptManager()->isScriptMode()) {
+			if (!$isScriptMode) {
 				if (is_bool($settingValue[0])) {
 					$activeQuad = new Quad_Icons64x64_1();
 					$settingFrame->addChild($activeQuad);
@@ -426,7 +447,7 @@ class GameModeSettings implements ConfiguratorMenu, CallbackListener, Communicat
 				$entry->setX(0.275 * $width);
 			}
 
-			if ($this->maniaControl->getServer()->getScriptManager()->isScriptMode()) {
+			if ($isScriptMode) {
 				$descriptionLabel = new Label();
 				$pageFrame->addChild($descriptionLabel);
 				$descriptionLabel->setHorizontalAlign($descriptionLabel::LEFT);
