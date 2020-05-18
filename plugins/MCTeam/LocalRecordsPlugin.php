@@ -27,6 +27,7 @@ use ManiaControl\Players\PlayerManager;
 use ManiaControl\Plugins\Plugin;
 use ManiaControl\Settings\Setting;
 use ManiaControl\Settings\SettingManager;
+use ManiaControl\Utils\DataUtil;
 use ManiaControl\Utils\Formatter;
 use MCTeam\Common\RecordWidget;
 
@@ -64,6 +65,7 @@ class LocalRecordsPlugin implements CallbackListener, CallQueueListener, Command
 	const SETTING_RECORDS_BEFORE_AFTER        = 'Number of Records displayed before and after a player';
 	const CB_LOCALRECORDS_CHANGED             = 'LocalRecords.Changed';
 	const ACTION_SHOW_RECORDSLIST             = 'LocalRecords.ShowRecordsList';
+	const CSV_SPLITTER                        = ';';
 
 
 	/*
@@ -171,6 +173,7 @@ class LocalRecordsPlugin implements CallbackListener, CallQueueListener, Command
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::TM_ONFINISHLINE, $this, 'handleFinishCallback');
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::TM_ONLAPFINISH, $this, 'handleFinishLapCallback');
 
+		$this->maniaControl->getCommandManager()->registerCommandListener(array('exportrecs', 'exportrecords', 'recexport'), $this, 'exportRecordsList', true, 'Exports the records of a map to a CSV-file.');
 		$this->maniaControl->getCommandManager()->registerCommandListener(array('recs', 'records'), $this, 'showRecordsList', false, 'Shows a list of Local Records on the current map.');
 		$this->maniaControl->getCommandManager()->registerCommandListener('delrec', $this, 'deletePersonalRecord', false, 'Removes your record from the database.');
 		$this->maniaControl->getCommandManager()->registerCommandListener('delrec', $this, 'deleteAnyRecord', true, 'Removes any record from the database.');
@@ -689,6 +692,72 @@ class LocalRecordsPlugin implements CallbackListener, CallQueueListener, Command
 	 */
 	public function handleShowRecordsList(array $callback, Player $player) {
 		$this->showRecordsList(array(), $player);
+	}
+
+	/**
+	 * Exports the Records of a map to a CSV-file
+	 *
+	 * @api
+	 * @param array  $chat
+	 * @param Player $player
+	 */
+	public function exportRecordsList(array $chat, Player $player) {
+		if (!$this->maniaControl->getAuthenticationManager()->checkPluginPermission($this, $player, self::PERMISSION_DELETE_ANY_RECORD)) {
+			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($player);
+			return;
+		}
+
+		$commandParts = explode(' ', $chat[1][2]);
+		if (count($commandParts) < 2 || strlen($commandParts[1]) == 0) {
+			$this->maniaControl->getChat()->sendUsageInfo('Missing CSV-Filename ID! (Example: //exportrecs locals.csv)', $player);
+			return;
+		}
+
+		$filename = $commandParts[1];
+		if (!DataUtil::endsWith($filename, '.csv')) {
+			$filename .= '.csv';
+		}
+
+		$map = null;
+		if (count($commandParts) >= 3) {
+			$mapId = (int) $commandParts[2];
+			if ($mapId <= 0) {
+				$this->maniaControl->getChat()->sendUsageInfo('Map-Id below 1!', $player);
+				return;
+			}
+
+			$mapIndex = $mapId-1;
+			$map = $this->maniaControl->getMapManager()->getMapByIndex($mapIndex);
+			if (!$map) {
+				$this->maniaControl->getChat()->sendUsageInfo('Map-Id too high!', $player);
+				return;
+			}
+		} else {
+			$map = $this->maniaControl->getMapManager()->getCurrentMap();
+		}
+
+		$records = $this->getLocalRecords($map);
+		$lines = array();
+		$header = array('rank', 'login', 'time', 'checkpoints');
+		array_push($lines, implode(self::CSV_SPLITTER, $header));
+
+		foreach ($records as $record) {
+			$line = array(
+				$record->rank,
+				$record->login,
+				$record->time,
+				$record->checkpoints,
+			);
+			array_push($lines, implode(self::CSV_SPLITTER, $line));
+		}
+
+		try {
+			file_put_contents($filename, implode(PHP_EOL, $lines));
+		} catch (\Exception $e) {
+			$this->maniaControl->getChat()->sendException($e, $player);
+		}
+
+		$this->maniaControl->getChat()->sendSuccess('Successfully exported Local Records of map ' . $map->getEscapedName() . ' to $<$fff' . $filename . '$>!');
 	}
 
 	/**

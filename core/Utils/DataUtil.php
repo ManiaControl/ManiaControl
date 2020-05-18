@@ -64,6 +64,32 @@ abstract class DataUtil {
 	}
 
 	/**
+	 * Checks, if a string ends with the given substring.
+	 * @param string $haystack
+	 * @param string $needle
+	 * @return bool
+	 */
+	public static function endsWith($haystack, $needle) {
+		$length = strlen($needle);
+		if ($length == 0) {
+			return true;
+		}
+
+		return (substr($haystack, -$length) === $needle);
+	}
+
+	/**
+	 * Checks, if a string starts with the given substring.
+	 * @param string $haystack
+	 * @param string $needle
+	 * @return bool
+	 */
+	public static function startsWith($haystack, $needle) {
+		$length = strlen($needle);
+		return (substr($haystack, 0, $length) === $needle);
+	}
+
+	/**
 	 * Implodes sub-arrays with position properties.
 	 *
 	 * @param array $a
