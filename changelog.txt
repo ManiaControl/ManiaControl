@@ -1,3 +1,9 @@
+###v0.255###
+#Additions
+- add Setting to hide Script-Settings which have the description "<hidden>"
+- add Setting to sort GameMode-Settings
+- CSV-Export of Locals (//exportrecs <filename> [map-id])
+
 ###v0.254###
 #Additions
 - added small scale support for Legacy-Modes
