@@ -559,7 +559,7 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 		$posY -= $buttonSpacing;
 
 		$banButton = $this->maniaControl->getManialinkManager()->getElementBuilder()->buildRoundTextButton(
-			'$700Kick',
+			'$700Ban',
 			$buttonWidth,
 			$buttonHeight,
 			self::ACTION_BAN_PLAYER . '.' . $login
