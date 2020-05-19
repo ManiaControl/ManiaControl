@@ -31,6 +31,7 @@ class InstallMenu implements ConfiguratorMenu, ManialinkPageAnswerListener {
 	const ACTION_PREFIX_INSTALL_PLUGIN       = 'PluginInstallMenu.Install.';
 	const ACTION_REFRESH_LIST                = 'PluginInstallMenu.RefreshList';
 	const SETTING_GAME_ONLY                  = 'Display only Plugins eligible for your game';
+	const SETTING_VERSION_ONLY               = 'Display only Plugins eligible for your MC-version';
 
 	/*
 	 * Private properties
@@ -51,6 +52,7 @@ class InstallMenu implements ConfiguratorMenu, ManialinkPageAnswerListener {
 
 		//Settings
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_GAME_ONLY, true);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_VERSION_ONLY, true);
 
 		// Callbacks
 		$this->maniaControl->getManialinkManager()->registerManialinkPageAnswerListener(self::ACTION_REFRESH_LIST, $this, 'handleRefreshListAction');
@@ -67,8 +69,8 @@ class InstallMenu implements ConfiguratorMenu, ManialinkPageAnswerListener {
 	 * @see \ManiaControl\Configurator\ConfiguratorMenu::getMenu()
 	 */
 	public function getMenu($width, $height, Script $script, Player $player) {
-
-		$gameOnly = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_GAME_ONLY);
+		$gameOnly    = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_GAME_ONLY);
+		$versionOnly = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_VERSION_ONLY);
 
 		$paging = new Paging();
 		$script->addFeature($paging);
@@ -128,6 +130,11 @@ class InstallMenu implements ConfiguratorMenu, ManialinkPageAnswerListener {
 					continue;
 				}
 
+				$isPluginCompatible = $this->isPluginCompatible($plugin);
+				if ($versionOnly && !$isPluginCompatible) {
+					continue;
+				}
+
 				if ($index % 10 === 0) {
 					// New page
 					$pageFrame = new Frame();
@@ -148,7 +155,7 @@ class InstallMenu implements ConfiguratorMenu, ManialinkPageAnswerListener {
 				$infoTooltipLabel->setLineSpacing(1);
 				$nameLabel->addTooltipLabelFeature($infoTooltipLabel, $description);
 
-				if (!$this->isPluginCompatible($plugin)) {
+				if (!$isPluginCompatible) {
 					// Incompatibility label
 					$infoLabel = new Label_Text();
 					$pluginFrame->addChild($infoLabel);
