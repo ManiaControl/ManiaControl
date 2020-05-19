@@ -8,6 +8,7 @@ use FML\Controls\Quad;
 use FML\Controls\Quads\Quad_Icons128x128_1;
 use FML\Controls\Quads\Quad_Icons128x32_1;
 use FML\Controls\Quads\Quad_Icons64x64_1;
+use FML\Elements\SimpleScript;
 use FML\ManiaLink;
 use FML\Script\Script;
 use FML\XmlRpc\TMUIProperties;
@@ -36,13 +37,14 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 	 * Constants
 	 */
 	const PLUGIN_ID      = 1;
-	const PLUGIN_VERSION = 0.12;
+	const PLUGIN_VERSION = 0.13;
 	const PLUGIN_NAME    = 'WidgetPlugin';
 	const PLUGIN_AUTHOR  = 'MCTeam';
 
 	// MapWidget Properties
 	const MLID_MAP_WIDGET                = 'WidgetPlugin.MapWidget';
 	const SETTING_MAP_WIDGET_ACTIVATED   = 'Map-Widget Activated';
+	const SETTING_MAP_WIDGET_NICKNAME    = 'Map-Widget display Author Nickname instead of Login';
 	const SETTING_MAP_WIDGET_POSX        = 'Map-Widget-Position: X';
 	const SETTING_MAP_WIDGET_POSY        = 'Map-Widget-Position: Y';
 	const SETTING_MAP_WIDGET_HEIGHT      = 'Map-Widget-Size: Height';
@@ -145,6 +147,7 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 
 		// Settings
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_MAP_WIDGET_ACTIVATED, true);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_MAP_WIDGET_NICKNAME, false);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_MAP_WIDGET_POSX, 160 - 20);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_MAP_WIDGET_POSY, 90 - 4.5);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_MAP_WIDGET_HEIGHT, 9.);
@@ -270,14 +273,27 @@ class WidgetPlugin implements CallbackListener, TimerListener, Plugin {
 		$label->setTextColor('fff');
 		$label->setSize($width - 5, $height);
 
-		$label = new Label_Text();
+		$label = new Label_Text('author_label');
 		$frame->addChild($label);
 		$label->setPosition(0, $height/2 - 6, 0.2);
-		$label->setTextSize(1);
 		$label->setScale(0.8);
-		$label->setText($map->authorLogin);
-		$label->setTextColor('fff');
 		$label->setSize($width - 5, $height);
+		$label->setTextSize(1);
+
+		if ($this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_MAP_WIDGET_NICKNAME)) {
+			$nicknameScript = array(
+				'declare CMlLabel Author_Label <=> (Page.GetFirstChild("author_label") as CMlLabel);',
+				'if (Map != Null) {',
+				'	Author_Label.SetText(Map.AuthorNickName);',
+				'}'
+			);
+			$simpleScript = new SimpleScript();
+			$simpleScript->setText(implode(PHP_EOL, $nicknameScript));
+			$frame->addChild($simpleScript);
+		} else {
+			$label->setText($map->authorLogin);
+			$label->setTextColor('fff');
+		}
 
 		$displayTimeAuthor = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_MAP_WIDGET_TIME_AUTHOR);
 		$displayTimeGold   = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_MAP_WIDGET_TIME_GOLD  );
