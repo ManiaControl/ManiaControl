@@ -49,8 +49,9 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 	const SETTING_WIDGET_LINE_COUNT           = 'Widget Displayed Lines Count';
 	const SETTING_WIDGET_LINE_HEIGHT          = 'Widget Line Height';
 	const SETTING_DEDIMANIA_CODE              = '$l[http://dedimania.net/tm2stats/?do=register]Dedimania Code for ';
-	const SETTING_NOTIFY_BEST_RECORDS_PUBLIC  = 'Notify Publicly only for the X Best Records';
+	const SETTING_NOTIFICATION_MESSAGE_PREFIX = 'Notification Message Prefix';
 	const SETTING_NOTIFY_BEST_RECORDS_PRIVATE = 'Notify Privately only for the X Best Records';
+	const SETTING_NOTIFY_BEST_RECORDS_PUBLIC  = 'Notify Publicly only for the X Best Records';
 	const SETTING_MAX_RECORDS                 = 'Max Records, only increase if you bought a rank update from Dedimania!';
 
 	const CB_DEDIMANIA_CHANGED        = 'Dedimania.Changed';
@@ -104,6 +105,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_WIDGET_WIDTH, 40);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_WIDGET_LINE_HEIGHT, 4);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_WIDGET_LINE_COUNT, 12);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_NOTIFICATION_MESSAGE_PREFIX, '$3c0');
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_NOTIFY_BEST_RECORDS_PRIVATE, 30);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_NOTIFY_BEST_RECORDS_PUBLIC, 15);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_MAX_RECORDS, 30);
@@ -382,15 +384,27 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 					$notifyName = 'You';
 				}
 
-				$message = '$390$<$fff' . $notifyName . '$> ' . $improvement . ' $<$ff0' . $newRecord->rank . '.$> Dedimania Record: $<$fff' . Formatter::formatTime($newRecord->best) . '$>';
+				$messagePrefix = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_NOTIFICATION_MESSAGE_PREFIX);
+				$message = $messagePrefix . '$<$fff' . $notifyName . '$> ' . $improvement . ' $<$ff0' . $newRecord->rank . '.$> Dedimania Record: $<$fff' . Formatter::formatTime($newRecord->best) . '$>';
 				if (!$oldRecord->nullRecord) {
 					$message .= ' ($<$ff0' . $oldRecord->rank . '.$> $<$fff-' . Formatter::formatTime(($oldRecord->best - $recTime)) . '$>)';
 				}
+				$message .= '!';
 
 				if ($newRecord->rank <= $notifyOnlyBestRecordsPublic) {
-					$this->maniaControl->getChat()->sendInformation($message . '!');
+					$this->maniaControl->getCallQueueManager()->registerListening(
+						$this,
+						function () use ($message) {
+							$this->maniaControl->getChat()->sendInformation($message);
+						}
+					);
 				} elseif ($newRecord->rank <= $notifyOnlyBestRecordsPrivate) {
-					$this->maniaControl->getChat()->sendInformation($message . '!', $player);
+					$this->maniaControl->getCallQueueManager()->registerListening(
+						$this,
+						function () use ($message, $player) {
+							$this->maniaControl->getChat()->sendInformation($message, $player);
+						}
+					);
 				}
 
 				$this->webHandler->maniaLinkUpdateNeeded();
