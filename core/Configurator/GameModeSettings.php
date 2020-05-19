@@ -98,7 +98,6 @@ class GameModeSettings implements ConfiguratorMenu, CallbackListener, Communicat
 
 		$renameQuery = "ALTER TABLE `" . self::TABLE_SCRIPT_SETTINGS . "` RENAME TO `" . self::TABLE_GAMEMODE_SETTINGS . "`;";
 		$result      = $mysqli->query($renameQuery);
-		var_dump($mysqli);
 		if (!$result) {
 			if ($mysqli->errno === 1146) {
 				// old doesn't exist, good, continue to force creation
