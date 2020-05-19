@@ -206,7 +206,7 @@ class LocalRecordsPlugin implements CallbackListener, CallQueueListener, Command
 
 		$mysqli->query("ALTER TABLE `" . self::TABLE_RECORDS . "` ADD `checkpoints` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL");
 		if ($mysqli->error) {
-			if ($mysqli->errno === 1062) {
+			if ($mysqli->errno !== 1062) {
 				// Duplicate
 				trigger_error($mysqli->error, E_USER_ERROR);
 			}
