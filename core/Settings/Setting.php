@@ -30,23 +30,25 @@ class Setting implements UsageInformationAble {
 	/*
 	 * Public properties
 	 */
-	public $index     = null;
-	public $class     = null;
-	public $setting   = null;
-	public $type      = null;
-	public $value     = null;
-	public $default   = null;
-	public $set       = null;
-	public $fetchTime = null;
+	public $index       = null;
+	public $class       = null;
+	public $setting     = null;
+	public $type        = null;
+	public $value       = null;
+	public $default     = null;
+	public $set         = null;
+	public $fetchTime   = null;
+	public $description = null;
 
 	/**
 	 * Construct a new setting instance
 	 *
-	 * @param mixed  $object
-	 * @param string $settingName
-	 * @param mixed  $defaultValue
+	 * @param mixed       $object
+	 * @param string      $settingName
+	 * @param mixed       $defaultValue
+	 * @param string|null $description
 	 */
-	public function __construct($object, $settingName, $defaultValue) {
+	public function __construct($object, $settingName, $defaultValue, $description = null) {
 		if ($object === false) {
 			// Fetched from Database
 			$this->value   = $this->castValue($this->value);
@@ -68,6 +70,7 @@ class Setting implements UsageInformationAble {
 				$this->value = $defaultValue;
 			}
 			$this->default = $this->value;
+			$this->description = $description;
 		}
 	}
 

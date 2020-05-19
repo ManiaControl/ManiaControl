@@ -70,6 +70,15 @@ class SettingManager implements CallbackListener, UsageInformationAble {
 		if ($mysqli->error) {
 			trigger_error($mysqli->error, E_USER_ERROR);
 		}
+
+		$mysqli->query("ALTER TABLE `" . self::TABLE_SETTINGS . "` ADD `description` VARCHAR(500) DEFAULT NULL;");
+		if ($mysqli->error) {
+			// If not Duplicate
+			if ($mysqli->errno !== 1060) {
+				trigger_error($mysqli->error, E_USER_ERROR);
+			}
+		}
+
 		return $result;
 	}
 
@@ -172,12 +181,13 @@ class SettingManager implements CallbackListener, UsageInformationAble {
 	/**
 	 * Set a Setting for the given Object
 	 *
-	 * @param mixed  $object
-	 * @param string $settingName
-	 * @param mixed  $value
+	 * @param mixed       $object
+	 * @param string      $settingName
+	 * @param mixed       $value
+	 * @param string|null $description
 	 * @return bool
 	 */
-	public function setSetting($object, $settingName, $value) {
+	public function setSetting($object, $settingName, $value, $description = null) {
 		//TODO nowhere used, everywhere saveSettings used, is it depreciated?
 		$setting = $this->getSettingObject($object, $settingName);
 		if ($setting) {
@@ -187,7 +197,7 @@ class SettingManager implements CallbackListener, UsageInformationAble {
 				return false;
 			}
 		} else {
-			$saved = $this->initSetting($object, $settingName, $value);
+			$saved = $this->initSetting($object, $settingName, $value, $description);
 			if (!$saved) {
 				return false;
 			}
@@ -266,13 +276,14 @@ class SettingManager implements CallbackListener, UsageInformationAble {
 	/**
 	 * Initialize a Setting for the given Object
 	 *
-	 * @param mixed  $object
-	 * @param string $settingName
-	 * @param mixed  $defaultValue
+	 * @param mixed       $object
+	 * @param string      $settingName
+	 * @param mixed       $defaultValue
+	 * @param string|null $description
 	 * @return bool
 	 */
-	public function initSetting($object, $settingName, $defaultValue) {
-		$setting = new Setting($object, $settingName, $defaultValue);
+	public function initSetting($object, $settingName, $defaultValue, $description = null) {
+		$setting = new Setting($object, $settingName, $defaultValue, $description);
 		return $this->saveSetting($setting, true);
 	}
 
@@ -296,17 +307,19 @@ class SettingManager implements CallbackListener, UsageInformationAble {
 				`class`,
 				`setting`,
 				`type`,
+				`description`,
 				`value`,
 				`default`,
 				`set`
 				) VALUES (
-				?, ?, ?, ?, ?, ?
+				?, ?, ?, ?, ?, ?, ?
 				) ON DUPLICATE KEY UPDATE
 				`index` = LAST_INSERT_ID(`index`),
 				`type` = VALUES(`type`),
 				{$valueUpdateString},
 				`default` = VALUES(`default`),
 				`set` = VALUES(`set`),
+				`description` = VALUES(`description`),
 				`changed` = NOW();";
 		$settingStatement = $mysqli->prepare($settingQuery);
 		if ($mysqli->error) {
@@ -316,7 +329,16 @@ class SettingManager implements CallbackListener, UsageInformationAble {
 		$formattedValue   = $setting->getFormattedValue();
 		$formattedDefault = $setting->getFormattedDefault();
 		$formattedSet     = $setting->getFormattedSet();
-		$settingStatement->bind_param('ssssss', $setting->class, $setting->setting, $setting->type, $formattedValue, $formattedDefault, $formattedSet);
+		$settingStatement->bind_param(
+			'sssssss',
+			$setting->class,
+			$setting->setting,
+			$setting->type,
+			$setting->description,
+			$formattedValue,
+			$formattedDefault,
+			$formattedSet
+		);
 		$settingStatement->execute();
 		if ($settingStatement->error) {
 			trigger_error($settingStatement->error);

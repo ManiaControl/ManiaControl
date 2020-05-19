@@ -97,7 +97,7 @@ class ManiaControlSettings implements ConfiguratorMenu, CallbackListener {
 		$pagerSize     = 9.;
 		$settingHeight = 5.;
 		$labelTextSize = 2;
-		$pageMaxCount  = 11;
+		$pageMaxCount  = 10;
 
 		// Pagers
 		$pagerPrev = new Quad_Icons64x64_1();
@@ -127,8 +127,9 @@ class ManiaControlSettings implements ConfiguratorMenu, CallbackListener {
 		$backLabel = new Label_Button();
 		$frame->addChild($backLabel);
 		$backLabel->setStyle($backLabel::STYLE_CardMain_Quit);
-		$backLabel->setPosition(-$width / 2 + 7, -$height / 2 + 7);
+		$backLabel->setPosition(-$width / 2 + 5, -$height / 2 + 5);
 		$backLabel->setHorizontalAlign($backLabel::LEFT);
+		$backLabel->setScale(0.5);
 		$backLabel->setTextSize(2);
 		$backLabel->setText('Back');
 		$backLabel->setAction(self::ACTION_SETTINGCLASS_BACK);
@@ -167,6 +168,15 @@ class ManiaControlSettings implements ConfiguratorMenu, CallbackListener {
 			$nameLabel->setTextSize($labelTextSize);
 			$nameLabel->setText($setting->setting);
 			$nameLabel->setTextColor('fff');
+
+			$descriptionLabel = new Label_Text();
+			$pageFrame->addChild($descriptionLabel);
+			$descriptionLabel->setHorizontalAlign($descriptionLabel::LEFT);
+			$descriptionLabel->setPosition(-0.45 * $width, -0.35 * $height);
+			$descriptionLabel->setSize(0.9 * $width, $settingHeight);
+			$descriptionLabel->setTextSize($labelTextSize);
+			$descriptionLabel->setTranslate(true);
+			$nameLabel->addTooltipLabelFeature($descriptionLabel, $setting->description);
 
 			$settingName = self::ACTION_PREFIX_SETTING . $setting->index;
 			if ($setting->type === Setting::TYPE_BOOL) {
