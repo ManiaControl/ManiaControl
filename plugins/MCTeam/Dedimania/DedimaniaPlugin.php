@@ -11,6 +11,7 @@ use FML\Script\Features\Paging;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Callbacks\Callbacks;
+use ManiaControl\Callbacks\CallQueueListener;
 use ManiaControl\Callbacks\Structures\TrackMania\OnWayPointEventStructure;
 use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\Commands\CommandListener;
@@ -31,7 +32,7 @@ use MCTeam\Common\RecordWidget;
  * @copyright 2014-2020 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListener, Plugin {
+class DedimaniaPlugin implements CallbackListener, CallQueueListener, CommandListener, TimerListener, Plugin {
 	/*
 	 * Constants
 	 */
@@ -105,7 +106,7 @@ class DedimaniaPlugin implements CallbackListener, CommandListener, TimerListene
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_WIDGET_WIDTH, 40);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_WIDGET_LINE_HEIGHT, 4);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_WIDGET_LINE_COUNT, 12);
-		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_NOTIFICATION_MESSAGE_PREFIX, '$3c0');
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_NOTIFICATION_MESSAGE_PREFIX, '$390');
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_NOTIFY_BEST_RECORDS_PRIVATE, 30);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_NOTIFY_BEST_RECORDS_PUBLIC, 15);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_MAX_RECORDS, 30);
