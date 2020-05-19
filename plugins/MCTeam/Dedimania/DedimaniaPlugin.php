@@ -37,7 +37,7 @@ class DedimaniaPlugin implements CallbackListener, CallQueueListener, CommandLis
 	 * Constants
 	 */
 	const ID             = 8;
-	const VERSION        = 0.61;
+	const VERSION        = 0.62;
 	const AUTHOR         = 'MCTeam';
 	const NAME           = 'Dedimania Plugin';
 	const MLID_DEDIMANIA = 'Dedimania.ManialinkId';
