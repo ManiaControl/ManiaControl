@@ -122,13 +122,12 @@ class ErrorHandler {
 				$report['FileLine'] = self::stripBaseDir($fileLine);
 			}
 
-
 			if ($sourceClass) {
 				$report['SourceClass'] = $sourceClass;
 				$pluginId              = PluginManager::getPluginId($sourceClass);
 				if ($pluginId > 0) {
 					$report['PluginId'] = $pluginId;
-
+					$report['PluginVersion'] = PluginManager::getPluginVersion($sourceClass);
 
 					if ($isFatalError) {
 						$this->maniaControl->getPluginManager()->deactivatePlugin($sourceClass);
@@ -137,9 +136,6 @@ class ErrorHandler {
 						$isPluginError = true;
 					}
 				}
-
-				$report['PluginId']      = $pluginId;
-				$report['PluginVersion'] = PluginManager::getPluginVersion($sourceClass);
 			}
 
 			if ($traceString) {
@@ -478,9 +474,19 @@ class ErrorHandler {
 			$report['Message']         = $message;
 			$report['Class']           = $exceptionClass;
 			$report['FileLine']        = self::stripBaseDir($exception->getFile()) . ': ' . $exception->getLine();
-			$report['SourceClass']     = $sourceClass;
-			$report['PluginId']        = PluginManager::getPluginId($sourceClass);
-			$report['PluginVersion']   = PluginManager::getPluginVersion($sourceClass);
+			if ($sourceClass) {
+				$report['SourceClass'] = $sourceClass;
+				$pluginId              = PluginManager::getPluginId($sourceClass);
+				if ($pluginId > 0) {
+					$report['PluginId'] = $pluginId;
+					$report['PluginVersion'] = PluginManager::getPluginVersion($sourceClass);
+
+					$this->maniaControl->getPluginManager()->deactivatePlugin($sourceClass);
+					$this->maniaControl->getChat()->sendError("Plugin " . $sourceClass . " has an Error -> The Plugin will be deactivated and ManiaControl restarted");
+					Logger::logError("Plugin " . $sourceClass . " has an Error -> The Plugin will be deactivated and ManiaControl restarted");
+				}
+			}
+
 			$report['Backtrace']       = $traceString;
 			$report['OperatingSystem'] = php_uname();
 			$report['PHPVersion']      = phpversion();
