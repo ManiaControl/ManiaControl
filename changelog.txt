@@ -1,13 +1,16 @@
 ###v0.255###
 #Additions
+- added optional descriptions to Settings (but no MC-settings have descriptions yet)
 - add Setting to allow Karma-Votes only if player has local
 - add Setting to change Dedimania-Message formatting
+- add Setting to display author nickname instead of author login
 - add Setting to hide Plugins to install for incompatible version of ManiaControl
 - add Setting to hide Script-Settings which have the description "<hidden>"
 - add Setting to sort GameMode-Settings
 - CSV-Export of Locals (//exportrecs <filename> [map-id])
 
 #Bug Fixes
+- deactivate Plugins if they cause uncaught exceptions
 - fixed typo in actions panel of players list
 - fixed crashing GameMode-Settings table on other languages than english
 
