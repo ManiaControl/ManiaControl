@@ -8,7 +8,7 @@
 - add Setting to hide Script-Settings which have the description "<hidden>"
 - add Setting to sort GameMode-Settings
 - CSV-Export of Locals (//exportrecs <filename> [map-id])
-- new Plugin to save and load GameMode-Settings (//loadmode <name> & //savemode <name>)
+- new GameModePresetPlugin to save and load GameMode-Settings (//loadmode <name> & //savemode <name>)
 
 #Bug Fixes
 - deactivate Plugins if they cause uncaught exceptions
