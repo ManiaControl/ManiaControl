@@ -33,23 +33,25 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 	/*
 	 * Constants
 	 */
-	const ID                      = 2;
-	const VERSION                 = 0.1;
-	const NAME                    = 'Karma Plugin';
-	const AUTHOR                  = 'MCTeam';
-	const MLID_KARMA              = 'KarmaPlugin.MLID';
-	const TABLE_KARMA             = 'mc_karma';
-	const CB_KARMA_CHANGED        = 'KarmaPlugin.Changed';
-	const CB_KARMA_MXUPDATED      = 'KarmaPlugin.MXUpdated';
-	const SETTING_AVAILABLE_VOTES = 'Available Votes (X-Y: Comma separated)';
-	const SETTING_WIDGET_ENABLE   = 'Enable Karma Widget';
-	const SETTING_WIDGET_TITLE    = 'Widget-Title';
-	const SETTING_WIDGET_POSX     = 'Widget-Position: X';
-	const SETTING_WIDGET_POSY     = 'Widget-Position: Y';
-	const SETTING_WIDGET_WIDTH    = 'Widget-Size: Width';
-	const SETTING_WIDGET_HEIGHT   = 'Widget-Size: Height';
-	const SETTING_NEWKARMA        = 'Enable "new karma" (percentage), disable = RASP karma';
-	const STAT_PLAYER_MAPVOTES    = 'Voted Maps';
+	const ID                           = 2;
+	const VERSION                      = 0.2;
+	const NAME                         = 'Karma Plugin';
+	const AUTHOR                       = 'MCTeam';
+	const MLID_KARMA                   = 'KarmaPlugin.MLID';
+	const TABLE_KARMA                  = 'mc_karma';
+	const CB_KARMA_CHANGED             = 'KarmaPlugin.Changed';
+	const CB_KARMA_MXUPDATED           = 'KarmaPlugin.MXUpdated';
+	const DEFAULT_LOCAL_RECORDS_PLUGIN = 'MCTeam\LocalRecordsPlugin';
+	const SETTING_ALLOW_ON_LOCAL       = 'Player can only vote when having a local record';
+	const SETTING_AVAILABLE_VOTES      = 'Available Votes (X-Y: Comma separated)';
+	const SETTING_WIDGET_ENABLE        = 'Enable Karma Widget';
+	const SETTING_WIDGET_TITLE         = 'Widget-Title';
+	const SETTING_WIDGET_POSX          = 'Widget-Position: X';
+	const SETTING_WIDGET_POSY          = 'Widget-Position: Y';
+	const SETTING_WIDGET_WIDTH         = 'Widget-Size: Width';
+	const SETTING_WIDGET_HEIGHT        = 'Widget-Size: Height';
+	const SETTING_NEWKARMA             = 'Enable "new karma" (percentage), disable = RASP karma';
+	const STAT_PLAYER_MAPVOTES         = 'Voted Maps';
 
 	/*
 	 * Constants MX Karma
@@ -143,6 +145,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 		$this->initTables();
 
 		// Settings
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_ALLOW_ON_LOCAL, false);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_AVAILABLE_VOTES, '-2,2');
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_WIDGET_ENABLE, true);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_WIDGET_TITLE, 'Map-Karma');
@@ -587,6 +590,21 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 		if ($countPositive <= 0 && $countNegative <= 0) {
 			return;
 		}
+		// we have a vote-message
+		if ($this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_ALLOW_ON_LOCAL)) {
+			$localRecordPlugin = $this->maniaControl->getPluginManager()->getPlugin(self::DEFAULT_LOCAL_RECORDS_PLUGIN);
+			if (!$localRecordPlugin) {
+				return;
+			}
+
+			$currentMap = $this->maniaControl->getMapManager()->getCurrentMap();
+			$localRecord = $localRecordPlugin->getLocalRecord($currentMap, $player);
+			if ($localRecord === null) {
+				$this->maniaControl->getChat()->sendError('You need to have a local record on this map before voting.', $player->login);
+				return;
+			}
+		}
+
 		$vote    = $countPositive - $countNegative;
 		$success = $this->handleVote($player, $vote);
 		if (!$success) {
