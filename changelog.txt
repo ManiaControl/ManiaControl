@@ -12,6 +12,9 @@
 
 #Bug Fixes
 - deactivate Plugins if they cause uncaught exceptions
+- finish callbacks got triggered before corresponding checkpoint callback
+-- some CPs of your local records might be messed up
+-- you can fix them by either deleting the record "//delrec <rank>", or simply drive a better time
 - fixed typo in actions panel of players list
 - fixed crashing GameMode-Settings table on other languages than english
 

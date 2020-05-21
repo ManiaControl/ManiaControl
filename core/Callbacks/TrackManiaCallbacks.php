@@ -22,7 +22,7 @@ use ManiaControl\ManiaControl;
  * @copyright 2014-2020 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
-class TrackManiaCallbacks implements CallbackListener {
+class TrackManiaCallbacks implements CallbackListener, CallQueueListener {
 	/*
 	 * Private properties
 	 */
@@ -106,9 +106,13 @@ class TrackManiaCallbacks implements CallbackListener {
 	 */
 	public function handleWayPointCallback(OnWayPointEventStructure $structure) {
 		if ($structure->getIsEndRace()) {
-			$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::TM_ONFINISHLINE, $structure);
+			$this->maniaControl->getCallQueueManager()->registerListening($this, function () use ($structure) {
+				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::TM_ONFINISHLINE, $structure);
+			});
 		} else if ($structure->getIsEndLap()) {
-			$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::TM_ONLAPFINISH, $structure);
+			$this->maniaControl->getCallQueueManager()->registerListening($this, function () use ($structure) {
+				$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::TM_ONLAPFINISH, $structure);
+			});
 		}
 	}
 }
