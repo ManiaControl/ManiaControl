@@ -43,7 +43,7 @@ class LocalRecordsPlugin implements CallbackListener, CallQueueListener, Command
 	 * Constants
 	 */
 	const ID                                  = 7;
-	const VERSION                             = 0.8;
+	const VERSION                             = 0.81;
 	const NAME                                = 'Local Records Plugin';
 	const AUTHOR                              = 'MCTeam';
 	const MLID_RECORDS                        = 'ml_local_records';
