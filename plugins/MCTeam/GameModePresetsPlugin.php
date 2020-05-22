@@ -22,7 +22,7 @@ class GameModePresetsPlugin implements Plugin, CommandListener, TimerListener {
 	 * Constants
 	 */
 	const PLUGIN_ID      = 9;
-	const PLUGIN_VERSION = 0.1;
+	const PLUGIN_VERSION = 0.11;
 	const PLUGIN_NAME    = 'GameMode Presets Plugin';
 	const PLUGIN_AUTHOR  = 'MCTeam';
 
@@ -63,14 +63,12 @@ class GameModePresetsPlugin implements Plugin, CommandListener, TimerListener {
 		$this->maniaControl->getAuthenticationManager()->definePluginPermissionLevel(
 			$this,
 			self::SETTING_PERMISSION_LOAD_GAMEMODE_PRESET,
-			AuthenticationManager::AUTH_LEVEL_ADMIN,
-			AuthenticationManager::AUTH_LEVEL_MODERATOR
+			AuthenticationManager::AUTH_LEVEL_ADMIN
 		);
 		$this->maniaControl->getAuthenticationManager()->definePluginPermissionLevel(
 			$this,
 			self::SETTING_PERMISSION_SAVE_GAMEMODE_PRESET,
-			AuthenticationManager::AUTH_LEVEL_SUPERADMIN,
-			AuthenticationManager::AUTH_LEVEL_MODERATOR
+			AuthenticationManager::AUTH_LEVEL_SUPERADMIN
 		);
 
 		// Settings
@@ -92,6 +90,7 @@ class GameModePresetsPlugin implements Plugin, CommandListener, TimerListener {
 		// Commands
 		$this->maniaControl->getCommandManager()->registerCommandListener(array('loadmode', 'modeload'), $this, 'commandLoadMode', true, 'Loads the mode settings from the given preset name.');
 		$this->maniaControl->getCommandManager()->registerCommandListener(array('savemode', 'modesave'), $this, 'commandSaveMode', true, 'Saves the mode settings under the given preset name.');
+		$this->maniaControl->getCommandManager()->registerCommandListener(array('showmode', 'modeshow'), $this, 'commandSaveMode', true, 'Shows the available game mode presets.');
 
 		$this->initTables();
 	}
@@ -134,7 +133,7 @@ class GameModePresetsPlugin implements Plugin, CommandListener, TimerListener {
 		$statement->bind_param('s', $name);
 		$statement->execute();
 		if ($statement->error) {
-			trigger_error($statement->error);
+			trigger_error($statement->error, E_USER_ERROR);
 			$statement->close();
 			return null;
 		}
@@ -181,7 +180,7 @@ class GameModePresetsPlugin implements Plugin, CommandListener, TimerListener {
 		$statement->bind_param('ss', $name, $settings);
 		$statement->execute();
 		if ($statement->error) {
-			trigger_error($statement->error);
+			trigger_error($statement->error, E_USER_ERROR);
 			return false;
 		}
 
@@ -243,7 +242,6 @@ class GameModePresetsPlugin implements Plugin, CommandListener, TimerListener {
 			return;
 		}
 
-		// Check for delayed shutdown
 		$params = explode(' ', $chatCallback[1][2]);
 		if (count($params) < 2) {
 			$this->maniaControl->getChat()->sendError('You must provide a gamemode preset name to load settings from!', $player);
@@ -256,7 +254,7 @@ class GameModePresetsPlugin implements Plugin, CommandListener, TimerListener {
 		$presetName = strtolower($params[1]);
 		$presetSettings = $this->fetchPreset($presetName);
 		if (!$presetSettings) {
-			$this->maniaControl->getChat()->sendError('The gamemode preset $<$fff' . $presetName . '$> does not exist!', $player);
+			$this->maniaControl->getChat()->sendError('The gamemode preset $<$g$z$fff' . $presetName . '$> does not exist, use $<$g$z$fff//showmode$> to see the available presets!', $player);
 			return;
 		}
 
@@ -282,8 +280,9 @@ class GameModePresetsPlugin implements Plugin, CommandListener, TimerListener {
 			$this->maniaControl->getChat()->sendError('Unable to load gamemode preset $<$fff' . $presetName . '$>!', $player);
 			return;
 		}
-
-		$this->maniaControl->getChat()->sendSuccess($player->getEscapedNickname() . ' loaded gamemode preset $<$fff' . $presetName . '$>!');
+		
+		$authLevel = AuthenticationManager::getAuthLevelInt($this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_PERMISSION_LOAD_GAMEMODE_PRESET));
+		$this->maniaControl->getChat()->sendSuccessToAdmins($player->getEscapedNickname() . ' loaded gamemode preset $<$fff' . $presetName . '$>!', $authLevel);
 		$this->maniaControl->getTimerManager()->registerOneTimeListening(
 			$this,
 			function () {
@@ -310,12 +309,11 @@ class GameModePresetsPlugin implements Plugin, CommandListener, TimerListener {
 	 * @param \ManiaControl\Players\Player $player
 	 */
 	public function commandSaveMode(array $chatCallback, Player $player) {
-		if (!$this->maniaControl->getAuthenticationManager()->checkPluginPermission($this, $player, self::SETTING_PERMISSION_LOAD_GAMEMODE_PRESET)) {
+		if (!$this->maniaControl->getAuthenticationManager()->checkPluginPermission($this, $player, self::SETTING_PERMISSION_SAVE_GAMEMODE_PRESET)) {
 			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($player);
 			return;
 		}
 
-		// Check for delayed shutdown
 		$params = explode(' ', $chatCallback[1][2]);
 		if (count($params) < 2) {
 			$this->maniaControl->getChat()->sendError('You must provide a gamemode preset name to save settings into!', $player);
@@ -334,7 +332,37 @@ class GameModePresetsPlugin implements Plugin, CommandListener, TimerListener {
 			return;
 		}
 
-		$this->maniaControl->getChat()->sendSuccess($player->getEscapedNickname() . ' saved gamemode settings in preset $<$fff"' . $presetName . '"$>!');
+		$authLevel = AuthenticationManager::getAuthLevelInt($this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_PERMISSION_SAVE_GAMEMODE_PRESET));
+		$this->maniaControl->getChat()->sendSuccessToAdmins($player->getEscapedNickname() . ' saved gamemode settings in preset $<$fff' . $presetName . '$>!', $authLevel);
+	}
+
+	/**
+	 * Handle //showmode command
+	 *
+	 * @param array                        $chatCallback
+	 * @param \ManiaControl\Players\Player $player
+	 */
+	public function commandShowMode(array $chatCallback, Player $player) {
+		if (!$this->maniaControl->getAuthenticationManager()->checkPluginPermission($this, $player, self::SETTING_PERMISSION_LOAD_GAMEMODE_PRESET)) {
+			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($player);
+			return;
+		}
+
+		$mysqli = $this->maniaControl->getDatabase()->getMysqli();
+		$query  = "SELECT `name`
+				FROM `" . self::TABLE_GAMEMODEPRESETS . "`;";
+		$result = $mysqli->query($query);
+		if ($mysqli->error) {
+			trigger_error($mysqli->error);
+			return null;
+		}
+		$presets = array();
+		while ($preset = $result->fetch_object()) {
+			array_push($presets, $preset);
+		}
+		$result->free();
+
+		$this->maniaControl->getChat()->sendInformation('Available presets: $<$g$z$fff' . implode(', ', $presets) . '$>', $player);
 	}
 
 	/**
