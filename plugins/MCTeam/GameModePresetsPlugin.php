@@ -22,7 +22,7 @@ class GameModePresetsPlugin implements Plugin, CommandListener, TimerListener {
 	 * Constants
 	 */
 	const PLUGIN_ID      = 9;
-	const PLUGIN_VERSION = 0.11;
+	const PLUGIN_VERSION = 0.12;
 	const PLUGIN_NAME    = 'GameMode Presets Plugin';
 	const PLUGIN_AUTHOR  = 'MCTeam';
 
@@ -90,7 +90,7 @@ class GameModePresetsPlugin implements Plugin, CommandListener, TimerListener {
 		// Commands
 		$this->maniaControl->getCommandManager()->registerCommandListener(array('loadmode', 'modeload'), $this, 'commandLoadMode', true, 'Loads the mode settings from the given preset name.');
 		$this->maniaControl->getCommandManager()->registerCommandListener(array('savemode', 'modesave'), $this, 'commandSaveMode', true, 'Saves the mode settings under the given preset name.');
-		$this->maniaControl->getCommandManager()->registerCommandListener(array('showmode', 'modeshow'), $this, 'commandSaveMode', true, 'Shows the available game mode presets.');
+		$this->maniaControl->getCommandManager()->registerCommandListener(array('showmode', 'modeshow'), $this, 'commandShowMode', true, 'Shows the available game mode presets.');
 
 		$this->initTables();
 	}
@@ -315,7 +315,7 @@ class GameModePresetsPlugin implements Plugin, CommandListener, TimerListener {
 		}
 
 		$params = explode(' ', $chatCallback[1][2]);
-		if (count($params) < 2) {
+		if (count($params) < 2 || empty($params[1])) {
 			$this->maniaControl->getChat()->sendError('You must provide a gamemode preset name to save settings into!', $player);
 			return;
 		} elseif (count($params) > 2) {
