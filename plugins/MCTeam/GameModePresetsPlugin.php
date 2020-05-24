@@ -358,7 +358,7 @@ class GameModePresetsPlugin implements Plugin, CommandListener, TimerListener {
 		}
 		$presets = array();
 		while ($preset = $result->fetch_object()) {
-			array_push($presets, $preset);
+			array_push($presets, $preset->name);
 		}
 		$result->free();
 
