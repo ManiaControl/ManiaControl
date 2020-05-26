@@ -53,7 +53,7 @@ class HelpManager implements CommandListener, CallbackListener, ManialinkPageAns
 		$this->maniaControl->getActionsMenu()->addMenuItem($itemQuad, true, 0, 'Available commands');
 		$itemQuad = clone $itemQuad;
 		$itemQuad->setAction(self::ACTION_OPEN_ADMIN_HELP_ALL);
-		$this->maniaControl->getActionsMenu()->addAdminMenuItem($itemQuad,0,'Available admin commands');
+		$this->maniaControl->getActionsMenu()->addAdminMenuItem($itemQuad, 0, 'Available admin commands');
 
 		// Callbacks
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::ONINIT, $this, 'handleOnInit');
@@ -79,9 +79,13 @@ class HelpManager implements CommandListener, CallbackListener, ManialinkPageAns
 		// Parse list from array
 		$message = $this->parseHelpList($this->adminCommands);
 
-		// Show message when it's not empty
-		if ($message != null) {
-			$message = 'Supported Admin Commands: ' . $message;
+		if ($message === null) {
+			$this->maniaControl->getChat()->sendError('No Admin Commands supported!', $player);
+		} else {
+			$message = $this->maniaControl->getChat()->formatMessage(
+				'Supported Admin Commands: %s',
+				$message
+			);
 			$this->maniaControl->getChat()->sendChat($message, $player);
 		}
 	}
@@ -96,11 +100,25 @@ class HelpManager implements CommandListener, CallbackListener, ManialinkPageAns
 		// Parse list from array
 		$message = $this->parseHelpList($this->playerCommands);
 
-		// Show message when it's not empty
-		if ($message != null) {
-			$message = 'Supported Player Commands: ' . $message;
+		if ($message === null) {
+			$this->maniaControl->getChat()->sendError('No Player Commands supported!', $player);
+		} else {
+			$message = $this->maniaControl->getChat()->formatMessage(
+				'Supported Player Commands: %s',
+				$message
+			);
 			$this->maniaControl->getChat()->sendChat($message, $player);
 		}
+	}
+
+	/**
+	 * Show a ManiaLink list of Admin Commands
+	 *
+	 * @param array  $chatCallback
+	 * @param Player $player
+	 */
+	public function command_adminHelpAll(array $chatCallback, Player $player) {
+		$this->parseHelpList($this->adminCommands, true, $player);
 	}
 
 	/**
@@ -120,8 +138,8 @@ class HelpManager implements CommandListener, CallbackListener, ManialinkPageAns
 	 * @param \ManiaControl\Players\Player $player
 	 * @internal
 	 */
-	public function maniaLink_helpAll(array $callback, Player $player) {
-		$this->parseHelpList($this->playerCommands, true, $player);
+	public function maniaLink_adminHelpAll(array $callback, Player $player){
+		$this->parseHelpList($this->adminCommands,true, $player);
 	}
 
 	/**
@@ -131,8 +149,8 @@ class HelpManager implements CommandListener, CallbackListener, ManialinkPageAns
 	 * @param \ManiaControl\Players\Player $player
 	 * @internal
 	 */
-	public function maniaLink_adminHelpAll(array $callback, Player $player){
-		$this->parseHelpList($this->adminCommands,true, $player);
+	public function maniaLink_helpAll(array $callback, Player $player) {
+		$this->parseHelpList($this->playerCommands, true, $player);
 	}
 
 	/**
@@ -185,7 +203,7 @@ class HelpManager implements CommandListener, CallbackListener, ManialinkPageAns
 	 * @param array $commands
 	 * @param mixed $player
 	 */
-	public function  showHelpAllList(array $commands, $player) {
+	public function showHelpAllList(array $commands, $player) {
 		$width  = $this->maniaControl->getManialinkManager()->getStyleManager()->getListWidgetsWidth();
 		$height = $this->maniaControl->getManialinkManager()->getStyleManager()->getListWidgetsHeight();
 
@@ -252,16 +270,6 @@ class HelpManager implements CommandListener, CallbackListener, ManialinkPageAns
 
 		// Render and display xml
 		$this->maniaControl->getManialinkManager()->displayWidget($maniaLink, $player, 'HelpAllList');
-	}
-
-	/**
-	 * Show a ManiaLink list of Admin Commands
-	 *
-	 * @param array  $chatCallback
-	 * @param Player $player
-	 */
-	public function command_adminHelpAll(array $chatCallback, Player $player) {
-		$this->parseHelpList($this->adminCommands, true, $player);
 	}
 
 	/**

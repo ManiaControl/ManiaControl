@@ -352,7 +352,12 @@ class CommandManager implements CallbackListener, UsageInformationAble {
 
 		if (!$this->isCommandEnabled($command, $isAdminCommand)) {
 			$prefix = $isAdminCommand ? '//' : '/';
-			$this->maniaControl->getChat()->sendError('The command $<$fff'.$prefix.$command.'$> is currently disabled!', $player);
+			$message = $this->maniaControl->getChat()->formatMessage(
+				'The command %s%s is currently disabled!',
+				$prefix,
+				$command
+			);
+			$this->maniaControl->getChat()->sendError($message, $player);
 			return;
 		}
 
