@@ -373,7 +373,7 @@ class Player implements Dumpable, UsageInformationAble {
 	 * @return string
 	 */
 	public function getAuthLevelName(){
-		return AuthenticationManager::getAuthLevelName($this->authLevel);
+		return AuthenticationManager::getAuthLevelName(intval($this->authLevel));
 	}
 
 	/**
@@ -383,7 +383,7 @@ class Player implements Dumpable, UsageInformationAble {
 	 * @return string
 	 */
 	public function getAuthLevelAbbreviation(){
-		return AuthenticationManager::getAuthLevelAbbreviation($this->authLevel);
+		return AuthenticationManager::getAuthLevelAbbreviation(intval($this->authLevel));
 	}
 
 	/**
