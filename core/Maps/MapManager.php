@@ -192,7 +192,11 @@ class MapManager implements CallbackListener, CommunicationListener, UsageInform
 
 		if (!isset($uid) || !isset($this->maps[$uid])) {
 			if ($admin) {
-				$this->maniaControl->getChat()->sendError("Error updating Map: Unknown UID '{$uid}'!", $admin);
+				$message = $this->maniaControl->getChat()->formatMessage(
+					'Error updating Map, unknown UID %s!',
+					$uid
+				);
+				$this->maniaControl->getChat()->sendError($message, $admin);
 			}
 			return;
 		}
@@ -278,16 +282,22 @@ class MapManager implements CallbackListener, CommunicationListener, UsageInform
 			// Check if ManiaControl can even write to the maps dir
 			$mapDir = $this->maniaControl->getClient()->getMapsDirectory();
 			if ($this->maniaControl->getServer()->checkAccess($mapDir)) {
+				$mapFile = $mapDir . $map->fileName;
+
 				// Delete map file
-				if (!@unlink($mapDir . $map->fileName)) {
+				if (!@unlink($mapFile)) {
 					if ($admin) {
-						$this->maniaControl->getChat()->sendError("Couldn't erase the map file.", $admin);
+						$message = $this->maniaControl->getChat()->formatMessage(
+							'Could not erase the map file %s.',
+							$mapFile
+						);
+						$this->maniaControl->getChat()->sendError($message, $admin);
 					}
 					$eraseFile = false;
 				}
 			} else {
 				if ($admin) {
-					$this->maniaControl->getChat()->sendError("Couldn't erase the map file (no access).", $admin);
+					$this->maniaControl->getChat()->sendError('Could not erase the map file (no access to Maps-Directory).', $admin);
 				}
 				$eraseFile = false;
 			}
@@ -297,9 +307,16 @@ class MapManager implements CallbackListener, CommunicationListener, UsageInform
 		if ($message) {
 			$action = ($eraseFile ? 'erased' : 'removed');
 			if ($admin) {
-				$message = $admin->getEscapedNickname() . ' ' . $action . ' ' . $map->getEscapedName() . '!';
+				$message = $this->maniaControl->getChat()->formatMessage(
+					"%s {$action} %s!",
+					$admin,
+					$map
+				);
 			} else {
-				$message = $map->getEscapedName() . ' got ' . $action . '!';
+				$message = $this->maniaControl->getChat()->formatMessage(
+					"%s got {$action}!",
+					$map
+				);
 			}
 			$this->maniaControl->getChat()->sendSuccess($message);
 			Logger::logInfo($message, true);
@@ -363,7 +380,7 @@ class MapManager implements CallbackListener, CommunicationListener, UsageInform
 					if (!$file || $error) {
 						if ($login) {
 							// Download error
-							$this->maniaControl->getChat()->sendError("Download failed: '{$error}'!", $login);
+							$this->maniaControl->getChat()->sendError("Download failed: {$error}!", $login);
 						}
 						return;
 					}
@@ -406,7 +423,11 @@ class MapManager implements CallbackListener, CommunicationListener, UsageInform
 		if ($this->maniaControl->getServer()->checkAccess($mapDir)) {
 			// Create download directory if necessary
 			if (!is_dir($downloadDirectory) && !mkdir($downloadDirectory) || !is_writable($downloadDirectory)) {
-				$this->maniaControl->getChat()->sendError("ManiaControl doesn't have to rights to save maps in '{$downloadDirectory}'.", $login);
+				$message = $this->maniaControl->getChat()->formatMessage(
+					'ManiaControl does not have to rights to save maps in %s!',
+					$downloadDirectory
+				);
+				$this->maniaControl->getChat()->sendError($message, $login);
 				return;
 			}
 
@@ -421,12 +442,12 @@ class MapManager implements CallbackListener, CommunicationListener, UsageInform
 				$this->maniaControl->getClient()->writeFile($relativeMapFileName, $file);
 			} catch (InvalidArgumentException $e) {
 				if ($e->getMessage() === 'data are too big') {
-					$this->maniaControl->getChat()->sendError("Map is too big for a remote save.", $login);
+					$this->maniaControl->getChat()->sendError('Map is too big for a remote save!', $login);
 					return;
 				}
 				throw $e;
 			} catch (FileException $e) {
-				$this->maniaControl->getChat()->sendError("Could not write file", $login);
+				$this->maniaControl->getChat()->sendError('Could not write file!', $login);
 				return;
 			}
 		}
@@ -434,26 +455,26 @@ class MapManager implements CallbackListener, CommunicationListener, UsageInform
 		// Check for valid map
 		try {
 			$this->maniaControl->getClient()->checkMapForCurrentServerParams($relativeMapFileName);
-		} catch (InvalidMapException $exception) {
-			$this->maniaControl->getChat()->sendException($exception, $login);
+		} catch (InvalidMapException $e) {
+			$this->maniaControl->getChat()->sendException($e, $login);
 			return;
-		} catch (FileException $exception) {
-			$this->maniaControl->getChat()->sendException($exception, $login);
+		} catch (FileException $e) {
+			$this->maniaControl->getChat()->sendException($e, $login);
 			return;
-		}catch (FaultException $exception){
-			$this->maniaControl->getChat()->sendException($exception, $login);
+		}catch (FaultException $e){
+			$this->maniaControl->getChat()->sendException($e, $login);
 			return;
 		}
 
 		// Add map to map list
 		try {
 			$this->maniaControl->getClient()->insertMap($relativeMapFileName);
-		} catch (AlreadyInListException $exception) {
-			$this->maniaControl->getChat()->sendException($exception, $login);
+		} catch (AlreadyInListException $e) {
+			$this->maniaControl->getChat()->sendException($e, $login);
 			return;
-		} catch (InvalidMapException $exception) {
-			$this->maniaControl->getChat()->sendException($exception, $login);
-			if ($exception->getMessage() != 'Map lightmap is not up to date. (will still load for now)') {
+		} catch (InvalidMapException $e) {
+			$this->maniaControl->getChat()->sendException($e, $login);
+			if ($e->getMessage() != 'Map lightmap is not up to date. (will still load for now)') {
 				return;
 			}
 		}
@@ -482,14 +503,21 @@ class MapManager implements CallbackListener, CommunicationListener, UsageInform
 		if ($login) {
 			$player = $this->maniaControl->getPlayerManager()->getPlayer($login);
 			if (!$update) {
-				// Message
-				$message = $player->getEscapedNickname() . ' added $<' . $mapInfo->name . '$>!';
+				$message = $this->maniaControl->getChat()->formatMessage(
+					'%s added %s from MX!',
+					$player,
+					$map
+				);
 				$this->maniaControl->getChat()->sendSuccess($message);
 				Logger::logInfo($message, true);
-				// Queue requested Map
+				
 				$this->maniaControl->getMapManager()->getMapQueue()->addMapToMapQueue($login, $mapInfo->uid);
 			} else {
-				$message = $player->getEscapedNickname() . ' updated $<' . $mapInfo->name . '$>!';
+				$message = $this->maniaControl->getChat()->formatMessage(
+					'%s updated %s from MX!',
+					$player,
+					$map
+				);
 				$this->maniaControl->getChat()->sendSuccess($message);
 				Logger::logInfo($message, true);
 			}
@@ -649,15 +677,18 @@ class MapManager implements CallbackListener, CommunicationListener, UsageInform
 			$this->maniaControl->getClient()->chooseNextMapList($mapArray);
 		} catch (Exception $e) {
 			//TODO temp added 19.04.2014
-			$this->maniaControl->getErrorHandler()->triggerDebugNotice("Exception line 331 MapManager" . $e->getMessage());
-			trigger_error("Couldn't shuffle mapList. " . $e->getMessage());
+			$this->maniaControl->getErrorHandler()->triggerDebugNotice('Exception line 331 MapManager' . $e->getMessage());
+			trigger_error('Could not shuffle mapList. ' . $e->getMessage());
 			return false;
 		}
 
 		$this->fetchCurrentMap();
 
 		if ($admin) {
-			$message = $admin->getEscapedNickname() . ' shuffled the Maplist!';
+			$message = $this->maniaControl->getChat()->formatMessage(
+				'%s shuffled the Maplist!',
+				$admin
+			);
 			$this->maniaControl->getChat()->sendSuccess($message);
 			Logger::logInfo($message, true);
 		}
@@ -725,7 +756,7 @@ class MapManager implements CallbackListener, CommunicationListener, UsageInform
 		try {
 			$this->maniaControl->getClient()->chooseNextMapList($mapArray);
 		} catch (Exception $e) {
-			trigger_error("Error restructuring the Maplist. " . $e->getMessage());
+			trigger_error('Error restructuring the Maplist. ' . $e->getMessage());
 			return false;
 		}
 		return true;

@@ -34,6 +34,7 @@ class MapQueue implements CallbackListener, CommandListener, UsageInformationAbl
 	const SETTING_SKIP_MAPQUEUE_ADMIN       = 'Skip Map when admin leaves';
 	const SETTING_MAPLIMIT_PLAYER           = 'Maximum maps per player in the Map-Queue (-1 = unlimited)';
 	const SETTING_MAPLIMIT_ADMIN            = 'Maximum maps per admin (Admin+) in the Map-Queue (-1 = unlimited)';
+	const SETTING_MESSAGE_FORMAT            = 'Message Format';
 	const SETTING_BUFFERSIZE                = 'Size of the Map-Queue buffer (recently played maps)';
 	const SETTING_PERMISSION_CLEAR_MAPQUEUE = 'Clear MapQueue';
 	const SETTING_PERMISSION_QUEUE_BUFFER   = 'Queue maps in buffer';
@@ -69,6 +70,7 @@ class MapQueue implements CallbackListener, CommandListener, UsageInformationAbl
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_SKIP_MAPQUEUE_ADMIN, false);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_MAPLIMIT_PLAYER, 1);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_MAPLIMIT_ADMIN, -1);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_MESSAGE_FORMAT, '$fa0');
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_BUFFERSIZE, 10);
 
 		// Permissions
@@ -117,17 +119,22 @@ class MapQueue implements CallbackListener, CommandListener, UsageInformationAbl
 			return;
 		}
 
+		$messagePrefix = $this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_MESSAGE_FORMAT);
 		if ($admin && empty($this->queuedMaps)) {
-			$this->maniaControl->getChat()->sendError('$fa0There are no maps in the jukebox!', $admin->login);
+			$this->maniaControl->getChat()->sendError($messagePrefix . 'There are no maps in the jukebox!', $admin);
 			return;
 		}
 
-		//Destroy map - queue list
+		// Destroy map - queue list
 		$this->queuedMaps = array();
 
 		if ($admin) {
-			$title   = $this->maniaControl->getAuthenticationManager()->getAuthLevelName($admin->authLevel);
-			$message = '$fa0' . $title . ' $<$fff' . $admin->nickname . '$> cleared the Map-Queue!';
+			$title   = $admin->getAuthLevelName();
+			$message = $this->maniaControl->getChat()->formatMessage(
+				$messagePrefix . '%s %s cleared the Map-Queue!',
+				$title,
+				$admin
+			);
 			$this->maniaControl->getChat()->sendInformation($message);
 			Logger::logInfo($message, true);
 		}
@@ -172,15 +179,20 @@ class MapQueue implements CallbackListener, CommandListener, UsageInformationAbl
 	 * @param Player $player
 	 */
 	public function showMapQueue(Player $player) {
+		$messagePrefix = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_MESSAGE_FORMAT);
 		if (empty($this->queuedMaps)) {
-			$this->maniaControl->getChat()->sendError('$fa0There are no maps in the jukebox!', $player->login);
+			$this->maniaControl->getChat()->sendInformation($messagePrefix . 'There are no maps in the jukebox!', $player);
 			return;
 		}
 
-		$message = '$fa0Upcoming maps in the Map-Queue:';
+		$message = $messagePrefix . 'Upcoming maps in the Map-Queue:';
 		$index   = 1;
 		foreach ($this->queuedMaps as $queuedMap) {
-			$message .= ' $<$fff' . $index . '$>. [$<$fff' . Formatter::stripCodes($queuedMap[1]->name) . '$>]';
+			$message .= $this->maniaControl->getChat()->formatMessage(
+				' %s. [%s]',
+				$index,
+				Formatter::stripCodes($queuedMap[1]->name)
+			);
 			$index++;
 		}
 
@@ -193,8 +205,9 @@ class MapQueue implements CallbackListener, CommandListener, UsageInformationAbl
 	 * @param Player $player
 	 */
 	public function showMapQueueManialink(Player $player) {
+		$messagePrefix = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_MESSAGE_FORMAT);
 		if (empty($this->queuedMaps)) {
-			$this->maniaControl->getChat()->sendError('There are no Maps in the Jukebox!', $player);
+			$this->maniaControl->getChat()->sendInformation($messagePrefix . 'There are no Maps in the Jukebox!', $player);
 			return;
 		}
 
@@ -246,7 +259,12 @@ class MapQueue implements CallbackListener, CommandListener, UsageInformationAbl
 
 		$this->queuedMaps[$uid] = array(null, $map);
 
-		$this->maniaControl->getChat()->sendInformation('$fa0$<$fff' . $map->name . '$> has been added to the Map-Queue by the Server.');
+		$messagePrefix = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_MESSAGE_FORMAT);
+		$message = $this->maniaControl->getChat()->formatMessage(
+			$messagePrefix . '%s has been added to the Map-Queue by the Server.',
+			$map
+		);
+		$this->maniaControl->getChat()->sendInformation($message);
 
 		// Trigger callback
 		$this->maniaControl->getCallbackManager()->triggerCallback(self::CB_MAPQUEUE_CHANGED, array('add', $this->queuedMaps[$uid]));
@@ -285,13 +303,21 @@ class MapQueue implements CallbackListener, CommandListener, UsageInformationAbl
 		if ($isModerator) {
 			$maxAdmin = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_MAPLIMIT_ADMIN);
 			if ($maxAdmin >= 0 && $mapsForPlayer >= $maxAdmin) {
-				$this->maniaControl->getChat()->sendError('You already have $<$fff' . $maxAdmin . '$> map(s) in the Map-Queue!', $login);
+				$message = $this->maniaControl->getChat()->formatMessage(
+					'You already have %s map(s) in the Map-Queue!',
+					$maxAdmin
+				);
+				$this->maniaControl->getChat()->sendError($message, $player);
 				return;
 			}
 		} else {
 			$maxPlayer = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_MAPLIMIT_PLAYER);
 			if ($maxPlayer >= 0 && $mapsForPlayer >= $maxPlayer) {
-				$this->maniaControl->getChat()->sendError('You already have $<$fff' . $maxPlayer . '$> map(s) in the Map-Queue!', $login);
+				$message = $this->maniaControl->getChat()->formatMessage(
+					'You already have %s map(s) in the Map-Queue!',
+					$maxPlayer
+				);
+				$this->maniaControl->getChat()->sendError($message, $player);
 				return;
 			}
 		}
@@ -303,14 +329,15 @@ class MapQueue implements CallbackListener, CommandListener, UsageInformationAbl
 			$uid = $map->uid;
 		}
 		if (array_key_exists($uid, $this->queuedMaps)) {
-			$this->maniaControl->getChat()->sendError('That map is already in the Map-Queue!', $login);
+			$this->maniaControl->getChat()->sendError('This map is already in the Map-Queue!', $player);
 			return;
 		}
 
 		//TODO recently maps not able to add to queue-amps setting, and management
 		// Check if map is in the buffer
+		$messagePrefix = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_MESSAGE_FORMAT);
 		if (in_array($uid, $this->buffer)) {
-			$this->maniaControl->getChat()->sendError('That map has recently been played!', $login);
+			$this->maniaControl->getChat()->sendInformation($messagePrefix . 'This map has recently been played!', $player);
 			if (!$this->maniaControl->getAuthenticationManager()->checkPermission($player, self::SETTING_PERMISSION_CLEAR_MAPQUEUE)) {
 				return;
 			}
@@ -322,7 +349,12 @@ class MapQueue implements CallbackListener, CommandListener, UsageInformationAbl
 
 		$this->queuedMaps[$uid] = array($player, $map);
 
-		$this->maniaControl->getChat()->sendInformation('$fa0$<$fff' . $map->name . '$> has been added to the Map-Queue by $<$fff' . $player->nickname . '$>.');
+		$message = $this->maniaControl->getChat()->formatMessage(
+			$messagePrefix . '%s has been added to the Map-Queue by %s.',
+			$map,
+			$player
+		);
+		$this->maniaControl->getChat()->sendInformation($message);
 
 		// Trigger callback
 		$this->maniaControl->getCallbackManager()->triggerCallback(self::CB_MAPQUEUE_CHANGED, array('add', $this->queuedMaps[$uid]));
@@ -343,7 +375,13 @@ class MapQueue implements CallbackListener, CommandListener, UsageInformationAbl
 		unset($this->queuedMaps[$uid]);
 
 		if ($player) {
-			$this->maniaControl->getChat()->sendInformation('$fa0$<$fff' . $map->name . '$> is removed from the Map-Queue by $<$fff' . $player->nickname . '$>.');
+			$messagePrefix = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_MESSAGE_FORMAT);
+			$message = $this->maniaControl->getChat()->formatMessage(
+				$messagePrefix . '%s has been removed from the Map-Queue by %s.',
+				$map,
+				$player
+			);
+			$this->maniaControl->getChat()->sendInformation($message);
 		}
 
 		// Trigger callback
@@ -356,17 +394,22 @@ class MapQueue implements CallbackListener, CommandListener, UsageInformationAbl
 	 * @internal
 	 */
 	public function endMap() {
-		//Don't queue next map (for example on skip to map)
+		// Don't queue next map (for example on skip to map)
 		if ($this->nextNoQueue) {
 			$this->nextNoQueue = false;
 			return;
 		}
+		
+		$messagePrefix = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_MESSAGE_FORMAT);
 
 		$this->nextMap = null;
 		if ($this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_SKIP_MAP_ON_LEAVE)) {
 			// Skip Map if requester has left
 			foreach ($this->queuedMaps as $queuedMap) {
+				/** @var Player $player */
 				$player = $queuedMap[0];
+				/** @var Map $map */
+				$map = $queuedMap[1];
 
 				// Check if map is added via replay vote/command
 				if (isset($queuedMap[2]) && $queuedMap[2] === true) {
@@ -391,22 +434,34 @@ class MapQueue implements CallbackListener, CommandListener, UsageInformationAbl
 				// Player not found, so remove the map from the mapqueue
 				array_shift($this->queuedMaps);
 
-				$this->maniaControl->getChat()->sendInformation('$fa0$<$fff' . $queuedMap[0]->name . '$> is skipped because $<' . $player->nickname . '$> left the game!');
+				$message = $this->maniaControl->getChat()->formatMessage(
+					$messagePrefix . '%s will be skipped, because %s left the game!',
+					$map,
+					$player
+				);
+				$this->maniaControl->getChat()->sendInformation($message);
 			}
 		}
 
 		$this->nextMap = array_shift($this->queuedMaps);
 
-		//Check if Map Queue is empty
+		// Check if Map Queue is empty
 		if (!$this->nextMap || !isset($this->nextMap[1])) {
 			return;
 		}
+		/** @var Player $player */
+		$player = $this->nextMap[0];
+		/** @var Map $map */
 		$map = $this->nextMap[1];
 
-		//Message only if it's juked by a player (not by the server)
-		if ($this->nextMap[0]) {
-			/** @var Map $map */
-			$this->maniaControl->getChat()->sendInformation('$fa0Next map will be $<$fff' . $map->name . '$> as requested by $<' . $this->nextMap[0]->nickname . '$>.');
+		// Message only if it's juked by a player (not by the server)
+		if ($player) {
+			$message = $this->maniaControl->getChat()->formatMessage(
+				$messagePrefix . 'Next map will be %s as requested by %s.',
+				$map,
+				$player
+			);
+			$this->maniaControl->getChat()->sendInformation($message);
 		}
 
 		try {

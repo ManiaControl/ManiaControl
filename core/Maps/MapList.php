@@ -588,18 +588,22 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$this->maniaControl->getMapManager()->getMapQueue()->dontQueueNextMapChange();
 				try {
 					$this->maniaControl->getClient()->jumpToMapIdent($mapUid);
-				} catch (NextMapException $exception) {
-					$this->maniaControl->getChat()->sendError('Error on Jumping to Map Ident: ' . $exception->getMessage(), $player);
+				} catch (NextMapException $e) {
+					$this->maniaControl->getChat()->sendException($e, $player);
 					break;
-				} catch (NotInListException $exception) {
+				} catch (NotInListException $e) {
 					// TODO: "Map not found." -> how is that possible?
-					$this->maniaControl->getChat()->sendError('Error on Jumping to Map Ident: ' . $exception->getMessage(), $player);
+					$this->maniaControl->getChat()->sendException($e, $player);
 					break;
 				}
 
 				$map = $this->maniaControl->getMapManager()->getMapByUid($mapUid);
 
-				$message = $player->getEscapedNickname() . ' skipped to Map $z' . $map->getEscapedName() . '!';
+				$message = $this->maniaControl->getChat()->formatMessage(
+					'%s skipped to Map %s!',
+					$player,
+					$map
+				);
 				$this->maniaControl->getChat()->sendSuccess($message);
 				Logger::logInfo($message, true);
 
@@ -610,14 +614,19 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$votesPlugin = $this->maniaControl->getPluginManager()->getPlugin(self::DEFAULT_CUSTOM_VOTE_PLUGIN);
 				$map         = $this->maniaControl->getMapManager()->getMapByUid($mapUid);
 
-				$message = $player->getEscapedNickname() . '$s started a vote to switch to ' . $map->getEscapedName() . '!';
+				$message = $this->maniaControl->getChat()->formatMessage(
+					'%s started a vote to switch to Map %s!',
+					$player,
+					$map
+				);
 
 				$votesPlugin->defineVote('switchmap', 'Goto ' . $map->name, true, $message)->setStopCallback(Callbacks::ENDMAP);
-
 				$votesPlugin->startVote($player, 'switchmap', function ($result) use (&$votesPlugin, &$map) {
-					$votesPlugin->undefineVote('switchmap');
+					// will be only called, if successful
 
-					//Don't queue on Map-Change
+					$votesPlugin->undefineVote('switchmap');
+					
+					// Don't queue on Map-Change
 					$this->maniaControl->getMapManager()->getMapQueue()->dontQueueNextMapChange();
 
 					try {
@@ -631,7 +640,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 						return;
 					}
 
-					$this->maniaControl->getChat()->sendInformation('$sVote Successful -> Map switched!');
+					$this->maniaControl->getChat()->sendSuccess('Vote Successful -> Map switched!');
 				});
 				break;
 			case self::ACTION_QUEUED_MAP:

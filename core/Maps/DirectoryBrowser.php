@@ -371,7 +371,11 @@ class DirectoryBrowser implements ManialinkPageAnswerListener {
 		$this->maniaControl->getMapManager()->updateMapTimestamp($map->uid);
 
 		// Message
-		$message = $player->getEscapedNickname() . ' added ' . $map->getEscapedName() . '!';
+		$message = $this->maniaControl->getChat()->formatMessage(
+			'%s added %s!',
+			$player,
+			$map
+		);
 		$this->maniaControl->getChat()->sendSuccess($message);
 		Logger::logInfo($message, true);
 
@@ -391,10 +395,18 @@ class DirectoryBrowser implements ManialinkPageAnswerListener {
 		$folderPath = $player->getCache($this, self::CACHE_FOLDER_PATH);
 		$filePath   = $folderPath . $fileName;
 		if (@unlink($filePath)) {
-			$this->maniaControl->getChat()->sendSuccess("Erased {$fileName}!");
+			$message = $this->maniaControl->getChat()->formatMessage(
+				'Erased %s!',
+				$fileName
+			);
+			$this->maniaControl->getChat()->sendSuccess($message, $player);
 			$this->showManiaLink($player);
 		} else {
-			$this->maniaControl->getChat()->sendError("Couldn't erase {$fileName}!");
+			$message = $this->maniaControl->getChat()->formatMessage(
+				'Could not erase %s!',
+				$fileName
+			);
+			$this->maniaControl->getChat()->sendError($message, $player);
 		}
 	}
 }

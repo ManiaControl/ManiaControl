@@ -563,10 +563,16 @@ class GameModeSettings implements ConfiguratorMenu, CallbackListener, Communicat
 		$settingsCount = count($newSettings);
 		$settingIndex  = 0;
 		$title         = $this->maniaControl->getAuthenticationManager()->getAuthLevelName($player);
-		$chatMessage   = '$ff0' . $title . ' ' . $player->getEscapedNickname() . ' set GameMode-Setting' . ($settingsCount > 1 ? 's' : '') . ' ';
+		$chatMessage   = $this->maniaControl->getChat()->formatMessage(
+			"\$ff0{$title} %s set GameMode-Setting" . ($settingsCount > 1 ? "s" : "") . " ",
+			$player
+		);
 		foreach ($newSettings as $settingName => $settingValue) {
-			$chatMessage .= '$<' . '$fff' . preg_replace('/^S_/', '', $settingName) . '$z$ff0 ';
-			$chatMessage .= 'to $fff' . $this->parseSettingValue($settingValue) . '$>';
+			$chatMessage .= $this->maniaControl->getChat()->formatMessage(
+				'%s to %s',
+				preg_replace('/^S_/', '', $settingName),
+				$this->parseSettingValue($settingValue)
+			);
 
 			if ($settingIndex <= $settingsCount - 2) {
 				$chatMessage .= ', ';

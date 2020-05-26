@@ -28,16 +28,17 @@ class Chat implements CallbackListener, CommunicationListener, UsageInformationA
 	/*
 	 * Constants
 	 */
-	const SETTING_FORMAT_ERROR                = 'Error Format';
-	const SETTING_FORMAT_INFORMATION          = 'Information Format';
-	const SETTING_FORMAT_SUCCESS              = 'Success Format';
-	const SETTING_FORMAT_USAGEINFO            = 'UsageInfo Format';
-	const SETTING_FORMAT_MESSAGE_INPUT_COLOR  = 'Format Message Input Color';
-	const SETTING_FORMAT_MESSAGE_MAP_AUTHOR   = 'Format Message Add Map Author';
-	const SETTING_FORMAT_MESSAGE_PLAYER_LOGIN = 'Format Message Add Player Login';
-	const SETTING_PUBLIC_PREFIX               = 'Public Messages Prefix';
-	const SETTING_PRIVATE_PREFIX              = 'Private Messages Prefix';
-	const CHAT_BUFFER_SIZE                    = 200;
+	const SETTING_FORMAT_ERROR                       = 'Error Format';
+	const SETTING_FORMAT_INFORMATION                 = 'Information Format';
+	const SETTING_FORMAT_SUCCESS                     = 'Success Format';
+	const SETTING_FORMAT_USAGEINFO                   = 'UsageInfo Format';
+	const SETTING_FORMAT_MESSAGE_INPUT_COLOR         = 'Format Message Input Color';
+	const SETTING_FORMAT_MESSAGE_MAP_AUTHOR_LOGIN    = 'Format Message Add Map Author Login';
+	const SETTING_FORMAT_MESSAGE_MAP_AUTHOR_NICKNAME = 'Format Message Add Map Author Nickname';
+	const SETTING_FORMAT_MESSAGE_PLAYER_LOGIN        = 'Format Message Add Player Login';
+	const SETTING_PUBLIC_PREFIX                      = 'Public Messages Prefix';
+	const SETTING_PRIVATE_PREFIX                     = 'Private Messages Prefix';
+	const CHAT_BUFFER_SIZE                           = 200;
 
 	/*
 	 * Private properties
@@ -60,7 +61,8 @@ class Chat implements CallbackListener, CommunicationListener, UsageInformationA
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_FORMAT_SUCCESS, '$0f0');
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_FORMAT_USAGEINFO, '$f80');
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_FORMAT_MESSAGE_INPUT_COLOR, '$fff');
-		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_FORMAT_MESSAGE_MAP_AUTHOR, false);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_FORMAT_MESSAGE_MAP_AUTHOR_LOGIN, false);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_FORMAT_MESSAGE_MAP_AUTHOR_NICKNAME, true);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_FORMAT_MESSAGE_PLAYER_LOGIN, false);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_PUBLIC_PREFIX, '» ');
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_PRIVATE_PREFIX, '»» ');
@@ -171,7 +173,8 @@ class Chat implements CallbackListener, CommunicationListener, UsageInformationA
 	 * @return string
 	 */
 	public function formatMessage($message, ...$inputs) {
-		$addMapAuthor = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_FORMAT_MESSAGE_MAP_AUTHOR);
+		$addMapAuthorLogin = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_FORMAT_MESSAGE_MAP_AUTHOR_LOGIN);
+		$addMapAuthorNickname = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_FORMAT_MESSAGE_MAP_AUTHOR_NICKNAME);
 		$addPlayerLogin = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_FORMAT_MESSAGE_PLAYER_LOGIN);
 		$formatInputColor = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_FORMAT_MESSAGE_INPUT_COLOR);
 
@@ -183,12 +186,18 @@ class Chat implements CallbackListener, CommunicationListener, UsageInformationA
 				$strInput = $input ? 'true' : 'false';
 			} elseif ($input instanceof Map) {
 				$strInput = $input->getEscapedName();
-				if ($addMapAuthor) {
-					$strInput .= " (by {$input->authorLogin})"; 
+				if ($addMapAuthorNickname && $input->authorNick) {
+					$strInput .= " (by {$input->authorNick}";
+					if ($addMapAuthorLogin && $input->authorLogin) {
+						$strInput .= " ({$input->authorLogin})";
+					}
+					$strInput .= ")";
+				} elseif ($addMapAuthorLogin && $input->authorLogin) {
+					$strInput .= " (by {$input->authorLogin})";
 				}
 			} elseif ($input instanceof Player) {
 				$strInput = $input->getEscapedNickname();
-				if ($addPlayerLogin) {
+				if ($addPlayerLogin && $input->login) {
 					$strInput .= " ({$input->login})";
 				}
 			} else {
