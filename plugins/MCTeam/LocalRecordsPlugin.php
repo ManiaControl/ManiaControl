@@ -43,7 +43,7 @@ class LocalRecordsPlugin implements CallbackListener, CallQueueListener, Command
 	 * Constants
 	 */
 	const ID                                  = 7;
-	const VERSION                             = 0.81;
+	const VERSION                             = 0.82;
 	const NAME                                = 'Local Records Plugin';
 	const AUTHOR                              = 'MCTeam';
 	const MLID_RECORDS                        = 'ml_local_records';
@@ -516,7 +516,7 @@ class LocalRecordsPlugin implements CallbackListener, CallQueueListener, Command
 		$checkpointsString                 = $this->getCheckpoints($player->login);
 		$this->checkpoints[$player->login] = array();
 
-		$message           = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_NOTIFICATION_MESSAGE_PREFIX);
+		$messagePrefix     = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_NOTIFICATION_MESSAGE_PREFIX);
 		$notifyPrivatelyAt = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_NOTIFY_BEST_RECORDS_PRIVATE);
 		$notifyPubliclyAt  = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_NOTIFY_BEST_RECORDS_PUBLIC);
 
@@ -528,13 +528,13 @@ class LocalRecordsPlugin implements CallbackListener, CallQueueListener, Command
 				return;
 			} else if ($oldRecord->time == $time) {
 				// Same time
-				if ($notifyPubliclyAt < $oldRecord->rank && $oldRecord->rank <= $notifyPrivatelyAt) {
-					$message .= 'You';
-				} else {
-					$message .= '$<$fff' . $player->nickname . '$>';
-				}
-				$message .= ' equalized the $<$ff0' . $oldRecord->rank . '.$> Local Record:';
-				$message .= ' $<$fff' . Formatter::formatTime($oldRecord->time) . '$>!';
+				$isPM = ($notifyPubliclyAt < $oldRecord->rank && $oldRecord->rank <= $notifyPrivatelyAt);
+				$message = $this->maniaControl->getChat()->formatMessage(
+					$messagePrefix . '%s equalized the %s Local Record: %s!',
+					($isPM ? 'You' : $player),
+					'$ff0' . $oldRecord->rank . '.',
+					Formatter::formatTime($oldRecord->time)
+				);
 
 				if ($oldRecord->rank <= $notifyPubliclyAt) {
 					$this->maniaControl->getCallQueueManager()->registerListening(
@@ -581,21 +581,20 @@ class LocalRecordsPlugin implements CallbackListener, CallQueueListener, Command
 		$newRecord    = $this->getLocalRecord($map, $player);
 		$improvedRank = ($oldRecord && $newRecord->rank >= $oldRecord->rank);
 
-		if ($notifyPubliclyAt < $newRecord->rank && $newRecord->rank <= $notifyPrivatelyAt) {
-			$message .= 'You';
-		} else {
-			$message .= '$<$fff' . $player->nickname . '$>';
-		}
-		$message .= ' ' . ($improvedRank ? 'improved' : 'gained') . ' the';
-		$message .= ' $<$ff0' . $newRecord->rank . '.$> Local Record:';
-		$message .= ' $<$fff' . Formatter::formatTime($newRecord->time) . '$>!';
+		$isPM = ($notifyPubliclyAt < $newRecord->rank && $newRecord->rank <= $notifyPrivatelyAt);
+		$message = $this->maniaControl->getChat()->formatMessage(
+			$messagePrefix . '%s ' . ($improvedRank ? 'improved' : 'gained') . ' the %s Local Record: %s!',
+			($isPM ? 'You' : $player),
+			'$ff0' . $newRecord->rank . '.',
+			Formatter::formatTime($newRecord->time)
+		);
 		if ($oldRecord) {
-			$message .= ' (';
-			if ($improvedRank) {
-				$message .= '$<$ff0' . $oldRecord->rank . '.$> ';
-			}
 			$timeDiff = $oldRecord->time - $newRecord->time;
-			$message  .= '$<$fff-' . Formatter::formatTime($timeDiff) . '$>)';
+			$message .= $this->maniaControl->getChat()->formatMessage(
+				' (%s%s)',
+				($improvedRank ? '$ff0'.$oldRecord->rank.'. ' : ''),
+				'-'.Formatter::formatTime($timeDiff)
+			);
 		}
 
 		if ($newRecord->rank <= $notifyPubliclyAt) {
@@ -710,7 +709,11 @@ class LocalRecordsPlugin implements CallbackListener, CallQueueListener, Command
 
 		$commandParts = explode(' ', $chat[1][2]);
 		if (count($commandParts) < 2 || strlen($commandParts[1]) == 0) {
-			$this->maniaControl->getChat()->sendUsageInfo('Missing CSV-Filename ID! (Example: //exportrecs locals.csv)', $player);
+			$message = $this->maniaControl->getChat()->formatMessage(
+				'Missing CSV-Filename! (Example %s)',
+				'//exportrecs locals.csv'
+			);
+			$this->maniaControl->getChat()->sendUsageInfo($message, $player);
 			return;
 		}
 
@@ -758,7 +761,12 @@ class LocalRecordsPlugin implements CallbackListener, CallQueueListener, Command
 			$this->maniaControl->getChat()->sendException($e, $player);
 		}
 
-		$this->maniaControl->getChat()->sendSuccess('Successfully exported Local Records of map ' . $map->getEscapedName() . ' to $<$fff' . $filename . '$>!');
+		$message = $this->maniaControl->getChat()->formatMessage(
+			'Exported Local Records of %s to %s!',
+			$map,
+			$filename
+		);
+		$this->maniaControl->getChat()->sendSuccess($message, $player);
 	}
 
 	/**
@@ -872,7 +880,11 @@ class LocalRecordsPlugin implements CallbackListener, CallQueueListener, Command
 
 		$commandParts = explode(' ', $chat[1][2]);
 		if (count($commandParts) < 2 || strlen($commandParts[1]) == 0) {
-			$this->maniaControl->getChat()->sendUsageInfo('Missing Record ID! (Example: //delrec 3)', $player);
+			$message = $this->maniaControl->getChat()->formatMessage(
+				'Missing Record ID! (Example: %s)',
+				'//delrec 3'
+			);
+			$this->maniaControl->getChat()->sendUsageInfo($message, $player);
 			return;
 		}
 
@@ -880,13 +892,26 @@ class LocalRecordsPlugin implements CallbackListener, CallQueueListener, Command
 		$currentMap = $this->maniaControl->getMapManager()->getCurrentMap();
 		$records    = $this->getLocalRecords($currentMap);
 		if ($recordRank <= 0 || count($records) < $recordRank) {
-			$this->maniaControl->getChat()->sendError('Cannot remove record $<$fff' . $recordRank . '$>!', $player);
+			$message = $this->maniaControl->getChat()->formatMessage(
+				'Cannot remove record no. %s, does not exist!',
+				$recordRank
+			);
+			$this->maniaControl->getChat()->sendError($message, $player);
 			return;
 		}
 
 		assert($recordRank == $records[$recordRank-1]->rank);
 		$playerIndex = $records[$recordRank-1]->playerIndex;
-		$playerNick  = $records[$recordRank-1]->nickname;
+		$recordPlayer = $this->maniaControl->getPlayerManager()->getPlayerByIndex($playerIndex);
+		if (!$recordPlayer) {
+			// should never happen, but you never know
+			$message = $this->maniaControl->getChat()->formatMessage(
+				'Cannot remove record no. %s, player does not exist!',
+				$recordRank
+			);
+			$this->maniaControl->getChat()->sendError($message, $player);
+			return;
+		}
 
 		$mysqli = $this->maniaControl->getDatabase()->getMysqli();
 		$query  = "DELETE FROM `" . self::TABLE_RECORDS . "`
@@ -899,7 +924,12 @@ class LocalRecordsPlugin implements CallbackListener, CallQueueListener, Command
 		}
 
 		$this->maniaControl->getCallbackManager()->triggerCallback(self::CB_LOCALRECORDS_CHANGED, null);
-		$this->maniaControl->getChat()->sendSuccess('Record no. $<$fff' . $recordRank . '$> by $<$fff' . $playerNick . '$> has been removed!');
+		$message = $this->maniaControl->getChat()->formatMessage(
+			'Record no. %s by %s has been removed!',
+			$recordRank,
+			$recordPlayer
+		);
+		$this->maniaControl->getChat()->sendSuccess($message);
 	}
 
 	/**
@@ -941,7 +971,11 @@ class LocalRecordsPlugin implements CallbackListener, CallQueueListener, Command
 		}
 
 		$this->maniaControl->getCallbackManager()->triggerCallback(self::CB_LOCALRECORDS_CHANGED, null);
-		$this->maniaControl->getChat()->sendSuccess('$<$fff'.$player->getEscapedNickname().'$> removed his personal record!');
+		$message = $this->maniaControl->getChat()->formatMessage(
+			'%s removed his personal record!',
+			$player
+		);
+		$this->maniaControl->getChat()->sendSuccess($message);
 	}
 
 	/**
