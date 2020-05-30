@@ -714,13 +714,13 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 					break;
 				case self::ACTION_ADD_AS_MASTER:
 				case self::ACTION_ADD_AS_SUPER:
-					$this->maniaControl->getPlayerManager()->getPlayerActions()->grandAuthLevel($adminLogin, $targetLogin, AuthenticationManager::AUTH_LEVEL_SUPERADMIN);
+					$this->maniaControl->getPlayerManager()->getPlayerActions()->grantAuthLevel($adminLogin, $targetLogin, AuthenticationManager::AUTH_LEVEL_SUPERADMIN);
 					break;
 				case self::ACTION_ADD_AS_ADMIN:
-					$this->maniaControl->getPlayerManager()->getPlayerActions()->grandAuthLevel($adminLogin, $targetLogin, AuthenticationManager::AUTH_LEVEL_ADMIN);
+					$this->maniaControl->getPlayerManager()->getPlayerActions()->grantAuthLevel($adminLogin, $targetLogin, AuthenticationManager::AUTH_LEVEL_ADMIN);
 					break;
 				case self::ACTION_ADD_AS_MOD:
-					$this->maniaControl->getPlayerManager()->getPlayerActions()->grandAuthLevel($adminLogin, $targetLogin, AuthenticationManager::AUTH_LEVEL_MODERATOR);
+					$this->maniaControl->getPlayerManager()->getPlayerActions()->grantAuthLevel($adminLogin, $targetLogin, AuthenticationManager::AUTH_LEVEL_MODERATOR);
 					break;
 				case self::ACTION_REVOKE_RIGHTS:
 					$this->maniaControl->getPlayerManager()->getPlayerActions()->revokeAuthLevel($adminLogin, $targetLogin);
@@ -737,7 +737,11 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 					$votesPlugin->defineVote('forcespec', 'Force ' . $target->getEscapedNickname() . ' Spec', true, $startMessage);
 
 					$votesPlugin->startVote($admin, 'forcespec', function ($result) use (&$votesPlugin, &$target) {
-						$this->maniaControl->getChat()->sendInformation('$sVote successful -> Player ' . $target->getEscapedNickname() . ' forced to Spectator!');
+						$message = $this->maniaControl->getChat()->formatMessage(
+							'Vote successful -> %s forced to Spectator!',
+							$target
+						);
+						$this->maniaControl->getChat()->sendSuccess($message);
 						$votesPlugin->undefineVote('forcespec');
 
 						try {
@@ -761,10 +765,14 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 					$votesPlugin->defineVote('kick', 'Kick ' . $target->getEscapedNickname(), true, $startMessage);
 
 					$votesPlugin->startVote($admin, 'kick', function ($result) use (&$votesPlugin, &$target) {
-						$this->maniaControl->getChat()->sendInformation('$sVote successful -> ' . $target->getEscapedNickname() . ' got Kicked!');
+						$message = $this->maniaControl->getChat()->formatMessage(
+							'Vote successful -> %s got kicked!',
+							$target
+						);
+						$this->maniaControl->getChat()->sendSuccess($message);
 						$votesPlugin->undefineVote('kick');
 
-						$message = '$39F You got kicked due to a Public Vote!$z ';
+						$message = '$39FYou got kicked due to a Public Vote!';
 						try {
 							$this->maniaControl->getClient()->kick($target->login, $message);
 						} catch (UnknownPlayerException $e) {
@@ -780,7 +788,6 @@ class PlayerList implements ManialinkPageAnswerListener, CallbackListener, Timer
 				$neededPage = (int) substr($action, strlen(self::ACTION_PAGING_CHUNKS));
 				$this->showPlayerList($player, $neededPage - 1);
 			}
-
 		}
 	}
 
