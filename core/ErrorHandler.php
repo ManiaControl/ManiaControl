@@ -131,8 +131,12 @@ class ErrorHandler {
 
 					if ($isFatalError) {
 						$this->maniaControl->getPluginManager()->deactivatePlugin($sourceClass);
-						$this->maniaControl->getChat()->sendError("Plugin " . $sourceClass . " has an Error -> The Plugin will be deactivated and ManiaControl restarted");
-						Logger::logError("Plugin " . $sourceClass . " has an Error -> The Plugin will be deactivated and ManiaControl restarted");
+						$message = $this->maniaControl->getChat()->formatMessage(
+							'Plugin %s has an Error -> The Plugin will be deactivated and ManiaControl restarted!',
+							$sourceClass
+						);
+						$this->maniaControl->getChat()->sendError($message);
+						Logger::logError("Plugin {$sourceClass} has an Error -> The Plugin will be deactivated and ManiaControl restarted!");
 						$isPluginError = true;
 					}
 				}
@@ -482,8 +486,12 @@ class ErrorHandler {
 					$report['PluginVersion'] = PluginManager::getPluginVersion($sourceClass);
 
 					$this->maniaControl->getPluginManager()->deactivatePlugin($sourceClass);
-					$this->maniaControl->getChat()->sendError("Plugin " . $sourceClass . " has an Error -> The Plugin will be deactivated and ManiaControl restarted");
-					Logger::logError("Plugin " . $sourceClass . " has an Error -> The Plugin will be deactivated and ManiaControl restarted");
+					$message = $this->maniaControl->getChat()->formatMessage(
+						'Plugin %s has an Error -> The Plugin will be deactivated and ManiaControl restarted!',
+						$sourceClass
+					);
+					$this->maniaControl->getChat()->sendError($message);
+					Logger::logError("Plugin {$sourceClass} has an Error -> The Plugin will be deactivated and ManiaControl restarted!");
 				}
 			}
 

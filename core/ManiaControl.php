@@ -561,7 +561,12 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener, 
 			$this->getAuthenticationManager()->sendNotAllowed($player);
 			return;
 		}
-		$this->getChat()->sendError('The command //restart got disabled, reboot ManiaControl with //reboot instead', $player);
+		$message = $this->getChat()->formatMessage(
+			'The command %s got disabled, reboot ManiaControl with %s instead!',
+			'//restart',
+			'//reboot'
+		);
+		$this->getChat()->sendError($message, $player);
 	}
 
 	/**
