@@ -465,7 +465,11 @@ class PluginManager {
 			//Unload the Plugin and all its features
 			$this->unloadPlugin($plugin);
 
-			$message = "Error during Plugin Activation of '{$pluginClass}': '{$e->getMessage()}'";
+			$this->maniaControl->getChat()->sendException($e, $adminLogin);
+			$message = $this->maniaControl->getChat()->formatMessage(
+				'Error during Plugin Activation of %s!',
+				$pluginClass
+			);
 			$this->maniaControl->getChat()->sendError($message, $adminLogin);
 			Logger::logError($message);
 			$this->savePluginStatus($pluginClass, false);
