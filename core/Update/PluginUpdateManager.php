@@ -269,9 +269,12 @@ class PluginUpdateManager implements CallbackListener, CommandListener, TimerLis
 			&$pluginUpdateData, &$player, &$update
 		) {
 			if (!$updateFileContent || $error) {
-				$message = "Error loading Update Data for '{$pluginUpdateData->pluginName}': {$error}!";
+				$message = $this->maniaControl->getChat()->formatMessage(
+					"Error loading Update Data for %s: {$error}!",
+					$pluginUpdateData->pluginName
+				);
 				if ($player) {
-					$this->maniaControl->getChat()->sendInformation($message, $player);
+					$this->maniaControl->getChat()->sendError($message, $player);
 				}
 				Logger::logError($message);
 				return;
@@ -281,7 +284,10 @@ class PluginUpdateManager implements CallbackListener, CommandListener, TimerLis
 			$actionVerb     = ($update ? 'Updating' : 'Installing');
 			$actionVerbDone = ($update ? 'updated' : 'installed');
 
-			$message = "Now {$actionVerb} '{$pluginUpdateData->pluginName}'...";
+			$message = $this->maniaControl->getChat()->formatMessage(
+				"Now {$actionVerb} %s ...",
+				$pluginUpdateData->pluginName
+			);
 			if ($player) {
 				$this->maniaControl->getChat()->sendInformation($message, $player);
 			}
@@ -320,7 +326,10 @@ class PluginUpdateManager implements CallbackListener, CommandListener, TimerLis
 			if ($update) {
 				$messageExtra = ' (Restart ManiaControl to load the new Version!)';
 			}
-			$message = "Successfully {$actionVerbDone} '{$pluginUpdateData->pluginName}'!{$messageExtra}";
+			$message = $this->maniaControl->getChat()->formatMessage(
+				"Successfully {$actionVerbDone} %s!{$messageExtra}",
+				$pluginUpdateData->pluginName
+			);
 			if ($player) {
 				$this->maniaControl->getChat()->sendSuccess($message, $player);
 			}
@@ -330,13 +339,19 @@ class PluginUpdateManager implements CallbackListener, CommandListener, TimerLis
 				$newPluginClasses = $this->maniaControl->getPluginManager()->loadPlugins();
 
 				if (empty($newPluginClasses)) {
-					$message = "Loading fresh installed Plugin '{$pluginUpdateData->pluginName}' failed, try to restart ManiaControl!";
+					$message = $this->maniaControl->getChat()->formatMessage(
+						"Loading fresh installed Plugin %s failed, try to restart ManiaControl!",
+						$pluginUpdateData->pluginName
+					);
 					if ($player) {
 						$this->maniaControl->getChat()->sendError($message, $player);
 					}
 					Logger::log($message);
 				} else {
-					$message = "Successfully loaded fresh installed Plugin '{$pluginUpdateData->pluginName}'!";
+					$message = $this->maniaControl->getChat()->formatMessage(
+						"Successfully loaded fresh installed Plugin %s!",
+						$pluginUpdateData->pluginName
+					);
 					if ($player) {
 						$this->maniaControl->getChat()->sendSuccess($message, $player);
 					}
