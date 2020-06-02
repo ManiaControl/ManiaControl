@@ -440,7 +440,7 @@ class ServerUIPropertiesMenu implements ConfiguratorMenu, CallbackListener, Time
 		// Notifications
 		$uiPropertiesCount = count($newUIProperties);
 		$uiPropertyIndex   = 0;
-		$title             = $this->maniaControl->getAuthenticationManager()->getAuthLevelName($player);
+		$title             = $player->getAuthLevelName();
 		$chatMessage       = '$ff0' . $title . ' ' . $player->getEscapedNickname() . ' set ServerUIPropert' . ($uiPropertiesCount > 1 ? 'ies' : 'y') . ' ';
 		foreach ($newUIProperties as $uiPropertyName => $uiPropertyValue) {
 			$chatMessage .= '$<$fff' . $uiPropertyName . '$>$ff0 ';

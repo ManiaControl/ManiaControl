@@ -172,6 +172,10 @@ class VoteRatiosMenu implements CallbackListener, ConfiguratorMenu, TimerListene
 	 * @param string $commandName
 	 */
 	private function sendInvalidValueError(Player $player, $commandName) {
-		$this->maniaControl->getChat()->sendError("Invalid Value given for '{$commandName}'!", $player);
+		$message = $this->maniaControl->getChat()->formatMessage(
+			'Invalid Value given for %s!',
+			$commandName
+		);
+		$this->maniaControl->getChat()->sendError($message, $player);
 	}
 }

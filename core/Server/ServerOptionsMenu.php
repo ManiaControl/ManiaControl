@@ -210,8 +210,8 @@ class ServerOptionsMenu implements CallbackListener, ConfiguratorMenu, TimerList
 		$loaded = false;
 		try {
 			$loaded = $this->maniaControl->getClient()->setServerOptions($newServerOptions);
-		} catch (ServerOptionsException $exception) {
-			$this->maniaControl->getChat()->sendExceptionToAdmins($exception);
+		} catch (ServerOptionsException $e) {
+			$this->maniaControl->getChat()->sendExceptionToAdmins($e);
 		}
 
 		if ($loaded) {
@@ -371,8 +371,8 @@ class ServerOptionsMenu implements CallbackListener, ConfiguratorMenu, TimerList
 	private function applyNewServerOptions(ServerOptions $newServerOptions, $player = null) {
 		try {
 			$this->maniaControl->getClient()->setServerOptions($newServerOptions);
-		} catch (ServerOptionsException $exception) {
-			$this->maniaControl->getChat()->sendException($exception, $player);
+		} catch (ServerOptionsException $e) {
+			$this->maniaControl->getChat()->sendException($e, $player);
 			return false;
 		}
 
