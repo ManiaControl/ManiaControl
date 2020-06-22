@@ -119,7 +119,7 @@ class MapQueue implements CallbackListener, CommandListener, UsageInformationAbl
 			return;
 		}
 
-		$messagePrefix = $this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_MESSAGE_FORMAT);
+		$messagePrefix = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_MESSAGE_FORMAT);
 		if ($admin && empty($this->queuedMaps)) {
 			$this->maniaControl->getChat()->sendError($messagePrefix . 'There are no maps in the jukebox!', $admin);
 			return;
@@ -131,8 +131,7 @@ class MapQueue implements CallbackListener, CommandListener, UsageInformationAbl
 		if ($admin) {
 			$title   = $admin->getAuthLevelName();
 			$message = $this->maniaControl->getChat()->formatMessage(
-				$messagePrefix . '%s %s cleared the Map-Queue!',
-				$title,
+				"{$messagePrefix}{$title} %s cleared the Map-Queue!",
 				$admin
 			);
 			$this->maniaControl->getChat()->sendInformation($message);

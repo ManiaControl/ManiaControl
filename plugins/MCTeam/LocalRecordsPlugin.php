@@ -592,8 +592,8 @@ class LocalRecordsPlugin implements CallbackListener, CallQueueListener, Command
 			$timeDiff = $oldRecord->time - $newRecord->time;
 			$message .= $this->maniaControl->getChat()->formatMessage(
 				' (%s%s)',
-				($improvedRank ? '$ff0'.$oldRecord->rank.'. ' : ''),
-				'-'.Formatter::formatTime($timeDiff)
+				($improvedRank ? '$ff0' . $oldRecord->rank . '. ' : ''),
+				'-' . Formatter::formatTime($timeDiff)
 			);
 		}
 

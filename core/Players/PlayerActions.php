@@ -211,9 +211,9 @@ class PlayerActions implements EchoListener, CommunicationListener, UsageInforma
 
 		if ($teamName) {
 			if ($calledByAdmin) {
+				$title = $admin->getAuthLevelName();
 				$message = $this->maniaControl->getChat()->formatMessage(
-					'%s %s forced %s into the %s-Team!',
-					$admin->getAuthLevelName(),
+					"{$title} %s forced %s into the %s-Team!",
 					$admin,
 					$target,
 					$teamName
@@ -284,9 +284,9 @@ class PlayerActions implements EchoListener, CommunicationListener, UsageInforma
 		// Announce force
 		if ($displayAnnouncement) {
 			if ($calledByAdmin) {
+				$title = $admin->getAuthLevelName();
 				$message = $this->maniaControl->getChat()->formatMessage(
-					'%s %s forced %s to Play!',
-					$admin->getAuthLevelName(),
+					"{$title} %s forced %s to Play!",
 					$admin,
 					$target
 				);
@@ -341,9 +341,9 @@ class PlayerActions implements EchoListener, CommunicationListener, UsageInforma
 		}
 
 		if ($calledByAdmin) {
+			$title = $admin->getAuthLevelName();
 			$message = $this->maniaControl->getChat()->formatMessage(
-				'%s %s forced %s to Spectator!',
-				$admin->getAuthLevelName(),
+				"{$title} %s forced %s to Spectator!",
 				$admin,
 				$target
 			);
@@ -397,16 +397,16 @@ class PlayerActions implements EchoListener, CommunicationListener, UsageInforma
 		} catch (NotInListException $e) {
 			$message = $this->maniaControl->getChat()->formatMessage(
 				'%s is not muted!',
-				$player
+				$targetLogin
 			);
 			$this->maniaControl->getChat()->sendError($message, $adminLogin);
 			return false;
 		}
 
 		if ($calledByAdmin) {
+			$title = $admin->getAuthLevelName();
 			$message = $this->maniaControl->getChat()->formatMessage(
-				'%s %s un-muted %s!',
-				$admin->getAuthLevelName(),
+				"{$title} %s un-muted %s!",
 				$admin,
 				$target
 			);
@@ -451,16 +451,19 @@ class PlayerActions implements EchoListener, CommunicationListener, UsageInforma
 		} catch (AlreadyInListException $e) {
 			$message = $this->maniaControl->getChat()->formatMessage(
 				'%s is already muted!',
-				$player
+				$targetLogin
 			);
 			$this->maniaControl->getChat()->sendError($message, $adminLogin);
+			return false;
+		} catch (UnknownPlayerException $e) {
+			$this->maniaControl->getChat()->sendException($e, $adminLogin);
 			return false;
 		}
 
 		if ($calledByAdmin) {
+			$title = $admin->getAuthLevelName();
 			$message = $this->maniaControl->getChat()->formatMessage(
-				'%s %s muted %s!',
-				$admin->getAuthLevelName(),
+				"{$title} %s muted %s!",
 				$admin,
 				$target
 			);
@@ -559,9 +562,9 @@ class PlayerActions implements EchoListener, CommunicationListener, UsageInforma
 		$this->maniaControl->getManialinkManager()->displayWidget($maniaLink, $target);
 
 		if ($calledByAdmin) {
+			$title = $admin->getAuthLevelName();
 			$message = $this->maniaControl->getChat()->formatMessage(
-				'%s %s warned %s!',
-				$admin->getAuthLevelName(),
+				"{$title} %s warned %s!",
 				$admin,
 				$target
 			);
@@ -623,9 +626,9 @@ class PlayerActions implements EchoListener, CommunicationListener, UsageInforma
 		}
 
 		if ($calledByAdmin) {
+			$title = $admin->getAuthLevelName();
 			$message = $this->maniaControl->getChat()->formatMessage(
-				'%s %s kicked %s!',
-				$admin->getAuthLevelName(),
+				"{$title} %s kicked %s!",
 				$admin,
 				$target
 			);
@@ -676,9 +679,9 @@ class PlayerActions implements EchoListener, CommunicationListener, UsageInforma
 			return;
 		}
 
+		$title = $admin->getAuthLevelName();
 		$message = $this->maniaControl->getChat()->formatMessage(
-			'%s %s banned %s!',
-			$admin->getAuthLevelName(),
+			"{$title} %s banned %s!",
 			$admin,
 			$target
 		);
@@ -717,10 +720,10 @@ class PlayerActions implements EchoListener, CommunicationListener, UsageInforma
 			$this->maniaControl->getChat()->sendError('This player is not Banned!', $admin);
 			return;
 		}
-
+		
+		$title = $admin->getAuthLevelName();
 		$message = $this->maniaControl->getChat()->formatMessage(
-			'%s %s unbanned %s!',
-			$admin->getAuthLevelName(),
+			"{$title} %s unbanned %s!",
 			$admin,
 			$target
 		);
@@ -745,7 +748,6 @@ class PlayerActions implements EchoListener, CommunicationListener, UsageInforma
 	 * Grants the Player an Authorization Level
 	 *
 	 * @api
-	 * @deprecated
 	 * @param string $adminLogin
 	 * @param string $targetLogin
 	 * @param int    $authLevel
@@ -774,9 +776,9 @@ class PlayerActions implements EchoListener, CommunicationListener, UsageInforma
 			return;
 		}
 
+		$title = $admin->getAuthLevelName();
 		$message = $this->maniaControl->getChat()->formatMessage(
-			"%s %s added %s as {$authLevelName}!",
-			$admin->getAuthLevelName(),
+			"{$title} %s added %s as {$authLevelName}!",
 			$admin,
 			$target
 		);
@@ -814,9 +816,9 @@ class PlayerActions implements EchoListener, CommunicationListener, UsageInforma
 			return;
 		}
 
+		$title = $admin->getAuthLevelName();
 		$message = $this->maniaControl->getChat()->formatMessage(
-			"%s %s revoked the Rights of %s!",
-			$admin->getAuthLevelName(),
+			"{$title} %s revoked the Rights of %s!",
 			$admin,
 			$target
 		);

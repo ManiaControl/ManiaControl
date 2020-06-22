@@ -503,20 +503,21 @@ class PlayerManager implements CallbackListener, TimerListener, CommunicationLis
 				$color = $this->maniaControl->getColorManager()->getColorByPlayer($player);
 			}
 
-			$authName = $player->getAuthLeveName();
+			$authName = $player->getAuthLevelName();
+			$nation = $player->getCountry();
 
 			if (!$player->isSpectator && $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_JOIN_LEAVE_MESSAGES) && !$player->isFakePlayer()) {
 				$message = $this->maniaControl->getChat()->formatMessage(
 					"{$color}{$authName} %s Nation: %s joined!",
 					$player,
-					$player->getCountry()
+					$nation
 				);
 				$this->maniaControl->getChat()->sendChat($message);
 			} else if ($player->isSpectator && $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_JOIN_LEAVE_MESSAGES_SPECTATOR)) {
 				$message = $this->maniaControl->getChat()->formatMessage(
 					"{$color}{$authName} %s Nation: %s joined as Spectator!",
 					$player,
-					$player->getCountry()
+					$nation
 				);
 				$this->maniaControl->getChat()->sendChat($message);
 			}
