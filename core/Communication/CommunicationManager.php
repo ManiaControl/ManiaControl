@@ -266,8 +266,10 @@ class CommunicationManager implements CallbackListener, UsageInformationAble {
 							$data = json_decode($data);
 
 							if ($data == null) {
-								$data = array("error" => true, "data" => "Data is not provided as an valid AES-196-encrypted encrypted JSON");
+								Logger::log("[CommunicationManager] Error: Data is not provided as an valid AES-196 encrypted JSON");
+								$data = array("error" => true, "data" => "Data is not provided as an valid AES-196 encrypted JSON");
 							} else if (!property_exists($data, "method") || !property_exists($data, "data")) {
+								Logger::log("[CommunicationManager] Invalid Communication Message Received");
 								$data = array("error" => true, "data" => "Invalid Message");
 							} else {
 								$answer = $this->triggerCommuncationCallback($data->method, $data->data);
