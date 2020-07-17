@@ -38,10 +38,18 @@ class OnScoresStructure extends CommonScoresStructure {
 				$playerScore->setBestRaceTime($jsonPlayer->bestracetime);
 				$playerScore->setBestLapTime($jsonPlayer->bestlaptime);
 				$playerScore->setStuntScore($jsonPlayer->stuntsscore);
-				$playerScore->setBestRaceRespawns($jsonPlayer->bestracerespawns);
 				$playerScore->setBestRaceCheckpoints($jsonPlayer->bestracecheckpoints);
-				$playerScore->setBestLapRespawns($jsonPlayer->bestlaprespawns);
 				$playerScore->setBestLapCheckpoints($jsonPlayer->bestlapcheckpoints);
+				
+				// removed in TM2020
+				if (property_exists($jsonPlayer, 'bestracerespawns')) {
+					$playerScore->setBestRaceRespawns($jsonPlayer->bestracerespawns);
+				}
+				// removed in TM2020
+				if (property_exists($jsonPlayer, 'bestlaprespawns')) {
+					$playerScore->setBestLapRespawns($jsonPlayer->bestlaprespawns);
+				}
+
 				//New attributes in 2.5.0
 				if (property_exists($jsonPlayer, 'prevracetime')) {
 					$playerScore->setPrevRaceTime($jsonPlayer->prevracetime);
