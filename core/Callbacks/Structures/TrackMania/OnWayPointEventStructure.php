@@ -39,14 +39,14 @@ class OnWayPointEventStructure extends BasePlayerTimeStructure {
 
 		$this->raceTime         = (int) $this->getPlainJsonObject()->racetime;
 		$this->lapTime          = (int) $this->getPlainJsonObject()->laptime;
-		$this->stuntsScore      = $this->getPlainJsonObject()->stuntsscore;
+		$this->stuntsScore      = isset($this->getPlainJsonObject()->stuntsscore) ? $this->getPlainJsonObject()->stuntsscore : null;
 		$this->checkPointInRace = (int) $this->getPlainJsonObject()->checkpointinrace;
 		$this->checkPointInLap  = (int) $this->getPlainJsonObject()->checkpointinlap;
 		$this->isEndRace        = Formatter::parseBoolean($this->getPlainJsonObject()->isendrace);
 		$this->isEndLap         = Formatter::parseBoolean($this->getPlainJsonObject()->isendlap);
 		$this->blockId          = $this->getPlainJsonObject()->blockid;
 		$this->speed            = $this->getPlainJsonObject()->speed;
-		$this->distance         = $this->getPlainJsonObject()->distance;
+		$this->distance         = isset($this->getPlainJsonObject()->distance) ? $this->getPlainJsonObject()->distance : null;
 
 		if ($this->checkPointInRace > 0) {
 			$currentMap      = $this->maniaControl->getMapManager()->getCurrentMap();
