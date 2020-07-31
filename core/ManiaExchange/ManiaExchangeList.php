@@ -28,7 +28,7 @@ use ManiaControl\Utils\Formatter;
  * ManiaExchange List Widget Class
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
- * @copyright 2014-2019 ManiaControl Team
+ * @copyright 2014-2020 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener {
@@ -160,11 +160,26 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 		
 		$mxSearch->fetchMapsAsync(function (array $maps) use (&$player) {
 			if (!$maps) {
-				$this->maniaControl->getChat()->sendError('No maps found, or MX is down!', $player->login);
+				$this->maniaControl->getChat()->sendError('No maps found, or MX is down!', $player);
 				return;
 			}
 			$this->showManiaExchangeList($maps, $player);
 		});
+
+		// show temporary list to wait for Async
+		$labelStyle = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultLabelStyle();
+
+		$maniaLink = new ManiaLink(ManialinkManager::MAIN_MLID);
+		$frame = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultListFrame();
+		$maniaLink->addChild($frame);
+
+		$loadingLabel = new Label_Text();
+		$frame->addChild($loadingLabel);
+		$loadingLabel->setStyle($labelStyle);
+		$loadingLabel->setText('Loading maps, please wait ...');
+		$loadingLabel->setTextSize(2);
+
+		$this->maniaControl->getManialinkManager()->sendManialink($maniaLink, $player);
 	}
 
 
@@ -294,30 +309,14 @@ class ManiaExchangeList implements CallbackListener, ManialinkPageAnswerListener
 			}
 
 			//Map Karma
-			$karma     = $map->ratingVoteAverage / 100;
-			$voteCount = $map->ratingVoteCount;
-			if (is_numeric($karma) && $voteCount > 0) {
-				$karmaGauge = new Gauge();
+			$karmaGauge = $this->maniaControl->getManialinkManager()->getElementBuilder()->buildKarmaGauge(
+				$map,
+				20,
+				10
+			);
+			if ($karmaGauge) {
 				$mapFrame->addChild($karmaGauge);
-				$karmaGauge->setZ(-0.05);
 				$karmaGauge->setX($posX + 87);
-				$karmaGauge->setY(0.2);
-				$karmaGauge->setSize(20, 10);
-				$karmaGauge->setDrawBackground(false);
-				$karma = floatval($karma);
-				$karmaGauge->setRatio($karma + 0.15 - $karma * 0.15);
-				$karmaColor = ColorUtil::floatToStatusColor($karma);
-				$karmaGauge->setColor($karmaColor . '9');
-
-				$karmaLabel = new Label();
-				$mapFrame->addChild($karmaLabel);
-				$karmaLabel->setZ(1);
-				$karmaLabel->setX($posX + 87);
-				$karmaLabel->setSize(20 * 0.9, 5);
-				$karmaLabel->setY(-0.2);
-				$karmaLabel->setTextSize(0.9);
-				$karmaLabel->setTextColor('000');
-				$karmaLabel->setText('  ' . round($karma * 100.) . '% (' . $voteCount . ')');
 			}
 
 

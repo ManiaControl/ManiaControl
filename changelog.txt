@@ -1,9 +1,144 @@
-##v0.16x###
-# Additions
+###v0.255###
+#Additions
+- added optional descriptions to Settings (but no MC-settings have descriptions yet)
+- add Setting to allow Karma-Votes only if player has local
+- add Setting to change Dedimania-Message formatting
+- add Setting to display author nickname instead of author login
+- add Setting to hide Plugins to install for incompatible version of ManiaControl
+- add Setting to hide Script-Settings which have the description "<hidden>"
+- add Setting to sort GameMode-Settings
+- CSV-Export of Locals (//exportrecs <filename> [map-id])
+- new Adhoc-Callbacks, which get executed after the Callback that added them
+- new GameModePresetPlugin to save and load GameMode-Settings (//loadmode <name> & //savemode <name>)
+
+#Bug Fixes
+- deactivate Plugins if they cause uncaught exceptions
+- finish callbacks got triggered before corresponding checkpoint callback
+-- some CPs of your local records might be messed up
+-- you can fix them by either deleting the record "//delrec <rank>", or simply drive a better time
+- fixed typo in actions panel of players list
+- fixed crashing GameMode-Settings table on other languages than english
+
+###v0.254###
+#Additions
+- added small scale support for Legacy-Modes
+
+#Bug Fixes
+- fixed crashes of MX-List with deactivated Karma-Plugin
+- solved Finish-/Lap-Callback not getting triggered when Waypoint-Callback is not registered
+- //unban without login crashed
+
+#Changes
+- additional Waypoint-Callback on Finish-/Lap-Callback
+- moved constant DEFAULT_KARMA_PLUGIN
+- renamed all occurrences of Script-Settings to GameMode-Settings
+	- includes a renamed database
+- unified Creations of round Text-Buttons
+
+###v0.253###
+#Changes
+- //restart got replaced by //reboot
+- unified Creations of a Karma-Gauge in new Manialinks\ElementBuilder
+
+###v0.252###
+#Additions
+- Ingame-Changelog
+- new customizations for Join&Leave-Messages
+- symbolic Link resolving in ServerManager
+- Times in Map Widget
+
+#Bug Fixes
+- GReplay for Dedimania-Records are now being sent
+- solved non-numeric value warning on self-triggered debug notice
+
+###v0.250###
+#Additions
+- AuthenticationManager allows permissions to be stored inside Plugins
+- CallQueue to balance performance-heavy functions
+- Commands can be disabled by Plugins
+- /delrec can delete your personal local record (Permission-Setting)
+- simple DB-Installation-Script (Unix-only)
+
+#Bug Fixes
+- //delrec can delete every local record (Permission-Setting)
+- replaced deprecated code
+
+#Changes
+- format milliseconds with dot instead of double colon (1:02:375 -> 1:02.375)
+- Notification-System of Local Records
+
+###v0.226###
+#Bug Fixes
+- Dedimania Plugin, everything should work now
+- moved overlapping widgets in TM
+
+#Changes
+- improved Async Webrequest Handling
+- improved Error Handler
+- improved Page Chunking
+- updated FML
+
+###v0.220###
+#Additions
+- Local Records Plugin can capture Lap Records
+- Plugins for Rounds and Cup (commands for setting point distribution, endround etc.)
+
+#Bug Fixes
+- performance improvements (200+ player servers run fine now)
+- MX list filters by environment of server
+
+#Changes
+- reworked Dedimania Plugin
+- newly designed Local Record Widget
+
+###v0.205###
+#Bug Fixes
+- stability improvements
+- fixed wrong namespace
+
+#Changes
+- reorder admin menu items
+
+###v0.203###
+#Additions
+- admin and player helpall icon
+- map search feature in maplist
+- new Script Callbacks and Methods (including Trackmania)
+
+#Bug Fixes
+- z-Value fixes in UI
+
+#Changes
+- removed MP3 Callbacks
+- updated Pause/WarmUp-System
+
+###v0.201###
+#Additions
+- full support for new LibXmlRpc Callbacks
+- min & max plugin-version on maniacontrol.com
+- new ModeScriptEventManager class
+- new version of LabelLine
+- UsageInformationAble interface, plugin authors can use ->getUsageInformation() on nearly every class to be provided with infos about the class
+
+#Bug Fixes
+- small design fixes
+- stability improvements
+- wrong link on installing a plugin
+
+#Changes
+- deprecated old Callbacks
+- minimum dedicated server version updated to MP4 version
+- removed deprecates in ManiaControl class
+- updated Manialink to version 3 (including FML)
+- updated internal HTTP requests to new AsyncHttpRequest
+
+###v0.16x###
+#Additions
 - updated mx links to https
-# Changes
+
+#Changes
 - CommunicationMethod SET_SERVER_OPTIONS sets the changed values also in database on call
-- Changed Copyright label to 2014-2016
+- changed Copyright label to 2014-2016
 
 ###v0.163###
 #Additions
@@ -12,7 +147,7 @@
 - added Scriptcallbacks SCORESREADY / SCORES
 - added SSL support as well as http Redirections of the FileReader
 
-# Bug fixes
+#Bug Fixes
 - Banning of not connected Players now possible
 
 ###v0.162###

@@ -12,7 +12,7 @@ use FML\Controls\Quads\Quad_BgRaceScore2;
 use FML\Controls\Quads\Quad_Bgs1InRace;
 use FML\Controls\Quads\Quad_BgsPlayerCard;
 use FML\Controls\Quads\Quad_Icons64x64_1;
-use FML\Controls\Quads\Quad_UIConstruction_Buttons;
+
 use FML\Script\Features\Paging;
 use FML\Script\Script;
 use ManiaControl\General\UsageInformationAble;
@@ -23,7 +23,7 @@ use ManiaControl\ManiaControl;
  * Class managing default Control Styles
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
- * @copyright 2014-2019 ManiaControl Team
+ * @copyright 2014-2020 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class StyleManager implements UsageInformationAble {
@@ -142,7 +142,7 @@ class StyleManager implements UsageInformationAble {
 		$entry->setName('SearchString');
 
 		if ($actionReset) {
-			$quad = new Quad_Icons64x64_1();;
+			$quad = new Quad_Icons64x64_1();
 			$frame->addChild($quad);
 			$quad->setSubStyle($quad::SUBSTYLE_QuitRace);
 			$quad->setColorize('aaa');
@@ -150,40 +150,29 @@ class StyleManager implements UsageInformationAble {
 			$quad->setPosition(-$width / 2 + 15 + $width * 0.25 - 2, 0);
 			$quad->setZ(1);
 			$quad->setAction($actionReset);
-}
+		}
 
 		//Search for Map-Name
-		$label = new Label_Button();
-		$frame->addChild($label);
-		$label->setPosition(-$width / 2 + 63, 0);
-		$label->setText('MapName');
-		$label->setTextSize(1.3);
-
-		$quad = new Quad_BgsPlayerCard();
-		$frame->addChild($quad);
-		$quad->setPosition(-$width / 2 + 63, 0);
-		$quad->setSubStyle($quad::SUBSTYLE_BgPlayerCardBig);
-		$quad->setSize(18, 5);
-		$quad->setAction($actionMapNameSearch);
-		$quad->setZ(-0.1);
+		$mapNameButton = $this->maniaControl->getManialinkManager()->getElementBuilder()->buildRoundTextButton(
+			'MapName',
+			18,
+			5,
+			$actionMapNameSearch
+		);
+		$frame->addChild($mapNameButton);
+		$mapNameButton->setX(-$width / 2 + 63);
 
 		//Search for Author
-		$label = new Label_Button();
-		$frame->addChild($label);
-		$label->setPosition(-$width / 2 + 82, 0);
-		$label->setText('Author');
-		$label->setTextSize(1.3);
-
-		$quad = new Quad_BgsPlayerCard();
-		$frame->addChild($quad);
-		$quad->setPosition(-$width / 2 + 82, 0);
-		$quad->setSubStyle($quad::SUBSTYLE_BgPlayerCardBig);
-		$quad->setSize(18, 5);
-		$quad->setAction($actionAuthorSearch);
-		$quad->setZ(-0.1);
+		$authorButton = $this->maniaControl->getManialinkManager()->getElementBuilder()->buildRoundTextButton(
+			'Author',
+			18,
+			5,
+			$actionAuthorSearch
+		);
+		$frame->addChild($authorButton);
+		$authorButton->setX(-$width / 2 + 82);
 
 		return $frame;
-
 	}
 
 	/**

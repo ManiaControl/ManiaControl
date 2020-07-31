@@ -3,7 +3,6 @@
 namespace MCTeam;
 
 use FML\Controls\Frame;
-use FML\Controls\Gauge;
 use FML\Controls\Label;
 use FML\Controls\Quad;
 use FML\ManiaLink;
@@ -27,30 +26,32 @@ use ManiaControl\Utils\ColorUtil;
  * ManiaControl Karma Plugin
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
- * @copyright 2014-2019 ManiaControl Team
+ * @copyright 2014-2020 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 	/*
 	 * Constants
 	 */
-	const ID                      = 2;
-	const VERSION                 = 0.1;
-	const NAME                    = 'Karma Plugin';
-	const AUTHOR                  = 'MCTeam';
-	const MLID_KARMA              = 'KarmaPlugin.MLID';
-	const TABLE_KARMA             = 'mc_karma';
-	const CB_KARMA_CHANGED        = 'KarmaPlugin.Changed';
-	const CB_KARMA_MXUPDATED      = 'KarmaPlugin.MXUpdated';
-	const SETTING_AVAILABLE_VOTES = 'Available Votes (X-Y: Comma separated)';
-	const SETTING_WIDGET_ENABLE   = 'Enable Karma Widget';
-	const SETTING_WIDGET_TITLE    = 'Widget-Title';
-	const SETTING_WIDGET_POSX     = 'Widget-Position: X';
-	const SETTING_WIDGET_POSY     = 'Widget-Position: Y';
-	const SETTING_WIDGET_WIDTH    = 'Widget-Size: Width';
-	const SETTING_WIDGET_HEIGHT   = 'Widget-Size: Height';
-	const SETTING_NEWKARMA        = 'Enable "new karma" (percentage), disable = RASP karma';
-	const STAT_PLAYER_MAPVOTES    = 'Voted Maps';
+	const ID                           = 2;
+	const VERSION                      = 0.2;
+	const NAME                         = 'Karma Plugin';
+	const AUTHOR                       = 'MCTeam';
+	const MLID_KARMA                   = 'KarmaPlugin.MLID';
+	const TABLE_KARMA                  = 'mc_karma';
+	const CB_KARMA_CHANGED             = 'KarmaPlugin.Changed';
+	const CB_KARMA_MXUPDATED           = 'KarmaPlugin.MXUpdated';
+	const DEFAULT_LOCAL_RECORDS_PLUGIN = 'MCTeam\LocalRecordsPlugin';
+	const SETTING_ALLOW_ON_LOCAL       = 'Player can only vote when having a local record';
+	const SETTING_AVAILABLE_VOTES      = 'Available Votes (X-Y: Comma separated)';
+	const SETTING_WIDGET_ENABLE        = 'Enable Karma Widget';
+	const SETTING_WIDGET_TITLE         = 'Widget-Title';
+	const SETTING_WIDGET_POSX          = 'Widget-Position: X';
+	const SETTING_WIDGET_POSY          = 'Widget-Position: Y';
+	const SETTING_WIDGET_WIDTH         = 'Widget-Size: Width';
+	const SETTING_WIDGET_HEIGHT        = 'Widget-Size: Height';
+	const SETTING_NEWKARMA             = 'Enable "new karma" (percentage), disable = RASP karma';
+	const STAT_PLAYER_MAPVOTES         = 'Voted Maps';
 
 	/*
 	 * Constants MX Karma
@@ -71,8 +72,6 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 	/** @var ManiaControl $maniaControl */
 	private $maniaControl    = null;
 	private $updateManialink = false;
-	/** @var ManiaLink $manialink */
-	private $manialink = null;
 	// TODO: use some sort of model class instead of various array keys that you can't remember
 	private $mxKarma = array();
 
@@ -146,13 +145,14 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 		$this->initTables();
 
 		// Settings
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_ALLOW_ON_LOCAL, false);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_AVAILABLE_VOTES, '-2,2');
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_WIDGET_ENABLE, true);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_WIDGET_TITLE, 'Map-Karma');
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_WIDGET_POSX, 160 - 27.5);
-		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_WIDGET_POSY, 90 - 10 - 6);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_WIDGET_POSY, 90 - 9 - 5);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_WIDGET_WIDTH, 25.);
-		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_WIDGET_HEIGHT, 12.);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_WIDGET_HEIGHT, 10.);
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_NEWKARMA, true);
 
 		// Callbacks
@@ -270,9 +270,9 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 			} else {
 				Logger::logError("Error while authenticating on Mania-Exchange Karma");
 
-				if($data->data->message == "invalid server"){
+				if ($data->data->message == "invalid server") {
 					Logger::log("You need to get a Karma Key from MX with registering your server");
-				}else{
+				} else {
 					// TODO remove temp trigger
 					$this->maniaControl->getErrorHandler()->triggerDebugNotice('auth error ' . json_encode($data->data->message));
 				}
@@ -590,6 +590,21 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 		if ($countPositive <= 0 && $countNegative <= 0) {
 			return;
 		}
+		// we have a vote-message
+		if ($this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_ALLOW_ON_LOCAL)) {
+			$localRecordPlugin = $this->maniaControl->getPluginManager()->getPlugin(self::DEFAULT_LOCAL_RECORDS_PLUGIN);
+			if (!$localRecordPlugin) {
+				return;
+			}
+
+			$currentMap = $this->maniaControl->getMapManager()->getCurrentMap();
+			$localRecord = $localRecordPlugin->getLocalRecord($currentMap, $player);
+			if ($localRecord === null) {
+				$this->maniaControl->getChat()->sendError('You need to have a local record on this map before voting.', $player->login);
+				return;
+			}
+		}
+
 		$vote    = $countPositive - $countNegative;
 		$success = $this->handleVote($player, $vote);
 		if (!$success) {
@@ -736,7 +751,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 	 * Get all players votes
 	 *
 	 * @param Map $map
-	 * @return array
+	 * @return array|bool
 	 */
 	public function getMapPlayerVotes(Map $map) {
 		$mysqli = $this->maniaControl->getDatabase()->getMysqli();
@@ -775,6 +790,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 			return;
 		}
 
+		$this->updateManialink = true;
 		$serverLogin      = $this->maniaControl->getServer()->login;
 		$karmaSettingName = self::buildKarmaSettingName($serverLogin);
 
@@ -785,10 +801,8 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 			}
 			case self::SETTING_WIDGET_ENABLE: {
 				if ($setting->value) {
-					$this->updateManialink = true;
 					$this->handle1Second();
 				} else {
-					$this->updateManialink = false;
 					$this->maniaControl->getManialinkManager()->hideManialink(self::MLID_KARMA);
 				}
 				break;
@@ -806,58 +820,21 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 
 		$displayMxKarma = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_WIDGET_DISPLAY_MX);
 
-		// Get players
-		$players = $this->updateManialink;
-		if ($players === true) {
-			$players = $this->maniaControl->getPlayerManager()->getPlayers();
-		}
-		$this->updateManialink = false;
-
 		// Get map karma
 		$map = $this->maniaControl->getMapManager()->getCurrentMap();
 
 		// Display the mx Karma if the setting is chosen and the MX session is available
 		if ($displayMxKarma && isset($this->mxKarma['session']) && isset($this->mxKarma['voteCount'])) {
-			$karma     = $this->mxKarma['modeVoteAverage'] / 100;
-			$voteCount = $this->mxKarma['modeVoteCount'];
-		} else {
-			$karma     = $this->getMapKarma($map);
-			$votes     = $this->getMapVotes($map);
-			$voteCount = $votes['count'];
+			$map->mx->ratingVoteAverage = $this->mxKarma['modeVoteAverage'];
+			$map->mx->ratingVoteCount   = $this->mxKarma['modeVoteCount'];
 		}
 
 		if ($this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_WIDGET_ENABLE)) {
 			// Build karma manialink
-			$this->buildManialink();
-
-			// Update karma gauge & label
-			/**
-			 * @var Gauge $karmaGauge
-			 */
-			$karmaGauge = $this->manialink->karmaGauge;
-			/**
-			 * @var Label $karmaLabel
-			 */
-			$karmaLabel = $this->manialink->karmaLabel;
-			if (is_numeric($karma) && $voteCount > 0) {
-				$karma = floatval($karma);
-				$karmaGauge->setRatio($karma + 0.15 - $karma * 0.15);
-				$karmaColor = ColorUtil::floatToStatusColor($karma);
-				$karmaGauge->setColor($karmaColor . '7');
-				$karmaLabel->setText('  ' . round($karma * 100.) . '% (' . $voteCount . ')');
-			} else {
-				$karmaGauge->setRatio(0.);
-				$karmaGauge->setColor('00fb');
-				$karmaLabel->setText('-');
-			}
-
-
-			$this->maniaControl->getManialinkManager()->sendManialink($this->manialink, $players);
-			// TODO: show the player his own vote in some way
-			// $vote = $this->getPlayerVote($player, $map);
-			// $votesFrame = $this->manialink->votesFrame;
-			// $votesFrame->removeChildren();
+			$this->buildManialink($map, $this->updateManialink);
 		}
+
+		$this->updateManialink = false;
 	}
 
 	/**
@@ -893,7 +870,7 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 	 * Get the current Votes for the Map
 	 *
 	 * @param Map $map
-	 * @return array
+	 * @return array|bool
 	 */
 	public function getMapVotes(Map $map) {
 		$mysqli = $this->maniaControl->getDatabase()->getMysqli();
@@ -920,10 +897,11 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 	/**
 	 * Build Karma Voting Manialink if necessary
 	 *
+	 * @param Map $map
 	 * @param bool $forceBuild
 	 */
-	private function buildManialink($forceBuild = false) {
-		if (is_object($this->manialink) && !$forceBuild) {
+	private function buildManialink(Map $map = null, $forceBuild = false) {
+		if (!$forceBuild) {
 			return;
 		}
 
@@ -944,39 +922,34 @@ class KarmaPlugin implements CallbackListener, TimerListener, Plugin {
 
 		$backgroundQuad = new Quad();
 		$frame->addChild($backgroundQuad);
-		$backgroundQuad->setY($height * 0.15);
 		$backgroundQuad->setSize($width, $height);
 		$backgroundQuad->setStyles($quadStyle, $quadSubstyle);
 
 		$titleLabel = new Label();
 		$frame->addChild($titleLabel);
-		$titleLabel->setY($height * 0.36);
-		$titleLabel->setWidth($width * 0.85);
+		$titleLabel->setScale(0.9);
 		$titleLabel->setStyle($labelStyle);
-		$titleLabel->setTranslate(true);
-		$titleLabel->setTextSize(1);
-		$titleLabel->setScale(0.90);
 		$titleLabel->setText($title);
+		$titleLabel->setTextSize(1);
+		$titleLabel->setTranslate(true);
+		$titleLabel->setWidth(0.85*$width);
+		$titleLabel->setY(0.2*$height);
 
-		$karmaGauge = new Gauge();
-		$frame->addChild($karmaGauge);
-		$karmaGauge->setSize($width * 0.95, $height * 0.92);
-		$karmaGauge->setDrawBackground(false);
-		$manialink->karmaGauge = $karmaGauge;
+		if ($map === null) {
+			$map = $this->maniaControl->getMapManager()->getCurrentMap();
+		}
+		
+		$karmaGauge = $this->maniaControl->getManialinkManager()->getElementBuilder()->buildKarmaGauge(
+			$map,
+			0.95*$width,
+			0.95*$height
+		);
+		if ($karmaGauge) {
+			$frame->addChild($karmaGauge);
+			$karmaGauge->setY(-0.15*$height);
+		}
 
-		$karmaLabel = new Label();
-		$frame->addChild($karmaLabel);
-		$karmaLabel->setPosition(0, -0.4, 1);
-		$karmaLabel->setSize($width * 0.9, $height * 0.9);
-		$karmaLabel->setStyle($labelStyle);
-		$karmaLabel->setTextSize(1);
-		$manialink->karmaLabel = $karmaLabel;
-
-		$votesFrame = new Frame();
-		$frame->addChild($votesFrame);
-		$manialink->votesFrame = $votesFrame;
-
-		$this->manialink = $manialink;
+		$this->maniaControl->getManialinkManager()->sendManialink($manialink);
 	}
 
 	/**

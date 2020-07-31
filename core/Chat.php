@@ -10,14 +10,16 @@ use ManiaControl\Communication\CommunicationListener;
 use ManiaControl\Communication\CommunicationMethods;
 use ManiaControl\General\UsageInformationAble;
 use ManiaControl\General\UsageInformationTrait;
+use ManiaControl\Maps\Map;
 use ManiaControl\Players\Player;
+use ManiaControl\Utils\Formatter;
 use Maniaplanet\DedicatedServer\Xmlrpc\UnknownPlayerException;
 
 /**
  * Chat Utility Class
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
- * @copyright 2014-2019 ManiaControl Team
+ * @copyright 2014-2020 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class Chat implements CallbackListener, CommunicationListener, UsageInformationAble {
@@ -26,13 +28,18 @@ class Chat implements CallbackListener, CommunicationListener, UsageInformationA
 	/*
 	 * Constants
 	 */
-	const SETTING_PUBLIC_PREFIX      = 'Public Messages Prefix';
-	const SETTING_PRIVATE_PREFIX     = 'Privat Messages Prefix';
-	const SETTING_FORMAT_INFORMATION = 'Information Format';
-	const SETTING_FORMAT_SUCCESS     = 'Success Format';
-	const SETTING_FORMAT_ERROR       = 'Error Format';
-	const SETTING_FORMAT_USAGEINFO   = 'UsageInfo Format';
-	const CHAT_BUFFER_SIZE           = 200;
+	const SETTING_FORMAT_ERROR                       = 'Error Format';
+	const SETTING_FORMAT_INFORMATION                 = 'Information Format';
+	const SETTING_FORMAT_SUCCESS                     = 'Success Format';
+	const SETTING_FORMAT_USAGEINFO                   = 'UsageInfo Format';
+	const SETTING_FORMAT_MESSAGE_INPUT_COLOR         = 'Format Message Input Color';
+	const SETTING_FORMAT_MESSAGE_MAP_AUTHOR_LOGIN    = 'Format Message Add Map Author Login';
+	const SETTING_FORMAT_MESSAGE_MAP_AUTHOR_NICKNAME = 'Format Message Add Map Author Nickname';
+	const SETTING_FORMAT_MESSAGE_PLAYER_LOGIN        = 'Format Message Add Player Login';
+	const SETTING_PUBLIC_PREFIX                      = 'Public Messages Prefix';
+	const SETTING_PRIVATE_PREFIX                     = 'Private Messages Prefix';
+	const CHAT_BUFFER_SIZE                           = 200;
+
 	/*
 	 * Private properties
 	 */
@@ -49,12 +56,16 @@ class Chat implements CallbackListener, CommunicationListener, UsageInformationA
 		$this->maniaControl = $maniaControl;
 
 		// Settings
-		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_PUBLIC_PREFIX, '» ');
-		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_PRIVATE_PREFIX, '»» ');
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_FORMAT_ERROR, '$f30');
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_FORMAT_INFORMATION, '$fff');
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_FORMAT_SUCCESS, '$0f0');
-		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_FORMAT_ERROR, '$f30');
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_FORMAT_USAGEINFO, '$f80');
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_FORMAT_MESSAGE_INPUT_COLOR, '$fff');
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_FORMAT_MESSAGE_MAP_AUTHOR_LOGIN, false);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_FORMAT_MESSAGE_MAP_AUTHOR_NICKNAME, true);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_FORMAT_MESSAGE_PLAYER_LOGIN, false);
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_PUBLIC_PREFIX, '» ');
+		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_PRIVATE_PREFIX, '»» ');
 
 		//Callbacks
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(CallbackManager::CB_MP_PLAYERCHAT, $this, 'onPlayerChat');
@@ -64,51 +75,6 @@ class Chat implements CallbackListener, CommunicationListener, UsageInformationA
 		$this->maniaControl->getCommunicationManager()->registerCommunicationListener(CommunicationMethods::GET_SERVER_CHAT, $this, function ($data) {
 			return new CommunicationAnswer($this->chatBuffer);
 		});
-	}
-
-	/**
-	 * Send an information message to the given login
-	 *
-	 * @param string      $message
-	 * @param string      $login
-	 * @param string|bool $prefix
-	 * @param bool        $multiCall
-	 * @return bool
-	 */
-	public function sendInformation($message, $login = null, $prefix = true, $multiCall = true) {
-		$format = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_FORMAT_INFORMATION);
-		return $this->sendChat($format . $message, $login, $prefix, $multiCall);
-	}
-
-	/**
-	 * Send a chat message to the given login
-	 *
-	 * @param string      $message
-	 * @param string      $login
-	 * @param string|bool $prefix
-	 * @param bool        $multiCall
-	 * @return bool
-	 */
-	public function sendChat($message, $login = null, $prefix = true, $multiCall = true) {
-		if (!$this->maniaControl->getClient()) {
-			return false;
-		}
-
-		$prefix      = $this->buildPrefix($prefix, $login);
-		$chatMessage = '$<$z$ff0' . $prefix . $message . '$>';
-
-		if ($login) {
-			if (!is_array($login)) {
-				$login = Player::parseLogin($login);
-			}
-			try {
-				return $this->maniaControl->getClient()->chatSendServerMessage($chatMessage, $login, $multiCall);
-			} catch (UnknownPlayerException $e) {
-				return false;
-			}
-		}
-
-		return $this->maniaControl->getClient()->chatSendServerMessage($chatMessage, null, $multiCall);
 	}
 
 	/**
@@ -132,123 +98,6 @@ class Chat implements CallbackListener, CommunicationListener, UsageInformationA
 		}
 		return '';
 	}
-
-	/**
-	 * Send an Error Message to all Connected Admins
-	 *
-	 * @param string $message
-	 * @param int    $minLevel
-	 * @param bool   $prefix
-	 */
-	public function sendErrorToAdmins($message, $minLevel = AuthenticationManager::AUTH_LEVEL_MODERATOR, $prefix = true) {
-		$format = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_FORMAT_ERROR);
-		$this->sendMessageToAdmins($format . $message, $minLevel, $prefix);
-	}
-
-	/**
-	 * Send a Message to all connected Admins
-	 *
-	 * @param string      $message
-	 * @param int         $minLevel
-	 * @param bool|string $prefix
-	 * @return bool
-	 */
-	public function sendMessageToAdmins($message, $minLevel = AuthenticationManager::AUTH_LEVEL_MODERATOR, $prefix = true) {
-		$admins = $this->maniaControl->getAuthenticationManager()->getConnectedAdmins($minLevel);
-		return $this->sendChat($message, $admins, $prefix);
-	}
-
-	/**
-	 * Send a success message to the given login
-	 *
-	 * @param string      $message
-	 * @param string      $login
-	 * @param bool|string $prefix
-	 * @return bool
-	 */
-	public function sendSuccess($message, $login = null, $prefix = true) {
-		$format = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_FORMAT_SUCCESS);
-		return $this->sendChat($format . $message, $login, $prefix);
-	}
-
-	/**
-	 * Sends a Information Message to all connected Admins
-	 *
-	 * @param string      $message
-	 * @param int         $minLevel
-	 * @param bool|string $prefix
-	 * @return bool
-	 */
-	public function sendInformationToAdmins($message, $minLevel = AuthenticationManager::AUTH_LEVEL_MODERATOR, $prefix = true) {
-		$format = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_FORMAT_INFORMATION);
-		return $this->sendMessageToAdmins($format . $message, $minLevel, $prefix);
-	}
-
-
-	/**
-	 * Sends a Success Message to all connected Admins
-	 *
-	 * @param string      $message
-	 * @param int         $minLevel
-	 * @param bool|string $prefix
-	 * @return bool
-	 */
-	public function sendSuccessToAdmins($message, $minLevel = AuthenticationManager::AUTH_LEVEL_MODERATOR, $prefix = true) {
-		$format = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_FORMAT_SUCCESS);
-		return $this->sendMessageToAdmins($format . $message, $minLevel, $prefix);
-	}
-
-	/**
-	 * Send the Exception Information to the Chat
-	 *
-	 * @param \Exception $exception
-	 * @param string     $login
-	 * @return bool
-	 */
-	public function sendException(\Exception $exception, $login = null) {
-		$message = "Exception occurred: '{$exception->getMessage()}' ({$exception->getCode()})";
-		return $this->sendError($message, $login);
-	}
-
-	/**
-	 * Send an Error Message to the Chat
-	 *
-	 * @param string      $message
-	 * @param string      $login
-	 * @param string|bool $prefix
-	 * @return bool
-	 */
-	public function sendError($message, $login = null, $prefix = true) {
-		$format = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_FORMAT_ERROR);
-		return $this->sendChat($format . $message, $login, $prefix);
-	}
-
-	/**
-	 * Send a Exception Message to all Connected Admins
-	 *
-	 * @param \Exception  $exception
-	 * @param int         $minLevel
-	 * @param bool|string $prefix
-	 */
-	public function sendExceptionToAdmins(\Exception $exception, $minLevel = AuthenticationManager::AUTH_LEVEL_MODERATOR, $prefix = true) {
-		$format  = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_FORMAT_ERROR);
-		$message = $format . "Exception: '{$exception->getMessage()}' ({$exception->getCode()})";
-		$this->sendMessageToAdmins($message, $minLevel, $prefix);
-	}
-
-	/**
-	 * Send an usage info message to the given login
-	 *
-	 * @param string      $message
-	 * @param string      $login
-	 * @param string|bool $prefix
-	 * @return bool
-	 */
-	public function sendUsageInfo($message, $login = null, $prefix = false) {
-		$format = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_FORMAT_USAGEINFO);
-		return $this->sendChat($format . $message, $login, $prefix);
-	}
-
 
 	/**
 	 * Handles SendChat Communication Request
@@ -317,6 +166,49 @@ class Chat implements CallbackListener, CommunicationListener, UsageInformationA
 		return new CommunicationAnswer();
 	}
 
+	/**
+	 * Format the given message with the given inputs and colors the inputs.
+	 * @param string $message
+	 * @param mixed ...$inputs
+	 * @return string
+	 */
+	public function formatMessage($message, ...$inputs) {
+		$addMapAuthorLogin = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_FORMAT_MESSAGE_MAP_AUTHOR_LOGIN);
+		$addMapAuthorNickname = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_FORMAT_MESSAGE_MAP_AUTHOR_NICKNAME);
+		$addPlayerLogin = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_FORMAT_MESSAGE_PLAYER_LOGIN);
+		$formatInputColor = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_FORMAT_MESSAGE_INPUT_COLOR);
+
+		$formattedInputs = array($message);
+		foreach ($inputs as $input) {
+			$strInput = null;
+
+			if (is_bool($input)) {
+				$strInput = $input ? 'true' : 'false';
+			} elseif ($input instanceof Map) {
+				$strInput = $input->getEscapedName();
+				if ($addMapAuthorNickname && $input->authorNick) {
+					$strInput .= " (by {$input->authorNick}";
+					if ($addMapAuthorLogin && $input->authorLogin) {
+						$strInput .= " ({$input->authorLogin})";
+					}
+					$strInput .= ")";
+				} elseif ($addMapAuthorLogin && $input->authorLogin) {
+					$strInput .= " (by {$input->authorLogin})";
+				}
+			} elseif ($input instanceof Player) {
+				$strInput = $input->getEscapedNickname();
+				if ($addPlayerLogin && $input->login) {
+					$strInput .= " ({$input->login})";
+				}
+			} else {
+				$strInput = strval($input);
+			}
+
+			array_push($formattedInputs, Formatter::escapeText($formatInputColor . $strInput));
+		}
+
+		return call_user_func_array('sprintf', $formattedInputs);
+	}
 
 	/**
 	 * Stores the ChatMessage in the Buffer
@@ -335,5 +227,166 @@ class Chat implements CallbackListener, CommunicationListener, UsageInformationA
 		if (count($this->chatBuffer) > self::CHAT_BUFFER_SIZE) {
 			array_shift($this->chatBuffer);
 		}
+	}
+
+	/**
+	 * Send a chat message to the given login
+	 *
+	 * @param string      $message
+	 * @param string      $login
+	 * @param string|bool $prefix
+	 * @param bool        $multiCall
+	 * @return bool
+	 */
+	public function sendChat($message, $login = null, $prefix = true, $multiCall = true) {
+		if (!$this->maniaControl->getClient()) {
+			return false;
+		}
+
+		$prefix      = $this->buildPrefix($prefix, $login);
+		$chatMessage = '$<$z$ff0' . $prefix . $message . '$>';
+
+		if ($login) {
+			if (!is_array($login)) {
+				$login = Player::parseLogin($login);
+			}
+			try {
+				return $this->maniaControl->getClient()->chatSendServerMessage($chatMessage, $login, $multiCall);
+			} catch (UnknownPlayerException $e) {
+				return false;
+			}
+		}
+
+		return $this->maniaControl->getClient()->chatSendServerMessage($chatMessage, null, $multiCall);
+	}
+
+	/**
+	 * Send an Error Message to all Connected Admins
+	 *
+	 * @param string $message
+	 * @param int    $minLevel
+	 * @param bool   $prefix
+	 */
+	public function sendErrorToAdmins($message, $minLevel = AuthenticationManager::AUTH_LEVEL_MODERATOR, $prefix = true) {
+		$format = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_FORMAT_ERROR);
+		$this->sendMessageToAdmins($format . $message, $minLevel, $prefix);
+	}
+
+	/**
+	 * Send an Error Message to the Chat
+	 *
+	 * @param string      $message
+	 * @param string      $login
+	 * @param string|bool $prefix
+	 * @return bool
+	 */
+	public function sendError($message, $login = null, $prefix = true) {
+		$format = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_FORMAT_ERROR);
+		return $this->sendChat($format . $message, $login, $prefix);
+	}
+
+	/**
+	 * Send the Exception Information to the Chat
+	 *
+	 * @param \Exception $exception
+	 * @param string     $login
+	 * @return bool
+	 */
+	public function sendException(\Exception $exception, $login = null) {
+		$message = "Exception occurred: '{$exception->getMessage()}' ({$exception->getCode()})";
+		return $this->sendError($message, $login);
+	}
+
+	/**
+	 * Send a Exception Message to all Connected Admins
+	 *
+	 * @param \Exception  $exception
+	 * @param int         $minLevel
+	 * @param bool|string $prefix
+	 */
+	public function sendExceptionToAdmins(\Exception $exception, $minLevel = AuthenticationManager::AUTH_LEVEL_MODERATOR, $prefix = true) {
+		$format  = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_FORMAT_ERROR);
+		$message = $format . "Exception: '{$exception->getMessage()}' ({$exception->getCode()})";
+		$this->sendMessageToAdmins($message, $minLevel, $prefix);
+	}
+
+	/**
+	 * Send an information message to the given login
+	 *
+	 * @param string      $message
+	 * @param string      $login
+	 * @param string|bool $prefix
+	 * @param bool        $multiCall
+	 * @return bool
+	 */
+	public function sendInformation($message, $login = null, $prefix = true, $multiCall = true) {
+		$format = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_FORMAT_INFORMATION);
+		return $this->sendChat($format . $message, $login, $prefix, $multiCall);
+	}
+
+	/**
+	 * Sends a Information Message to all connected Admins
+	 *
+	 * @param string      $message
+	 * @param int         $minLevel
+	 * @param bool|string $prefix
+	 * @return bool
+	 */
+	public function sendInformationToAdmins($message, $minLevel = AuthenticationManager::AUTH_LEVEL_MODERATOR, $prefix = true) {
+		$format = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_FORMAT_INFORMATION);
+		return $this->sendMessageToAdmins($format . $message, $minLevel, $prefix);
+	}
+
+	/**
+	 * Send a Message to all connected Admins
+	 *
+	 * @param string      $message
+	 * @param int         $minLevel
+	 * @param bool|string $prefix
+	 * @return bool
+	 */
+	public function sendMessageToAdmins($message, $minLevel = AuthenticationManager::AUTH_LEVEL_MODERATOR, $prefix = true) {
+		$admins = $this->maniaControl->getAuthenticationManager()->getConnectedAdmins($minLevel);
+		return $this->sendChat($message, $admins, $prefix);
+	}
+
+	/**
+	 * Send a success message to the given login
+	 *
+	 * @param string      $message
+	 * @param string      $login
+	 * @param bool|string $prefix
+	 * @return bool
+	 */
+	public function sendSuccess($message, $login = null, $prefix = true) {
+		$format = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_FORMAT_SUCCESS);
+		return $this->sendChat($format . $message, $login, $prefix);
+	}
+
+
+	/**
+	 * Sends a Success Message to all connected Admins
+	 *
+	 * @param string      $message
+	 * @param int         $minLevel
+	 * @param bool|string $prefix
+	 * @return bool
+	 */
+	public function sendSuccessToAdmins($message, $minLevel = AuthenticationManager::AUTH_LEVEL_MODERATOR, $prefix = true) {
+		$format = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_FORMAT_SUCCESS);
+		return $this->sendMessageToAdmins($format . $message, $minLevel, $prefix);
+	}
+
+	/**
+	 * Send an usage info message to the given login
+	 *
+	 * @param string      $message
+	 * @param string      $login
+	 * @param string|bool $prefix
+	 * @return bool
+	 */
+	public function sendUsageInfo($message, $login = null, $prefix = false) {
+		$format = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_FORMAT_USAGEINFO);
+		return $this->sendChat($format . $message, $login, $prefix);
 	}
 }

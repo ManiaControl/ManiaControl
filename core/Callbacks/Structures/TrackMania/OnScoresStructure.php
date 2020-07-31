@@ -11,7 +11,7 @@ use ManiaControl\ManiaControl;
  *
  * @api
  * @author    ManiaControl Team <mail@maniacontrol.com>
- * @copyright 2014-2019 ManiaControl Team
+ * @copyright 2014-2020 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class OnScoresStructure extends CommonScoresStructure {
@@ -38,10 +38,18 @@ class OnScoresStructure extends CommonScoresStructure {
 				$playerScore->setBestRaceTime($jsonPlayer->bestracetime);
 				$playerScore->setBestLapTime($jsonPlayer->bestlaptime);
 				$playerScore->setStuntScore($jsonPlayer->stuntsscore);
-				$playerScore->setBestRaceRespawns($jsonPlayer->bestracerespawns);
 				$playerScore->setBestRaceCheckpoints($jsonPlayer->bestracecheckpoints);
-				$playerScore->setBestLapRespawns($jsonPlayer->bestlaprespawns);
 				$playerScore->setBestLapCheckpoints($jsonPlayer->bestlapcheckpoints);
+				
+				// removed in TM2020
+				if (property_exists($jsonPlayer, 'bestracerespawns')) {
+					$playerScore->setBestRaceRespawns($jsonPlayer->bestracerespawns);
+				}
+				// removed in TM2020
+				if (property_exists($jsonPlayer, 'bestlaprespawns')) {
+					$playerScore->setBestLapRespawns($jsonPlayer->bestlaprespawns);
+				}
+
 				//New attributes in 2.5.0
 				if (property_exists($jsonPlayer, 'prevracetime')) {
 					$playerScore->setPrevRaceTime($jsonPlayer->prevracetime);

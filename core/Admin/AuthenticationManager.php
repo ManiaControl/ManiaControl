@@ -14,6 +14,7 @@ use ManiaControl\Logger;
 use ManiaControl\ManiaControl;
 use ManiaControl\Players\Player;
 use ManiaControl\Players\PlayerManager;
+use ManiaControl\Plugins\Plugin;
 use ManiaControl\Settings\Setting;
 
 /**
@@ -21,7 +22,7 @@ use ManiaControl\Settings\Setting;
  *
  * @api
  * @author    ManiaControl Team <mail@maniacontrol.com>
- * @copyright 2014-2019 ManiaControl Team
+ * @copyright 2014-2020 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class AuthenticationManager implements CallbackListener, EchoListener, CommunicationListener, UsageInformationAble {
@@ -133,8 +134,10 @@ class AuthenticationManager implements CallbackListener, EchoListener, Communica
 				return self::AUTH_NAME_ADMIN;
 			case self::AUTH_LEVEL_MODERATOR:
 				return self::AUTH_NAME_MODERATOR;
+			case self::AUTH_LEVEL_PLAYER:
+				return self::AUTH_NAME_PLAYER;
 		}
-		return self::AUTH_NAME_PLAYER;
+		return '-';
 	}
 
 	/**
@@ -172,8 +175,10 @@ class AuthenticationManager implements CallbackListener, EchoListener, Communica
 				return self::AUTH_LEVEL_ADMIN;
 			case self::AUTH_NAME_MODERATOR:
 				return self::AUTH_LEVEL_MODERATOR;
+			case self::AUTH_NAME_PLAYER:
+				return self::AUTH_LEVEL_PLAYER;
 		}
-		return self::AUTH_LEVEL_PLAYER;
+		return -1;
 	}
 
 	/**
@@ -420,7 +425,21 @@ class AuthenticationManager implements CallbackListener, EchoListener, Communica
 	 */
 	public function checkPermission(Player $player, $rightName) {
 		$right = $this->maniaControl->getSettingManager()->getSettingValue($this, $rightName);
-		return $this->checkRight($player, $this->getAuthLevel($right));
+		return self::checkRight($player, self::getAuthLevel($right));
+	}
+
+	/**
+	 * Checks the permission by a right name
+	 *
+	 * @api
+	 * @param Plugin $plugin
+	 * @param Player $player
+	 * @param        $rightName
+	 * @return bool
+	 */
+	public function checkPluginPermission(Plugin $plugin, Player $player, $rightName) {
+		$right = $this->maniaControl->getSettingManager()->getSettingValue($plugin, $rightName);
+		return self::checkRight($player, self::getAuthLevel($right));
 	}
 
 	/**
@@ -429,9 +448,23 @@ class AuthenticationManager implements CallbackListener, EchoListener, Communica
 	 * @api
 	 * @param string $rightName
 	 * @param int    $authLevelNeeded
+	 * @param string $authLevelsAllowed
 	 */
-	public function definePermissionLevel($rightName, $authLevelNeeded) {
-		$this->maniaControl->getSettingManager()->initSetting($this, $rightName, self::getPermissionLevelNameArray($authLevelNeeded));
+	public function definePermissionLevel($rightName, $authLevelNeeded, $authLevelsAllowed = self::AUTH_LEVEL_MODERATOR) {
+		$this->maniaControl->getSettingManager()->initSetting($this, $rightName, self::getPermissionLevelNameArray($authLevelNeeded, $authLevelsAllowed));
+	}
+
+	/**
+	 * Define a Minimum Right Level needed for an Action
+	 *
+	 * @api
+	 * @param Plugin $plugin
+	 * @param string $rightName
+	 * @param int    $authLevelNeeded
+	 * @param string $authLevelsAllowed
+	 */
+	public function definePluginPermissionLevel(Plugin $plugin, $rightName, $authLevelNeeded, $authLevelsAllowed = self::AUTH_LEVEL_MODERATOR) {
+		$this->maniaControl->getSettingManager()->initSetting($plugin, $rightName, self::getPermissionLevelNameArray($authLevelNeeded, $authLevelsAllowed));
 	}
 
 	/**
@@ -439,19 +472,70 @@ class AuthenticationManager implements CallbackListener, EchoListener, Communica
 	 *
 	 * @api
 	 * @param $authLevelNeeded
+	 * @param $authLevelsAllowed
 	 * @return array[]
 	 */
-	public static function getPermissionLevelNameArray($authLevelNeeded) {
-		switch ($authLevelNeeded) {
+	public static function getPermissionLevelNameArray($authLevelNeeded, $authLevelsAllowed = self::AUTH_LEVEL_MODERATOR) {
+		assert($authLevelNeeded >= $authLevelsAllowed);
+
+		switch ($authLevelsAllowed) {
+			case self::AUTH_LEVEL_PLAYER:
+				switch ($authLevelNeeded) {
+					case self::AUTH_LEVEL_PLAYER:
+						return array(self::AUTH_NAME_PLAYER, self::AUTH_NAME_MODERATOR, self::AUTH_NAME_ADMIN, self::AUTH_NAME_SUPERADMIN, self::AUTH_NAME_MASTERADMIN);
+					case self::AUTH_LEVEL_MODERATOR:
+						return array(self::AUTH_NAME_MODERATOR, self::AUTH_NAME_ADMIN, self::AUTH_NAME_SUPERADMIN, self::AUTH_NAME_MASTERADMIN, self::AUTH_NAME_PLAYER);
+					case self::AUTH_LEVEL_ADMIN:
+						return array(self::AUTH_NAME_ADMIN, self::AUTH_NAME_SUPERADMIN, self::AUTH_NAME_MASTERADMIN, self::AUTH_NAME_PLAYER, self::AUTH_NAME_MODERATOR);
+					case self::AUTH_LEVEL_SUPERADMIN:
+						return array(self::AUTH_NAME_SUPERADMIN, self::AUTH_NAME_MASTERADMIN, self::AUTH_NAME_PLAYER, self::AUTH_NAME_MODERATOR, self::AUTH_NAME_ADMIN);
+					case self::AUTH_LEVEL_MASTERADMIN:
+						return array(self::AUTH_NAME_MASTERADMIN, self::AUTH_NAME_PLAYER, self::AUTH_NAME_MODERATOR, self::AUTH_NAME_ADMIN, self::AUTH_NAME_SUPERADMIN);
+				}
+			break;
+
 			case self::AUTH_LEVEL_MODERATOR:
-				return array(self::AUTH_NAME_MODERATOR, self::AUTH_NAME_ADMIN, self::AUTH_NAME_SUPERADMIN, self::AUTH_NAME_MASTERADMIN);
+				switch ($authLevelNeeded) {
+					case self::AUTH_LEVEL_MODERATOR:
+						return array(self::AUTH_NAME_MODERATOR, self::AUTH_NAME_ADMIN, self::AUTH_NAME_SUPERADMIN, self::AUTH_NAME_MASTERADMIN);
+					case self::AUTH_LEVEL_ADMIN:
+						return array(self::AUTH_NAME_ADMIN, self::AUTH_NAME_SUPERADMIN, self::AUTH_NAME_MASTERADMIN, self::AUTH_NAME_MODERATOR);
+					case self::AUTH_LEVEL_SUPERADMIN:
+						return array(self::AUTH_NAME_SUPERADMIN, self::AUTH_NAME_MASTERADMIN, self::AUTH_NAME_MODERATOR, self::AUTH_NAME_ADMIN);
+					case self::AUTH_LEVEL_MASTERADMIN:
+						return array(self::AUTH_NAME_MASTERADMIN, self::AUTH_NAME_MODERATOR, self::AUTH_NAME_ADMIN, self::AUTH_NAME_SUPERADMIN);
+				}
+			break;
+
 			case self::AUTH_LEVEL_ADMIN:
-				return array(self::AUTH_NAME_ADMIN, self::AUTH_NAME_SUPERADMIN, self::AUTH_NAME_MASTERADMIN, self::AUTH_NAME_MODERATOR);
+				switch ($authLevelNeeded) {
+					case self::AUTH_LEVEL_ADMIN:
+						return array(self::AUTH_NAME_ADMIN, self::AUTH_NAME_SUPERADMIN, self::AUTH_NAME_MASTERADMIN);
+					case self::AUTH_LEVEL_SUPERADMIN:
+						return array(self::AUTH_NAME_SUPERADMIN, self::AUTH_NAME_MASTERADMIN, self::AUTH_NAME_ADMIN);
+					case self::AUTH_LEVEL_MASTERADMIN:
+						return array(self::AUTH_NAME_MASTERADMIN, self::AUTH_NAME_ADMIN, self::AUTH_NAME_SUPERADMIN);
+				}
+			break;
+
 			case self::AUTH_LEVEL_SUPERADMIN:
-				return array(self::AUTH_NAME_SUPERADMIN, self::AUTH_NAME_MASTERADMIN, self::AUTH_NAME_MODERATOR, self::AUTH_NAME_ADMIN);
+				switch ($authLevelNeeded) {
+					case self::AUTH_LEVEL_SUPERADMIN:
+						return array(self::AUTH_NAME_SUPERADMIN, self::AUTH_NAME_MASTERADMIN);
+					case self::AUTH_LEVEL_MASTERADMIN:
+						return array(self::AUTH_NAME_MASTERADMIN, self::AUTH_NAME_SUPERADMIN);
+				}
+			break;
+
+			// just for completeness, should not be used this way
 			case self::AUTH_LEVEL_MASTERADMIN:
-				return array(self::AUTH_NAME_MASTERADMIN, self::AUTH_NAME_MODERATOR, self::AUTH_NAME_ADMIN, self::AUTH_NAME_SUPERADMIN);
+				switch ($authLevelNeeded) {
+					case self::AUTH_LEVEL_MASTERADMIN:
+						return array(self::AUTH_NAME_MASTERADMIN);
+				}
+			break;
 		}
+
 		return array("-");
 	}
 }

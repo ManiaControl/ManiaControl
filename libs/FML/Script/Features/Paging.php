@@ -387,9 +387,7 @@ class Paging extends ScriptFeature
         if (!is_int($maxPageNumber)) {
             $maxPageNumber = $maxPage->getPageNumber();
         }
-
-        $pagingId    = $maxPage->getControl()
-                               ->getId(true, true);
+	    
         $pagingId    = Builder::escapeText($maxPage->getControl()
                                                    ->getId());
         $pageLabelId = Builder::EMPTY_STRING;

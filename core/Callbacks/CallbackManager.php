@@ -15,7 +15,7 @@ use Maniaplanet\DedicatedServer\Xmlrpc\UnknownPlayerException;
  * Class for managing Server and ManiaControl Callbacks
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
- * @copyright 2014-2019 ManiaControl Team
+ * @copyright 2014-2020 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class CallbackManager implements UsageInformationAble {
@@ -31,6 +31,8 @@ class CallbackManager implements UsageInformationAble {
 	const CB_MP_ENDMATCH                  = 'ManiaPlanet.EndMatch';
 	const CB_MP_BEGINMAP                  = 'ManiaPlanet.BeginMap';
 	const CB_MP_ENDMAP                    = 'ManiaPlanet.EndMap';
+	const CB_MP_BEGINROUND                = 'ManiaPlanet.BeginRound';
+	const CB_MP_ENDROUND                  = 'ManiaPlanet.EndRound';
 	const CB_MP_MAPLISTMODIFIED           = 'ManiaPlanet.MapListModified';
 	const CB_MP_ECHO                      = 'ManiaPlanet.Echo';
 	const CB_MP_BILLUPDATED               = 'ManiaPlanet.BillUpdated';
@@ -61,6 +63,8 @@ class CallbackManager implements UsageInformationAble {
 
 	/** @var ManiaControl $maniaControl */
 	private $maniaControl = null;
+	/** @var Listening[] $adhocCallbacks */
+	private $adhocCallbacks = array();
 	/** @var Listening[][] $callbackListenings */
 	private $callbackListenings = array();
 	/** @var Listening[][] $scriptCallbackListenings */
@@ -220,6 +224,42 @@ class CallbackManager implements UsageInformationAble {
 	}
 
 	/**
+	 * @internal
+	 * Adds an adhoc Callback to be executed immediately after other callbacks.
+	 * Should be used for more specialized Callbacks, which need to be executed soon after a more general callback.
+	 * 
+	 * @param mixed $callbackName
+	 */
+	public function addAdhocCallback($callbackName) {
+		if (!$this->callbackListeningExists($callbackName)) {
+			return;
+		}
+
+		$params = func_get_args();
+		$params = array_slice($params, 1, null, true);
+		array_push($this->adhocCallbacks, array($callbackName, $params));
+	}
+
+	/**
+	 * @internal
+	 * Trigger internal adhoc Callbacks between manageCallbacks()
+	 */
+	private function manageAdhocCallbacks() {
+		// TODO add some timing method to determine long loop issues
+		//      currently it adds to the non-specialized callback which added the adhoc callback
+
+		foreach ($this->adhocCallbacks as $callback) {
+			list($callbackName, $params) = $callback;
+			foreach ($this->callbackListenings[$callbackName] as $listening) {
+				/** @var Listening $listening */
+				$listening->triggerCallbackWithParams($params);
+			}
+		}
+
+		$this->adhocCallbacks = array();
+	}
+
+	/**
 	 * Trigger internal Callbacks and manage Server Callbacks
 	 */
 	public function manageCallbacks() {
@@ -251,6 +291,8 @@ class CallbackManager implements UsageInformationAble {
 		foreach ($callbacks as $key => $callback) {
 			$time1 = microtime(true);
 			$this->handleCallback($callback);
+			// manage any callbacks added by the previous callback
+			$this->manageAdhocCallbacks();
 			$timings[$key] = array($callback[0], microtime(true) - $time1);
 		}
 
@@ -312,7 +354,6 @@ class CallbackManager implements UsageInformationAble {
 	 * @param mixed $callbackName
 	 */
 	public function triggerCallback($callbackName) {
-
 		if (!$this->callbackListeningExists($callbackName)) {
 			return;
 		}

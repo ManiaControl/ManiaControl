@@ -29,7 +29,7 @@ use ManiaControl\Settings\Setting;
  * Configurator for enabling and disabling Plugins
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
- * @copyright 2014-2019 ManiaControl Team
+ * @copyright 2014-2020 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAnswerListener {
@@ -256,7 +256,7 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 		// TODO: centralize menu code to use by mc settings and plugin settings
 		$settings = $this->maniaControl->getSettingManager()->getSettingsByClass($settingClass);
 
-		$pageSettingsMaxCount = 11;
+		$pageSettingsMaxCount = 10;
 		$posY                 = 0;
 		$index                = 0;
 		$settingHeight        = 5.;
@@ -295,6 +295,15 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 			$nameLabel->setText($setting->setting);
 			$nameLabel->setTextColor('fff');
 
+			$descriptionLabel = new Label_Text();
+			$pageFrame->addChild($descriptionLabel);
+			$descriptionLabel->setHorizontalAlign($descriptionLabel::LEFT);
+			$descriptionLabel->setPosition(-0.45 * $width, -0.35 * $height);
+			$descriptionLabel->setSize(0.9 * $width, $settingHeight);
+			$descriptionLabel->setTextSize(2);
+			$descriptionLabel->setTranslate(true);
+			$nameLabel->addTooltipLabelFeature($descriptionLabel, $setting->description);
+
 			if ($setting->type === Setting::TYPE_BOOL) {
 				// Boolean checkbox
 				$quad = new Quad();
@@ -332,9 +341,9 @@ class PluginMenu implements CallbackListener, ConfiguratorMenu, ManialinkPageAns
 		$frame->addChild($backButton);
 		$backButton->setStyle($backButton::STYLE_CardMain_Quit);
 		$backButton->setHorizontalAlign($backButton::LEFT);
-		$backButton->setScale(0.75);
+		$backButton->setScale(0.5);
 		$backButton->setText('Back');
-		$backButton->setPosition(-$width / 2 + 7, -$height / 2 + 7);
+		$backButton->setPosition(-$width / 2 + 5, -$height / 2 + 5);
 		$backButton->setAction(self::ACTION_BACK_TO_PLUGINS);
 
 		return $frame;

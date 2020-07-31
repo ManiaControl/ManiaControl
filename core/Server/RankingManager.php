@@ -11,12 +11,13 @@ use ManiaControl\ManiaControl;
 use ManiaControl\Maps\Map;
 use Maniaplanet\DedicatedServer\Xmlrpc\GameModeException;
 
+//TODO delete this class
 /**
  * Class managing Rankings
  *
  * @deprecated
  * @author    ManiaControl Team <mail@maniacontrol.com>
- * @copyright 2014-2019 ManiaControl Team
+ * @copyright 2014-2020 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class RankingManager implements CallbackListener, UsageInformationAble {
@@ -109,7 +110,7 @@ class RankingManager implements CallbackListener, UsageInformationAble {
 		array_multisort($this->rankings, SORT_DESC, SORT_NUMERIC);
 
 		//TODO if Local Records activated-> sort asc
-		$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::RANKINGSUPDATED, $this->getRankings());
+		//$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::RANKINGSUPDATED, $this->getRankings());
 	}
 
 	/**
@@ -134,7 +135,7 @@ class RankingManager implements CallbackListener, UsageInformationAble {
 				return $leaders;
 			}
 			// FIXME: $leader doesn't exist
-			array_push($leaders, $leader);
+			//array_push($leaders, $leader);
 			$prev = $score;
 		}
 		return null;

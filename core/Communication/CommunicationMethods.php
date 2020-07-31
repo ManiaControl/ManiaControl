@@ -6,14 +6,16 @@ namespace ManiaControl\Communication;
  * Communication Methods Interface
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
- * @copyright 2014-2019 ManiaControl Team
+ * @copyright 2014-2020 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 interface CommunicationMethods {
-	/** Restarts Mania Control
+	/** Reboots Mania Control
 	 *   Optional Params
 	 *      - message
 	 */
+	const REBOOT_MANIA_CONTROL = "ManiaControl.Reboot";
+	/** @deprecated */
 	const RESTART_MANIA_CONTROL = "ManiaControl.Restart";
 
 	/** Update the ManiaControl Core */
@@ -43,12 +45,25 @@ interface CommunicationMethods {
 	 */
 	const SET_SERVER_OPTIONS = "ServerOptions.SetServerOptions";
 
-	/** Provides the ModeScriptSettings
+	/** Provides the GameModeSettings
+	 *  no Parameters
+	 */
+	const GET_GAMEMODE_SETTINGS = "GameModeSettings.GetGameModeSettings";
+
+	/** Set GameModeSettings
+	 *   Required Parameter
+	 *    - gameModeSettings (array(settingName1 => value1, settingName2 => value2...))
+	 */
+	const SET_GAMEMODE_SETTINGS = "GameModeSettings.SetGameModeSettings";
+
+	/** @deprecated
+	 *  Provides the ModeScriptSettings
 	 *  no Parameters
 	 */
 	const GET_SCRIPT_SETTINGS = "ScriptSettings.GetScriptSettings";
 
-	/** Set ModeScriptSettings
+	/** @deprecated
+	 *  Set ModeScriptSettings
 	 *   Required Parameter
 	 *    - scriptSettings (array(settingName1 => value1, settingName2 => value2...))
 	 */

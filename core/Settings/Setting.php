@@ -10,7 +10,7 @@ use ManiaControl\Utils\ClassUtil;
  * ManiaControl Setting Model Class
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
- * @copyright 2014-2019 ManiaControl Team
+ * @copyright 2014-2020 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class Setting implements UsageInformationAble {
@@ -30,23 +30,25 @@ class Setting implements UsageInformationAble {
 	/*
 	 * Public properties
 	 */
-	public $index     = null;
-	public $class     = null;
-	public $setting   = null;
-	public $type      = null;
-	public $value     = null;
-	public $default   = null;
-	public $set       = null;
-	public $fetchTime = null;
+	public $index       = null;
+	public $class       = null;
+	public $setting     = null;
+	public $type        = null;
+	public $value       = null;
+	public $default     = null;
+	public $set         = null;
+	public $fetchTime   = null;
+	public $description = null;
 
 	/**
 	 * Construct a new setting instance
 	 *
-	 * @param mixed  $object
-	 * @param string $settingName
-	 * @param mixed  $defaultValue
+	 * @param mixed       $object
+	 * @param string      $settingName
+	 * @param mixed       $defaultValue
+	 * @param string|null $description
 	 */
-	public function __construct($object, $settingName, $defaultValue) {
+	public function __construct($object, $settingName, $defaultValue, $description = null) {
 		if ($object === false) {
 			// Fetched from Database
 			$this->value   = $this->castValue($this->value);
@@ -68,6 +70,7 @@ class Setting implements UsageInformationAble {
 				$this->value = $defaultValue;
 			}
 			$this->default = $this->value;
+			$this->description = $description;
 		}
 	}
 
@@ -111,7 +114,7 @@ class Setting implements UsageInformationAble {
 		if (is_int($value)) {
 			return self::TYPE_INT;
 		}
-		if (is_real($value)) {
+		if (is_float($value)) {
 			return self::TYPE_REAL;
 		}
 		if (is_bool($value)) {

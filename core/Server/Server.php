@@ -18,7 +18,7 @@ use Maniaplanet\DedicatedServer\Xmlrpc\Exception;
  * Class providing access to the connected ManiaPlanet Server
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
- * @copyright 2014-2019 ManiaControl Team
+ * @copyright 2014-2020 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class Server implements CallbackListener, CommandListener, UsageInformationAble {
@@ -100,11 +100,20 @@ class Server implements CallbackListener, CommandListener, UsageInformationAble 
 		$hours        = intval($hourstotal - 24 * $days);
 		$minutes      = intval($minutestotal - 24 * 60 * $days - $hours * 60);
 
-		$days > 1 ? $dayString = 'days' : $dayString = 'day';
-		$hours > 1 ? $hourString = 'hours' : $hourString = 'hour';
-		$minutes > 1 ? $minuteString = 'minutes' : $minuteString = 'minute';
+		$dayString    = ($days    == 1 ? 'day'    : 'days'   );
+		$hourString   = ($hours   == 1 ? 'hour'   : 'hours'  );
+		$minuteString = ($minutes == 1 ? 'minute' : 'minutes');
 
-		$this->maniaControl->getChat()->sendChat('Server is running since $<$fff' . $days . '$> ' . $dayString . ', $<$fff' . $hours . '$> ' . $hourString . ' and $<$fff' . $minutes . '$> ' . $minuteString, $player);
+		$message = $this->maniaControl->getChat()->formatMessage(
+			'Server is running since %s %s, %s %s and %s %s',
+			$days,
+			$dayString,
+			$hours,
+			$hourString,
+			$minutes,
+			$minuteString
+		);
+		$this->maniaControl->getChat()->sendChat($message, $player);
 	}
 
 	/**

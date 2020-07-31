@@ -21,7 +21,7 @@ use React\Socket\Server;
  * Class for managing Socket Callbacks
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
- * @copyright 2014-2019 ManiaControl Team
+ * @copyright 2014-2020 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class CommunicationManager implements CallbackListener, UsageInformationAble {
@@ -266,8 +266,10 @@ class CommunicationManager implements CallbackListener, UsageInformationAble {
 							$data = json_decode($data);
 
 							if ($data == null) {
-								$data = array("error" => true, "data" => "Data is not provided as an valid AES-196-encrypted encrypted JSON");
+								Logger::log("[CommunicationManager] Error: Data is not provided as an valid AES-196 encrypted JSON");
+								$data = array("error" => true, "data" => "Data is not provided as an valid AES-196 encrypted JSON");
 							} else if (!property_exists($data, "method") || !property_exists($data, "data")) {
+								Logger::log("[CommunicationManager] Invalid Communication Message Received");
 								$data = array("error" => true, "data" => "Invalid Message");
 							} else {
 								$answer = $this->triggerCommuncationCallback($data->method, $data->data);

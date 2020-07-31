@@ -13,7 +13,7 @@ use Maniaplanet\DedicatedServer\Xmlrpc\TransportException;
  * Error and Exception Manager Class
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
- * @copyright 2014-2019 ManiaControl Team
+ * @copyright 2014-2020 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class ErrorHandler {
@@ -122,24 +122,24 @@ class ErrorHandler {
 				$report['FileLine'] = self::stripBaseDir($fileLine);
 			}
 
-
 			if ($sourceClass) {
 				$report['SourceClass'] = $sourceClass;
 				$pluginId              = PluginManager::getPluginId($sourceClass);
 				if ($pluginId > 0) {
 					$report['PluginId'] = $pluginId;
-
+					$report['PluginVersion'] = PluginManager::getPluginVersion($sourceClass);
 
 					if ($isFatalError) {
 						$this->maniaControl->getPluginManager()->deactivatePlugin($sourceClass);
-						$this->maniaControl->getChat()->sendError("Plugin " . $sourceClass . " has an Error -> The Plugin will be deactivated and ManiaControl restarted");
-						Logger::logError("Plugin " . $sourceClass . " has an Error -> The Plugin will be deactivated and ManiaControl restarted");
+						$message = $this->maniaControl->getChat()->formatMessage(
+							'Plugin %s has an Error -> The Plugin will be deactivated and ManiaControl restarted!',
+							$sourceClass
+						);
+						$this->maniaControl->getChat()->sendError($message);
+						Logger::logError("Plugin {$sourceClass} has an Error -> The Plugin will be deactivated and ManiaControl restarted!");
 						$isPluginError = true;
 					}
 				}
-
-				$report['PluginId']      = $pluginId;
-				$report['PluginVersion'] = PluginManager::getPluginVersion($sourceClass);
 			}
 
 			if ($traceString) {
@@ -199,7 +199,7 @@ class ErrorHandler {
 
 		if ($isFatalError) {
 			if ($isPluginError) {
-				$this->maniaControl->restart();
+				$this->maniaControl->reboot();
 			} else {
 				$this->maniaControl->quit('Quitting ManiaControl after Fatal Error.');
 			}
@@ -253,8 +253,8 @@ class ErrorHandler {
 	 * @return bool
 	 */
 	private static function isUserErrorNumber($errorNumber) {
-		return ($errorNumber & E_USER_ERROR || $errorNumber & E_USER_WARNING || $errorNumber & E_USER_NOTICE
-		        || $errorNumber & E_USER_DEPRECATED);
+		$userError = (E_USER_ERROR | E_USER_WARNING | E_USER_NOTICE | E_USER_DEPRECATED);
+		return is_int($errorNumber) && ($errorNumber & $userError);
 	}
 
 	/**
@@ -265,7 +265,7 @@ class ErrorHandler {
 	 */
 	public static function isFatalError($errorNumber) {
 		$fatalError = (E_ERROR | E_PARSE | E_CORE_ERROR | E_COMPILE_ERROR | E_USER_ERROR | E_RECOVERABLE_ERROR);
-		return ($errorNumber & $fatalError);
+		return is_int($errorNumber) && ($errorNumber & $fatalError);
 	}
 
 	/**
@@ -478,9 +478,23 @@ class ErrorHandler {
 			$report['Message']         = $message;
 			$report['Class']           = $exceptionClass;
 			$report['FileLine']        = self::stripBaseDir($exception->getFile()) . ': ' . $exception->getLine();
-			$report['SourceClass']     = $sourceClass;
-			$report['PluginId']        = PluginManager::getPluginId($sourceClass);
-			$report['PluginVersion']   = PluginManager::getPluginVersion($sourceClass);
+			if ($sourceClass) {
+				$report['SourceClass'] = $sourceClass;
+				$pluginId              = PluginManager::getPluginId($sourceClass);
+				if ($pluginId > 0) {
+					$report['PluginId'] = $pluginId;
+					$report['PluginVersion'] = PluginManager::getPluginVersion($sourceClass);
+
+					$this->maniaControl->getPluginManager()->deactivatePlugin($sourceClass);
+					$message = $this->maniaControl->getChat()->formatMessage(
+						'Plugin %s has an Error -> The Plugin will be deactivated and ManiaControl restarted!',
+						$sourceClass
+					);
+					$this->maniaControl->getChat()->sendError($message);
+					Logger::logError("Plugin {$sourceClass} has an Error -> The Plugin will be deactivated and ManiaControl restarted!");
+				}
+			}
+
 			$report['Backtrace']       = $traceString;
 			$report['OperatingSystem'] = php_uname();
 			$report['PHPVersion']      = phpversion();
@@ -513,7 +527,7 @@ class ErrorHandler {
 
 		if ($shutdown) {
 			if ($this->shouldRestart()) {
-				$this->maniaControl->restart();
+				$this->maniaControl->reboot();
 			}
 			try {
 				$this->maniaControl->quit('Quitting ManiaControl after Exception.');

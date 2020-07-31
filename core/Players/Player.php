@@ -16,7 +16,7 @@ use Maniaplanet\DedicatedServer\Structures\LadderStats;
  * Player Model Class
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
- * @copyright 2014-2019 ManiaControl Team
+ * @copyright 2014-2020 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class Player implements Dumpable, UsageInformationAble {
@@ -373,7 +373,7 @@ class Player implements Dumpable, UsageInformationAble {
 	 * @return string
 	 */
 	public function getAuthLevelName(){
-		return AuthenticationManager::getAuthLevelName($this->authLevel);
+		return AuthenticationManager::getAuthLevelName(intval($this->authLevel));
 	}
 
 	/**
@@ -383,7 +383,7 @@ class Player implements Dumpable, UsageInformationAble {
 	 * @return string
 	 */
 	public function getAuthLevelAbbreviation(){
-		return AuthenticationManager::getAuthLevelAbbreviation($this->authLevel);
+		return AuthenticationManager::getAuthLevelAbbreviation(intval($this->authLevel));
 	}
 
 	/**

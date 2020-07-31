@@ -5,19 +5,19 @@ namespace ManiaControl\Server;
 use FML\Components\CheckBox;
 use FML\Controls\Entry;
 use FML\Controls\Frame;
-use FML\Controls\Label;
+
 use FML\Controls\Labels\Label_Text;
 use FML\Controls\Quad;
 use FML\Controls\Quads\Quad_Icons64x64_1;
 use FML\Script\Features\Paging;
 use FML\Script\Script;
-use FML\XmlRpc\UIProperties;
+
 use ManiaControl\Admin\AuthenticationManager;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\Callbacks;
 use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\Callbacks\Structures\Common\UIPropertiesBaseStructure;
-use ManiaControl\Configurator\Configurator;
+
 use ManiaControl\Configurator\ConfiguratorMenu;
 use ManiaControl\Logger;
 use ManiaControl\ManiaControl;
@@ -440,7 +440,7 @@ class ServerUIPropertiesMenu implements ConfiguratorMenu, CallbackListener, Time
 		// Notifications
 		$uiPropertiesCount = count($newUIProperties);
 		$uiPropertyIndex   = 0;
-		$title             = $this->maniaControl->getAuthenticationManager()->getAuthLevelName($player);
+		$title             = $player->getAuthLevelName();
 		$chatMessage       = '$ff0' . $title . ' ' . $player->getEscapedNickname() . ' set ServerUIPropert' . ($uiPropertiesCount > 1 ? 'ies' : 'y') . ' ';
 		foreach ($newUIProperties as $uiPropertyName => $uiPropertyValue) {
 			$chatMessage .= '$<$fff' . $uiPropertyName . '$>$ff0 ';

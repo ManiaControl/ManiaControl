@@ -36,7 +36,7 @@ use MCTeam\KarmaPlugin;
  * MapList Widget Class
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
- * @copyright 2014-2019 ManiaControl Team
+ * @copyright 2014-2020 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class MapList implements ManialinkPageAnswerListener, CallbackListener {
@@ -57,7 +57,6 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 	const ACTION_RESET               = 'MapList.ResetMapList';
 	const MAX_MAPS_PER_PAGE          = 13;
 	const MAX_PAGES_PER_CHUNK        = 2;
-	const DEFAULT_KARMA_PLUGIN       = 'MCTeam\KarmaPlugin';
 	const DEFAULT_CUSTOM_VOTE_PLUGIN = 'MCTeam\CustomVotesPlugin';
 	const CACHE_CURRENT_PAGE         = 'CurrentPage';
 	const WIDGET_NAME                = 'MapList';
@@ -163,67 +162,37 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 
 		// Admin Buttons
 		if ($this->maniaControl->getAuthenticationManager()->checkPermission($player, MapQueue::SETTING_PERMISSION_CLEAR_MAPQUEUE)) {
-			// Clear Map-Queue
-			$label = new Label_Button();
-			$frame->addChild($label);
-			$label->setText('Clear Map-Queue');
-			$label->setTextSize(1);
-			$label->setPosition($width / 2 - 8, $buttonY, 0.1);
-			$label->setHorizontalAlign($label::RIGHT);
-
-			$quad = new Quad_BgsPlayerCard();
-			$frame->addChild($quad);
-			$quad->setPosition($width / 2 - 5, $buttonY, 0.01);
-			$quad->setSubStyle($quad::SUBSTYLE_BgPlayerCardBig);
-			$quad->setHorizontalAlign($quad::RIGHT);
-			$quad->setSize(29, 4);
-			$quad->setAction(self::ACTION_CLEAR_MAPQUEUE);
+			$clearMapQueueButton = $this->maniaControl->getManialinkManager()->getElementBuilder()->buildRoundTextButton(
+				'Clear Map-Queue',
+				30,
+				4,
+				self::ACTION_CLEAR_MAPQUEUE
+			);
+			$frame->addChild($clearMapQueueButton);
+			$clearMapQueueButton->setPosition($width/2 - 5 - 30/2, $buttonY);
 		}
 
 		if ($this->maniaControl->getAuthenticationManager()->checkPermission($player, MapManager::SETTING_PERMISSION_CHECK_UPDATE)) {
-			$mxCheckForUpdatesX = $width / 2 - 37;
-			$buttonWidth        = 35;
-			$iconSize           = 3;
-			// Check Update
-			$label = new Label_Button();
-			$frame->addChild($label);
-			$label->setText('Check MX for Updates');
-			$label->setPosition($mxCheckForUpdatesX - 1.5, $buttonY, 0.02);
-			$label->setTextSize(1);
-			$label->setWidth(30);
-			$label->setHorizontalAlign($label::RIGHT);
-
-			$quad = new Quad_BgsPlayerCard();
-			$frame->addChild($quad);
-			$quad->setPosition($mxCheckForUpdatesX, $buttonY, 0.01);
-			$quad->setSubStyle($quad::SUBSTYLE_BgPlayerCardBig);
-			$quad->setHorizontalAlign($quad::RIGHT);
-			$quad->setSize($buttonWidth, 4);
-			$quad->setAction(self::ACTION_CHECK_UPDATE);
-
-			$mxQuad = new Quad();
-			$frame->addChild($mxQuad);
-			$mxQuad->setSize($iconSize, $iconSize);
-			$mxQuad->setImageUrl($this->maniaControl->getManialinkManager()->getIconManager()->getIcon(IconManager::MX_ICON_GREEN));
-			$mxQuad->setImageFocusUrl($this->maniaControl->getManialinkManager()->getIconManager()->getIcon(IconManager::MX_ICON_GREEN_MOVER));
-			$mxQuad->setPosition($mxCheckForUpdatesX - $buttonWidth + 3, $buttonY);
-			$mxQuad->setZ(0.2);
+			$mxCheckForUpdatesButton = $this->maniaControl->getManialinkManager()->getElementBuilder()->buildRoundTextButton(
+				'Check MX for Updates',
+				36,
+				4,
+				self::ACTION_CHECK_UPDATE,
+				$this->maniaControl->getManialinkManager()->getIconManager()->getIcon(IconManager::MX_ICON_GREEN)
+			);
+			$frame->addChild($mxCheckForUpdatesButton);
+			$mxCheckForUpdatesButton->setPosition($width/2 - 5 - 30 - 5 - 36/2, $buttonY);
 		}
 
 		if ($this->maniaControl->getAuthenticationManager()->checkPermission($player, MapManager::SETTING_PERMISSION_ADD_MAP)) {
-			// Directory browser
-			$browserButton = new Label_Button();
+			$browserButton = $this->maniaControl->getManialinkManager()->getElementBuilder()->buildRoundTextButton(
+				'Directory Browser',
+				36,
+				4,
+				DirectoryBrowser::ACTION_SHOW
+			);
 			$frame->addChild($browserButton);
-			$browserButton->setPosition($width / -2 + 20, $buttonY, 0.01);
-			$browserButton->setTextSize(1);
-			$browserButton->setText('Directory Browser');
-
-			$browserQuad = new Quad_BgsPlayerCard();
-			$frame->addChild($browserQuad);
-			$browserQuad->setPosition($width / -2 + 20, $buttonY, 0.01);
-			$browserQuad->setSubStyle($browserQuad::SUBSTYLE_BgPlayerCardBig);
-			$browserQuad->setSize(35, 4);
-			$browserQuad->setAction(DirectoryBrowser::ACTION_SHOW);
+			$browserButton->setPosition(-$width/2 + 5 + 36/2, $buttonY);
 		}
 
 		// Headline
@@ -249,8 +218,6 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 		$frame->addChild($descriptionLabel);
 
 		$queuedMaps = $this->maniaControl->getMapManager()->getMapQueue()->getQueuedMapsRanking();
-		/** @var KarmaPlugin $karmaPlugin */
-		$karmaPlugin = $this->maniaControl->getPluginManager()->getPlugin(self::DEFAULT_KARMA_PLUGIN);
 
 		$pageNumber = 1 + $chunkIndex * self::MAX_PAGES_PER_CHUNK;
 		$paging->setStartPageNumber($pageIndex + 1);
@@ -460,63 +427,14 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 			}
 
 			// Display Karma bar
-			if ($karmaPlugin) {
-				$displayMxKarma = $this->maniaControl->getSettingManager()->getSettingValue($karmaPlugin, $karmaPlugin::SETTING_WIDGET_DISPLAY_MX);
-
-				//Display Mx Karma
-				if ($displayMxKarma && $map->mx) {
-					$karma = $map->mx->ratingVoteAverage / 100;
-					$votes = array("count" => $map->mx->ratingVoteCount);
-
-					//Display Local Karma
-				} else {
-					$karma = $karmaPlugin->getMapKarma($map);
-					$votes = $karmaPlugin->getMapVotes($map);
-				}
-
-				if (is_numeric($karma) && $votes['count'] > 0) {
-					if ($this->maniaControl->getSettingManager()->getSettingValue($karmaPlugin, $karmaPlugin::SETTING_NEWKARMA)) {
-						$karmaText = '  ' . round($karma * 100.) . '% (' . $votes['count'] . ')';
-					} else {
-						$min  = 0;
-						$plus = 0;
-						foreach ($votes as $vote) {
-							if (isset($vote->vote)) {
-								if ($vote->vote !== 0.5) {
-									if ($vote->vote < 0.5) {
-										$min = $min + $vote->count;
-									} else {
-										$plus = $plus + $vote->count;
-									}
-								}
-							}
-						}
-						$endKarma  = $plus - $min;
-						$karmaText = '  ' . $endKarma . ' (' . $votes['count'] . 'x / ' . round($karma * 100.) . '%)';
-					}
-
-					$karmaGauge = new Gauge();
-					$mapFrame->addChild($karmaGauge);
-					$karmaGauge->setZ(0.2);
-					$karmaGauge->setX($posX + 120);
-					$karmaGauge->setY(0.2);
-					$karmaGauge->setSize(20, 10);
-					$karmaGauge->setDrawBackground(false);
-					$karma = floatval($karma);
-					$karmaGauge->setRatio($karma + 0.15 - $karma * 0.15);
-					$karmaColor = ColorUtil::floatToStatusColor($karma);
-					$karmaGauge->setColor($karmaColor . '9');
-
-					$karmaLabel = new Label();
-					$mapFrame->addChild($karmaLabel);
-					$karmaLabel->setZ(2);
-					$karmaLabel->setX($posX + 120);
-					$karmaLabel->setSize(20 * 0.9, 5);
-					$karmaLabel->setY(-0.2);
-					$karmaLabel->setTextSize(0.9);
-					$karmaLabel->setTextColor('000');
-					$karmaLabel->setText($karmaText);
-				}
+			$karmaGauge = $this->maniaControl->getManialinkManager()->getElementBuilder()->buildKarmaGauge(
+				$map,
+				20,
+				10
+			);
+			if ($karmaGauge) {
+				$mapFrame->addChild($karmaGauge);
+				$karmaGauge->setX($posX + 120);
 			}
 
 			$posY -= 4;
@@ -670,18 +588,22 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$this->maniaControl->getMapManager()->getMapQueue()->dontQueueNextMapChange();
 				try {
 					$this->maniaControl->getClient()->jumpToMapIdent($mapUid);
-				} catch (NextMapException $exception) {
-					$this->maniaControl->getChat()->sendError('Error on Jumping to Map Ident: ' . $exception->getMessage(), $player);
+				} catch (NextMapException $e) {
+					$this->maniaControl->getChat()->sendException($e, $player);
 					break;
-				} catch (NotInListException $exception) {
+				} catch (NotInListException $e) {
 					// TODO: "Map not found." -> how is that possible?
-					$this->maniaControl->getChat()->sendError('Error on Jumping to Map Ident: ' . $exception->getMessage(), $player);
+					$this->maniaControl->getChat()->sendException($e, $player);
 					break;
 				}
 
 				$map = $this->maniaControl->getMapManager()->getMapByUid($mapUid);
 
-				$message = $player->getEscapedNickname() . ' skipped to Map $z' . $map->getEscapedName() . '!';
+				$message = $this->maniaControl->getChat()->formatMessage(
+					'%s skipped to Map %s!',
+					$player,
+					$map
+				);
 				$this->maniaControl->getChat()->sendSuccess($message);
 				Logger::logInfo($message, true);
 
@@ -692,14 +614,19 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 				$votesPlugin = $this->maniaControl->getPluginManager()->getPlugin(self::DEFAULT_CUSTOM_VOTE_PLUGIN);
 				$map         = $this->maniaControl->getMapManager()->getMapByUid($mapUid);
 
-				$message = $player->getEscapedNickname() . '$s started a vote to switch to ' . $map->getEscapedName() . '!';
+				$message = $this->maniaControl->getChat()->formatMessage(
+					'%s started a vote to switch to Map %s!',
+					$player,
+					$map
+				);
 
 				$votesPlugin->defineVote('switchmap', 'Goto ' . $map->name, true, $message)->setStopCallback(Callbacks::ENDMAP);
-
 				$votesPlugin->startVote($player, 'switchmap', function ($result) use (&$votesPlugin, &$map) {
-					$votesPlugin->undefineVote('switchmap');
+					// will be only called, if successful
 
-					//Don't queue on Map-Change
+					$votesPlugin->undefineVote('switchmap');
+					
+					// Don't queue on Map-Change
 					$this->maniaControl->getMapManager()->getMapQueue()->dontQueueNextMapChange();
 
 					try {
@@ -713,7 +640,7 @@ class MapList implements ManialinkPageAnswerListener, CallbackListener {
 						return;
 					}
 
-					$this->maniaControl->getChat()->sendInformation('$sVote Successful -> Map switched!');
+					$this->maniaControl->getChat()->sendSuccess('Vote Successful -> Map switched!');
 				});
 				break;
 			case self::ACTION_QUEUED_MAP:

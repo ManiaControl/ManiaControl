@@ -18,7 +18,7 @@ use Maniaplanet\DedicatedServer\Structures\VoteRatio;
  * Class offering a Configurator Menu for Vote Ratios
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
- * @copyright 2014-2019 ManiaControl Team
+ * @copyright 2014-2020 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class VoteRatiosMenu implements CallbackListener, ConfiguratorMenu, TimerListener {
@@ -172,6 +172,10 @@ class VoteRatiosMenu implements CallbackListener, ConfiguratorMenu, TimerListene
 	 * @param string $commandName
 	 */
 	private function sendInvalidValueError(Player $player, $commandName) {
-		$this->maniaControl->getChat()->sendError("Invalid Value given for '{$commandName}'!", $player);
+		$message = $this->maniaControl->getChat()->formatMessage(
+			'Invalid Value given for %s!',
+			$commandName
+		);
+		$this->maniaControl->getChat()->sendError($message, $player);
 	}
 }

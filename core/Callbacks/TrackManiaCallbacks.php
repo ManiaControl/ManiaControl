@@ -19,7 +19,7 @@ use ManiaControl\ManiaControl;
  * Class handling and parsing TrackMania Callbacks
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
- * @copyright 2014-2019 ManiaControl Team
+ * @copyright 2014-2020 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class TrackManiaCallbacks implements CallbackListener {
@@ -41,6 +41,7 @@ class TrackManiaCallbacks implements CallbackListener {
 
 		// Register for script callbacks
 		$callbackManager->registerCallbackListener(Callbacks::SCRIPTCALLBACK, $this, 'handleScriptCallbacks');
+		$callbackManager->registerCallbackListener(Callbacks::TM_ONWAYPOINT, $this, 'handleWayPointCallback');
 	}
 
 	/**
@@ -73,9 +74,7 @@ class TrackManiaCallbacks implements CallbackListener {
 				$this->maniaControl->getCallbackManager()->triggerCallback($name, new BasePlayerTimeStructure($this->maniaControl, $data));
 				break;
 			case Callbacks::TM_ONWAYPOINT:
-				$this->handleWayPointCallback(new OnWayPointEventStructure($this->maniaControl, $data));
-
-				//$this->maniaControl->getCallbackManager()->triggerCallback($name, $wayPointStructure);
+				$this->maniaControl->getCallbackManager()->triggerCallback($name, new OnWayPointEventStructure($this->maniaControl, $data));
 				break;
 			case Callbacks::TM_ONRESPAWN:
 				$this->maniaControl->getCallbackManager()->triggerCallback($name, new OnRespawnStructure($this->maniaControl, $data));
@@ -105,13 +104,11 @@ class TrackManiaCallbacks implements CallbackListener {
 	 *
 	 * @param \ManiaControl\Callbacks\Structures\TrackMania\OnWayPointEventStructure $structure
 	 */
-	private function handleWayPointCallback(OnWayPointEventStructure $structure) {
+	public function handleWayPointCallback(OnWayPointEventStructure $structure) {
 		if ($structure->getIsEndRace()) {
-			$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::TM_ONFINISHLINE, $structure);
+			$this->maniaControl->getCallbackManager()->addAdhocCallback(Callbacks::TM_ONFINISHLINE, $structure);
 		} else if ($structure->getIsEndLap()) {
-			$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::TM_ONLAPFINISH, $structure);
-		} else {
-			$this->maniaControl->getCallbackManager()->triggerCallback(Callbacks::TM_ONWAYPOINT, $structure);
+			$this->maniaControl->getCallbackManager()->addAdhocCallback(Callbacks::TM_ONLAPFINISH, $structure);
 		}
 	}
 }

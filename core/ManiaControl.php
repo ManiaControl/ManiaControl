@@ -4,10 +4,12 @@ namespace ManiaControl;
 
 use ManiaControl\Admin\ActionsMenu;
 use ManiaControl\Admin\AuthenticationManager;
+use ManiaControl\Admin\ColorManager;
 use ManiaControl\Bills\BillManager;
 use ManiaControl\Callbacks\CallbackListener;
 use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Callbacks\Callbacks;
+use ManiaControl\Callbacks\CallQueueManager;
 use ManiaControl\Callbacks\EchoManager;
 use ManiaControl\Callbacks\TimerListener;
 use ManiaControl\Callbacks\TimerManager;
@@ -32,6 +34,7 @@ use ManiaControl\Script\ModeScriptEventManager;
 use ManiaControl\Server\Server;
 use ManiaControl\Settings\SettingManager;
 use ManiaControl\Statistics\StatisticManager;
+use ManiaControl\Update\ChangeLog;
 use ManiaControl\Update\UpdateManager;
 use ManiaControl\Utils\CommandLineHelper;
 use ManiaControl\Utils\SystemUtil;
@@ -43,7 +46,7 @@ use Maniaplanet\DedicatedServer\Xmlrpc\TransportException;
  * ManiaControl Server Controller for ManiaPlanet Server
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
- * @copyright 2014-2019 ManiaControl Team
+ * @copyright 2014-2020 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class ManiaControl implements CallbackListener, CommandListener, TimerListener, CommunicationListener, UsageInformationAble {
@@ -52,13 +55,13 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener, 
 	/*
 	 * Constants
 	 */
-	const VERSION                     = '0.232';
+	const VERSION                     = '0.256';
 	const API_VERSION                 = '2013-04-16';
 	const MIN_DEDIVERSION             = '2017-05-03_21_00';
 	const SCRIPT_TIMEOUT              = 40;
 	const URL_WEBSERVICE              = 'https://ws.maniacontrol.com/';
 	const SETTING_PERMISSION_SHUTDOWN = 'Shutdown ManiaControl';
-	const SETTING_PERMISSION_RESTART  = 'Restart ManiaControl';
+	const SETTING_PERMISSION_REBOOT   = 'Reboot ManiaControl';
 
 	/*
 	 * Public properties
@@ -84,10 +87,22 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener, 
 	 * @see getCallbackManager()
 	 */
 	private $callbackManager = null;
+	/** @var CallQueueManager $callQueueManager
+	 * @see getCallQueueManager()
+	 */
+	private $callQueueManager = null;
 	/** @var Chat $chat
 	 * @see getChat()
 	 */
 	private $chat = null;
+	/** @var ChangeLog $changeLog
+	 * @see getChangeLog()
+	 */
+	private $changeLog = null;
+	/** @var ColorManager $colorManager
+	 * @see getColorManager()
+	 */
+	private $colorManager = null;
 	/** @var \SimpleXMLElement $config
 	 * @see getConfig()
 	 */
@@ -180,6 +195,7 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener, 
 
 		// Load ManiaControl Modules
 		$this->callbackManager        = new CallbackManager($this);
+		$this->callQueueManager       = new CallQueueManager($this);
 		$this->modeScriptEventManager = new ModeScriptEventManager($this);
 		$this->echoManager            = new EchoManager($this);
 		$this->communicationManager   = new CommunicationManager($this);
@@ -196,19 +212,22 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener, 
 		$this->server                 = new Server($this);
 		$this->authenticationManager  = new AuthenticationManager($this);
 		$this->playerManager          = new PlayerManager($this);
+		$this->colorManager           = new ColorManager($this);
 		$this->mapManager             = new MapManager($this);
 		$this->configurator           = new Configurator($this);
 		$this->pluginManager          = new PluginManager($this);
 		$this->updateManager          = new UpdateManager($this);
+		$this->changeLog              = new ChangeLog($this);
 
 		$this->getErrorHandler()->init();
 
 		// Permissions
 		$this->getAuthenticationManager()->definePermissionLevel(self::SETTING_PERMISSION_SHUTDOWN, AuthenticationManager::AUTH_LEVEL_SUPERADMIN);
-		$this->getAuthenticationManager()->definePermissionLevel(self::SETTING_PERMISSION_RESTART, AuthenticationManager::AUTH_LEVEL_SUPERADMIN);
+		$this->getAuthenticationManager()->definePermissionLevel(self::SETTING_PERMISSION_REBOOT, AuthenticationManager::AUTH_LEVEL_SUPERADMIN);
 
 		// Commands
 		$this->getCommandManager()->registerCommandListener('version', $this, 'commandVersion', false, 'Shows ManiaControl version.');
+		$this->getCommandManager()->registerCommandListener('reboot', $this, 'commandReboot', true, 'Reboots ManiaControl.');
 		$this->getCommandManager()->registerCommandListener('restart', $this, 'commandRestart', true, 'Restarts ManiaControl.');
 		$this->getCommandManager()->registerCommandListener('shutdown', $this, 'commandShutdown', true, 'Shuts ManiaControl down.');
 
@@ -216,13 +235,13 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener, 
 		$this->getTimerManager()->registerTimerListening($this, 'checkConnection', 1000 * 30);
 
 		// Communication Methods
-		$this->getCommunicationManager()->registerCommunicationListener(CommunicationMethods::RESTART_MANIA_CONTROL, $this, function ($data) {
+		$this->getCommunicationManager()->registerCommunicationListener(CommunicationMethods::REBOOT_MANIA_CONTROL, $this, function ($data) {
 			//Delay Shutdown to send answer first
 			$this->getTimerManager()->registerOneTimeListening($this, function () use ($data) {
 				if (is_object($data) && property_exists($data, "message")) {
-					$this->restart($data->message);
+					$this->reboot($data->message);
 				} else {
-					$this->restart();
+					$this->reboot();
 				}
 			}, 3000);
 			return new CommunicationAnswer();
@@ -299,6 +318,15 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener, 
 	}
 
 	/**
+	 * Return the call queue manager
+	 *
+	 * @return CallQueueManager
+	 */
+	public function getCallQueueManager() {
+		return $this->callQueueManager;
+	}
+
+	/**
 	 * Return the echo manager
 	 *
 	 * @return EchoManager
@@ -323,6 +351,15 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener, 
 	 */
 	public function getChat() {
 		return $this->chat;
+	}
+
+	/**
+	 * Return the changelog
+	 *
+	 * @return ChangeLog
+	 */
+	public function getChangeLog() {
+		return $this->changeLog;
 	}
 
 	/**
@@ -437,6 +474,15 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener, 
 	}
 
 	/**
+	 * Return the color manager
+	 *
+	 * @return ColorManager
+	 */
+	public function getColorManager() {
+		return $this->colorManager;
+	}
+
+	/**
 	 * Return the setting manager
 	 *
 	 * @return SettingManager
@@ -491,42 +537,71 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener, 
 	}
 
 	/**
+	 * Handle Reboot AdminCommand
+	 *
+	 * @param array  $chatCallback
+	 * @param Player $player
+	 */
+	public function commandReboot(array $chatCallback, Player $player) {
+		if (!$this->getAuthenticationManager()->checkPermission($player, self::SETTING_PERMISSION_REBOOT)) {
+			$this->getAuthenticationManager()->sendNotAllowed($player);
+			return;
+		}
+		$this->reboot("ManiaControl Reboot requested by '{$player->login}'!");
+	}
+
+	/**
 	 * Handle Restart AdminCommand
 	 *
 	 * @param array  $chatCallback
 	 * @param Player $player
 	 */
 	public function commandRestart(array $chatCallback, Player $player) {
-		if (!$this->getAuthenticationManager()->checkPermission($player, self::SETTING_PERMISSION_RESTART)) {
+		if (!$this->getAuthenticationManager()->checkPermission($player, self::SETTING_PERMISSION_REBOOT)) {
 			$this->getAuthenticationManager()->sendNotAllowed($player);
 			return;
 		}
-		$this->restart("ManiaControl Restart requested by '{$player->login}'!");
+		$message = $this->getChat()->formatMessage(
+			'The command %s got disabled, reboot ManiaControl with %s instead!',
+			'//restart',
+			'//reboot'
+		);
+		$this->getChat()->sendError($message, $player);
 	}
 
 	/**
+	 * @deprecated
 	 * Restart ManiaControl
 	 *
 	 * @param string $message
 	 */
 	public function restart($message = null) {
-		// Trigger callback on Restart
-		$this->getCallbackManager()->triggerCallback(Callbacks::ONRESTART);
+		$this->reboot($message);
+	}
 
-		// Announce restart
+	/**
+	 * Reboot ManiaControl
+	 *
+	 * @param string $message
+	 */
+	public function reboot($message = null) {
+		// Trigger callback on Reboot
+		$this->getCallbackManager()->triggerCallback(Callbacks::ONREBOOT);
+
+		// Announce reboot
 		try {
-			$this->getChat()->sendInformation('Restarting ManiaControl...', null, true, false);
+			$this->getChat()->sendInformation('Rebooting ManiaControl...', null, true, false);
 		} catch (TransportException $e) {
 		}
-		Logger::log('Restarting ManiaControl... ' . $message);
+		Logger::log('Rebooting ManiaControl... ' . $message);
 
 		// Start new instance
 		if (!defined('PHP_UNIT_TEST')) {
-			SystemUtil::restart();
+			SystemUtil::reboot();
 		}
 
 		// Quit old instance
-		$this->quit('Quitting ManiaControl to restart.');
+		$this->quit('Quitting ManiaControl to reboot.');
 	}
 
 	/**
@@ -704,6 +779,9 @@ class ManiaControl implements CallbackListener, CommandListener, TimerListener, 
 
 		// Manage callbacks
 		$this->getCallbackManager()->manageCallbacks();
+
+		// Manage queued calls
+		$this->getCallQueueManager()->manageCallQueue();
 
 		// Manage async file reader
 		$this->getFileReader()->appendData();

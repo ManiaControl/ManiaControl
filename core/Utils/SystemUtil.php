@@ -8,7 +8,7 @@ use ManiaControl\Logger;
  * System Utility Class
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
- * @copyright 2014-2019 ManiaControl Team
+ * @copyright 2014-2020 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class SystemUtil {
@@ -134,13 +134,13 @@ class SystemUtil {
 	}
 
 	/**
-	 * Restart ManiaControl immediately
+	 * Reboot ManiaControl immediately
 	 */
-	public static function restart() {
+	public static function reboot() {
 		if (SystemUtil::isUnix()) {
-			self::restartUnix();
+			self::rebootUnix();
 		} else {
-			self::restartWindows();
+			self::rebootWindows();
 		}
 	}
 
@@ -156,9 +156,9 @@ class SystemUtil {
 	/**
 	 * Perform restart on Unix
 	 */
-	private static function restartUnix() {
+	private static function rebootUnix() {
 		if (!SystemUtil::checkFunctionAvailability('exec')) {
-			Logger::log("Can't restart ManiaControl because the function 'exec' is disabled!");
+			Logger::log("Can't reboot ManiaControl because the function 'exec' is disabled!");
 			return;
 		}
 		$fileName = null;
@@ -169,7 +169,7 @@ class SystemUtil {
 		}
 		$filePath = MANIACONTROL_PATH . $fileName;
 		if (!is_readable($filePath)) {
-			Logger::log("Can't restart ManiaControl because the file '{$fileName}' doesn't exist or isn't readable!");
+			Logger::log("Can't reboot ManiaControl because the file '{$fileName}' doesn't exist or isn't readable!");
 			return;
 		}
 		$command = 'sh ' . escapeshellarg($filePath) . ' > /dev/null &';
@@ -197,11 +197,11 @@ class SystemUtil {
 	}
 
 	/**
-	 * Perform restart on Windows
+	 * Perform reboot on Windows
 	 */
-	private static function restartWindows() {
+	private static function rebootWindows() {
 		if (!SystemUtil::checkFunctionAvailability('system')) {
-			Logger::log("Can't restart ManiaControl because the function 'system' is disabled!");
+			Logger::log("Can't reboot ManiaControl because the function 'system' is disabled!");
 			return;
 		}
 		$fileName = null;
@@ -212,7 +212,7 @@ class SystemUtil {
 		}
 		$filePath = MANIACONTROL_PATH . $fileName;
 		if (!is_readable($filePath)) {
-			Logger::log("Can't restart ManiaControl because the file '{$fileName}' doesn't exist or isn't readable!");
+			Logger::log("Can't reboot ManiaControl because the file '{$fileName}' doesn't exist or isn't readable!");
 			return;
 		}
 		$command = escapeshellarg($filePath);

@@ -11,9 +11,11 @@ use ManiaControl\Callbacks\CallbackManager;
 use ManiaControl\Commands\CommandListener;
 use ManiaControl\Logger;
 use ManiaControl\ManiaControl;
+use ManiaControl\Manialinks\ElementBuilder;
 use ManiaControl\Manialinks\IconManager;
 use ManiaControl\Manialinks\ManialinkPageAnswerListener;
 use ManiaControl\Players\Player;
+use ManiaControl\Utils\DataUtil;
 use Maniaplanet\DedicatedServer\Xmlrpc\ChangeInProgressException;
 use Maniaplanet\DedicatedServer\Xmlrpc\FaultException;
 
@@ -21,7 +23,7 @@ use Maniaplanet\DedicatedServer\Xmlrpc\FaultException;
  * Class offering Commands to manage Maps
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
- * @copyright 2014-2019 ManiaControl Team
+ * @copyright 2014-2020 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class MapCommands implements CommandListener, ManialinkPageAnswerListener, CallbackListener {
@@ -61,7 +63,7 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 		$this->maniaControl->getCommandManager()->registerCommandListener(array('readmaplist', 'rml'), $this, 'command_ReadMapList', true, 'Loads a maplist into the server.');
 
 		// Player commands
-		$this->maniaControl->getCommandManager()->registerCommandListener('nextmap', $this, 'command_showNextMap', false, 'Shows which map is next.');
+		$this->maniaControl->getCommandManager()->registerCommandListener(array('nextmap', 'next'), $this, 'command_showNextMap', false, 'Shows which map is next.');
 		$this->maniaControl->getCommandManager()->registerCommandListener(array('maps', 'list'), $this, 'command_List', false, 'Shows the current maplist (or variations).');
 		$this->maniaControl->getCommandManager()->registerCommandListener(array('xmaps', 'xlist'), $this, 'command_xList', false, 'Shows maps from ManiaExchange.');
 
@@ -116,12 +118,20 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 			$requester = $nextQueued[0];
 			/** @var Map $map */
 			$map = $nextQueued[1];
-			$this->maniaControl->getChat()->sendInformation("Next Map is $<{$map->name}$> from $<{$map->authorNick}$> requested by $<{$requester->nickname}$>.", $player);
+			$message = $this->maniaControl->getChat()->formatMessage(
+				'Next Map is %s, requested by %s.',
+				$map,
+				$requester
+			);
+			$this->maniaControl->getChat()->sendInformation($message, $player);
 		} else {
 			$mapIndex = $this->maniaControl->getClient()->getNextMapIndex();
-			$maps     = $this->maniaControl->getMapManager()->getMaps();
-			$map      = $maps[$mapIndex];
-			$this->maniaControl->getChat()->sendInformation("Next Map is $<{$map->name}$> from $<{$map->authorNick}$>.", $player);
+			$map      = $this->maniaControl->getMapManager()->getMapByIndex($mapIndex);
+			$message = $this->maniaControl->getChat()->formatMessage(
+				'Next Map is %s.',
+				$map
+			);
+			$this->maniaControl->getChat()->sendInformation($message, $player);
 		}
 	}
 
@@ -136,14 +146,14 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($player);
 			return;
 		}
-		// Get map
+		
 		$map = $this->maniaControl->getMapManager()->getCurrentMap();
 		if (!$map) {
-			$this->maniaControl->getChat()->sendError("Couldn't remove map.", $player);
+			$this->maniaControl->getChat()->sendError('Could not fetch current map to remove!', $player);
 			return;
 		}
 
-		// Remove map
+		// no chat message necessary, the MapManager will do that
 		$this->maniaControl->getMapManager()->removeMap($player, $map->uid);
 	}
 
@@ -158,14 +168,14 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($player);
 			return;
 		}
-		// Get map
+
 		$map = $this->maniaControl->getMapManager()->getCurrentMap();
 		if (!$map) {
-			$this->maniaControl->getChat()->sendError("Couldn't erase map.", $player);
+			$this->maniaControl->getChat()->sendError('Could not fetch current map to erase!', $player);
 			return;
 		}
 
-		// Erase map
+		// no chat message necessary, the MapManager will do that
 		$this->maniaControl->getMapManager()->removeMap($player, $map->uid, true);
 	}
 
@@ -181,7 +191,7 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 			return;
 		}
 
-		// Shuffles the maps
+		// no chat message necessary, the MapManager will do that
 		$this->maniaControl->getMapManager()->shuffleMapList($player);
 	}
 
@@ -196,13 +206,17 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($player);
 			return;
 		}
+
 		$params = explode(' ', $chatCallback[1][2], 2);
 		if (count($params) < 2) {
-			$this->maniaControl->getChat()->sendUsageInfo('Usage example: //addmap 1234', $player);
+			$message = $this->maniaControl->getChat()->formatMessage(
+				'Usage example: %s',
+				'//addmap 1234'
+			);
+			$this->maniaControl->getChat()->sendUsageInfo($message, $player);
 			return;
 		}
 
-		// add Map from Mania Exchange
 		$this->maniaControl->getMapManager()->addMapFromMx($params[1], $player->login);
 	}
 
@@ -220,7 +234,10 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 
 		$this->maniaControl->getMapManager()->getMapActions()->skipMap();
 
-		$message = $player->getEscapedNickname() . ' skipped the current Map!';
+		$message = $this->maniaControl->getChat()->formatMessage(
+			'%s skipped the current Map!',
+			$player
+		);
 		$this->maniaControl->getChat()->sendSuccess($message);
 		Logger::logInfo($message, true);
 	}
@@ -236,17 +253,21 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($player);
 			return;
 		}
-		$message = $player->getEscapedNickname() . ' restarted the current Map!';
-		$this->maniaControl->getChat()->sendSuccess($message);
-		Logger::logInfo($message, true);
 
 		try {
 			$this->maniaControl->getClient()->restartMap();
 		} catch (ChangeInProgressException $e) {
+			$this->maniaControl->getChat()->sendException($e, $player);
+			return;
 		}
-	}
 
-	////$this->maniaControl->mapManager->mapQueue->addFirstMapToMapQueue($this->currentVote->voter, $this->maniaControl->mapManager->getCurrentMap());
+		$message = $this->maniaControl->getChat()->formatMessage(
+			'%s restarted the current Map!',
+			$player
+		);
+		$this->maniaControl->getChat()->sendSuccess($message);
+		Logger::logInfo($message, true);
+	}
 
 	/**
 	 * Handle replaymap command
@@ -259,11 +280,15 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 			$this->maniaControl->getAuthenticationManager()->sendNotAllowed($player);
 			return;
 		}
-		$message = $player->getEscapedNickname() . ' replays the current Map!';
-		$this->maniaControl->getChat()->sendSuccess($message);
-		Logger::logInfo($message, true);
 
 		$this->maniaControl->getMapManager()->getMapQueue()->addFirstMapToMapQueue($player, $this->maniaControl->getMapManager()->getCurrentMap());
+		
+		$message = $this->maniaControl->getChat()->formatMessage(
+			'%s queued the current Map to replay!',
+			$player
+		);
+		$this->maniaControl->getChat()->sendSuccess($message);
+		Logger::logInfo($message, true);
 	}
 
 	/**
@@ -279,26 +304,35 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 		}
 
 		$chatCommand = explode(' ', $chat[1][2]);
+		$maplist = 'MatchSettings' . DIRECTORY_SEPARATOR;
 		if (isset($chatCommand[1])) {
-			if (strstr($chatCommand[1], '.txt')) {
-				$maplist = $chatCommand[1];
+			if (!DataUtil::endsWith($chatCommand[1], '.txt')) {
+				$maplist .= $chatCommand[1] . '.txt';
 			} else {
-				$maplist = $chatCommand[1] . '.txt';
+				$maplist .= $chatCommand[1];
 			}
 		} else {
-			$maplist = 'maplist.txt';
+			$maplist .= 'maplist.txt';
 		}
 
-		$maplist = 'MatchSettings' . DIRECTORY_SEPARATOR . $maplist;
 		try {
 			$this->maniaControl->getClient()->saveMatchSettings($maplist);
-
-			$message = 'Maplist $<$fff' . $maplist . '$> written.';
-			$this->maniaControl->getChat()->sendSuccess($message, $player);
-			Logger::logInfo($message, true);
 		} catch (FaultException $e) {
-			$this->maniaControl->getChat()->sendError('Cannot write maplist $<$fff' . $maplist . '$>!', $player);
+			$this->maniaControl->getChat()->sendException($e, $player);
+			$message = $this->maniaControl->getChat()->formatMessage(
+				'Cannot write maplist %s!',
+				$maplist
+			);
+			$this->maniaControl->getChat()->sendError($message, $player);
+			return;
 		}
+
+		$message = $this->maniaControl->getChat()->formatMessage(
+			'Maplist %s written.',
+			$maplist
+		);
+		$this->maniaControl->getChat()->sendSuccess($message, $player);
+		Logger::logInfo($message, true);
 	}
 
 	/**
@@ -314,27 +348,36 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 		}
 
 		$chatCommand = explode(' ', $chat[1][2]);
+		$maplist = 'MatchSettings' . DIRECTORY_SEPARATOR;
 		if (isset($chatCommand[1])) {
-			if (strstr($chatCommand[1], '.txt')) {
-				$maplist = $chatCommand[1];
+			if (!DataUtil::endsWith($chatCommand[1], '.txt')) {
+				$maplist .= $chatCommand[1] . '.txt';
 			} else {
-				$maplist = $chatCommand[1] . '.txt';
+				$maplist .= $chatCommand[1];
 			}
 		} else {
-			$maplist = 'maplist.txt';
+			$maplist .= 'maplist.txt';
 		}
 
-		$maplist = 'MatchSettings' . DIRECTORY_SEPARATOR . $maplist;
 		try {
 			$this->maniaControl->getClient()->loadMatchSettings($maplist);
-
-			$message = 'Maplist $<$fff' . $maplist . '$> loaded.';
-			$this->maniaControl->getMapManager()->restructureMapList();
-			$this->maniaControl->getChat()->sendSuccess($message, $player);
-			Logger::logInfo($message, true);
 		} catch (FaultException $e) {
-			$this->maniaControl->getChat()->sendError('Cannot load maplist $<$fff' . $maplist . '$>!', $player);
+			$this->maniaControl->getChat()->sendException($e, $player);
+			$message = $this->maniaControl->getChat()->formatMessage(
+				'Cannot load maplist %s!',
+				$maplist
+			);
+			$this->maniaControl->getChat()->sendError($message, $player);
+			return;
 		}
+
+		$message = $this->maniaControl->getChat()->formatMessage(
+			'Maplist %s loaded.',
+			$maplist
+		);
+		$this->maniaControl->getMapManager()->restructureMapList();
+		$this->maniaControl->getChat()->sendSuccess($message, $player);
+		Logger::logInfo($message, true);
 	}
 
 	/**
@@ -427,7 +470,7 @@ class MapCommands implements CommandListener, ManialinkPageAnswerListener, Callb
 	 */
 	private function showMapListKarma($best, Player $player) {
 		/** @var \MCTeam\KarmaPlugin $karmaPlugin */
-		$karmaPlugin    = $this->maniaControl->getPluginManager()->getPlugin(MapList::DEFAULT_KARMA_PLUGIN);
+		$karmaPlugin = $this->maniaControl->getPluginManager()->getPlugin(ElementBuilder::DEFAULT_KARMA_PLUGIN);
 
 		if ($karmaPlugin) {
 			$displayMxKarma = $this->maniaControl->getSettingManager()->getSettingValue($karmaPlugin, $karmaPlugin::SETTING_WIDGET_DISPLAY_MX);

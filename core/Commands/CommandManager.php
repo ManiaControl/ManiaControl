@@ -13,7 +13,7 @@ use ManiaControl\ManiaControl;
  * Class for handling Chat Commands
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
- * @copyright 2014-2019 ManiaControl Team
+ * @copyright 2014-2020 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 class CommandManager implements CallbackListener, UsageInformationAble {
@@ -28,8 +28,12 @@ class CommandManager implements CallbackListener, UsageInformationAble {
 	private $helpManager = array();
 	/** @var Listening[][] $commandListenings */
 	private $commandListenings = array();
+	/** @var CommandListener[][] $disabledCommands */
+	private $disabledCommands = array();
 	/** @var Listening[][] $adminCommandListenings */
 	private $adminCommandListenings = array();
+	/** @var CommandListener[][] $disabledAdminCommands */
+	private $disabledAdminCommands = array();
 
 	/**
 	 * Construct a new Commands Manager
@@ -117,6 +121,138 @@ class CommandManager implements CallbackListener, UsageInformationAble {
 	}
 
 	/**
+	 * Disable the command(s) by the given listener.
+	 * The specific listener has to also manually reenable the commands, before the command can be used again.
+	 * @param mixed           $commandName
+	 * @param bool            $adminCommand
+	 * @param CommandListener $listener
+	 */
+	public function disableCommand($commandName, $adminCommand, CommandListener $listener) {
+		if (is_array($commandName)) {
+			foreach ($commandName as $command) {
+				$this->disableCommand($command, $adminCommand, $listener);
+			}
+			return;
+		}
+
+		$command = strtolower(trim($commandName));
+		// first, check if the command actually exists
+		if (!array_key_exists($command, $this->commandListenings) && !array_key_exists($command, $this->adminCommandListenings)) {
+			return;
+		}
+
+		$disabledCommands = null;
+		if ($adminCommand) {
+			$disabledCommands = &$this->disabledAdminCommands;
+		} else {
+			$disabledCommands = &$this->disabledCommands;
+		}
+
+		if (!array_key_exists($command, $disabledCommands)) {
+			$disabledCommands[$command] = array();
+		}
+
+		if (!in_array($listener, $disabledCommands[$command])) {
+			array_push($disabledCommands[$command], $listener);
+		}
+	}
+
+	/**
+	 * Enable the command(s) by the given listener.
+	 * @param mixed           $commandName
+	 * @param bool            $adminCommand
+	 * @param CommandListener $listener
+	 */
+	public function enableCommand($commandName, $adminCommand, CommandListener $listener) {
+		if (is_array($commandName)) {
+			foreach ($commandName as $command) {
+				$this->enableCommand($command, $adminCommand, $listener);
+			}
+			return;
+		}
+
+		$command = strtolower(trim($commandName));
+
+		$disabledCommands = null;
+		if ($adminCommand) {
+			$disabledCommands = &$this->disabledAdminCommands;
+		} else {
+			$disabledCommands = &$this->disabledCommands;
+		}
+
+		if (!array_key_exists($command, $disabledCommands)) {
+			return;
+		}
+
+		if (($key = array_search($listener, $disabledCommands[$command])) !== false) {
+			unset($disabledCommands[$command][$key]);
+			if (empty($disabledCommands[$command])) {
+				unset($disabledCommands[$command]);
+			}
+		}
+	}
+
+	/**
+	 * Checks if a command is enabled.
+	 * @param mixed $commandName
+	 * @param bool  $adminCommand
+	 * @return bool|array
+	 */
+	public function isCommandEnabled($commandName, $adminCommand) {
+		if (is_array($commandName)) {
+			$results = array();
+			foreach ($commandName as $command) {
+				array_push($results, $this->isCommandEnabled($command, $adminCommand));
+			}
+			$resultsUnique = array_unique($results);
+			if (count($resultsUnique) === 1) {
+				return $resultsUnique[0];
+			}
+
+			return $results;
+		}
+
+		$command = strtolower(trim($commandName));
+
+		$disabledCommands = null;
+		if ($adminCommand) {
+			$disabledCommands = &$this->disabledAdminCommands;
+		} else {
+			$disabledCommands = &$this->disabledCommands;
+		}
+
+		if (!array_key_exists($command, $disabledCommands)) {
+			return true;
+		}
+
+		// if the command is disabled, there should be at least one listener in the array
+		assert(!empty($disabledCommands[$command]));
+		return false;
+	}
+
+	/**
+	 * Removes the given CommandListener blocking commands.
+	 * 
+	 * @param array &$disabledCommands
+	 * @param CommandListener $listener
+	 * @return bool
+	 */
+	private function removeDisabledCommandListener(array &$disabledCommands, CommandListener $listener) {
+		$removed = false;
+		foreach ($disabledCommands as $command => $disableListeners) {
+			if (($key = array_search($listener, $disableListeners)) !== false) {
+				unset($disabledCommands[$command][$key]);
+				$removed = true;
+
+				if (empty($disabledCommands[$command])) {
+					unset($disabledCommands[$command]);
+				}
+			}
+		}
+		return $removed;
+	}
+
+	/**
 	 * Unregister a Command Listener
 	 *
 	 * @param CommandListener $listener
@@ -128,6 +264,12 @@ class CommandManager implements CallbackListener, UsageInformationAble {
 			$removed = true;
 		}
 		if ($this->removeCommandListener($this->adminCommandListenings, $listener)) {
+			$removed = true;
+		}
+		if ($this->removeDisabledCommandListener($this->disabledCommands, $listener)) {
+			$removed = true;
+		}
+		if ($this->removeDisabledCommandListener($this->disabledAdminCommands, $listener)) {
 			$removed = true;
 		}
 		return $removed;
@@ -178,9 +320,11 @@ class CommandManager implements CallbackListener, UsageInformationAble {
 		if (!$command) {
 			return;
 		}
-
+		
+		$isAdminCommand = null;
 		if (substr($message, 0, 2) === '//' || $command === 'admin') {
 			// Admin command
+			$isAdminCommand = true;
 			$commandListenings = $this->adminCommandListenings;
 
 			if ($command === 'admin') {
@@ -197,11 +341,23 @@ class CommandManager implements CallbackListener, UsageInformationAble {
 			$callback[1][2] = $message;
 		} else {
 			// User command
+			$isAdminCommand = false;
 			$commandListenings = $this->commandListenings;
 		}
 
 		if (!array_key_exists($command, $commandListenings) || !is_array($commandListenings[$command])) {
 			// No command listener registered
+			return;
+		}
+
+		if (!$this->isCommandEnabled($command, $isAdminCommand)) {
+			$prefix = $isAdminCommand ? '//' : '/';
+			$message = $this->maniaControl->getChat()->formatMessage(
+				'The command %s%s is currently disabled!',
+				$prefix,
+				$command
+			);
+			$this->maniaControl->getChat()->sendError($message, $player);
 			return;
 		}
 

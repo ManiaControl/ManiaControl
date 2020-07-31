@@ -10,7 +10,7 @@ use ManiaControl\Logger;
  * Class offering Methods to format Texts and Values
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
- * @copyright 2014-2019 ManiaControl Team
+ * @copyright 2014-2020 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 abstract class Formatter implements UsageInformationAble {
@@ -43,7 +43,7 @@ abstract class Formatter implements UsageInformationAble {
 		$seconds      -= ($hours * 60 + $minutes) * 60;
 		$format       = ($hours > 0 ? $hours . ':' : '');
 		$format       .= ($hours > 0 && $minutes < 10 ? '0' : '') . $minutes . ':';
-		$format       .= ($seconds < 10 ? '0' : '') . $seconds . ':';
+		$format       .= ($seconds < 10 ? '0' : '') . $seconds . '.';
 		$format       .= ($milliseconds < 100 ? '0' : '') . ($milliseconds < 10 ? '0' : '') . $milliseconds;
 		return $format;
 	}
@@ -225,7 +225,7 @@ abstract class Formatter implements UsageInformationAble {
 	 * Make sure the given Text is encoded in UTF-8
 	 *
 	 * @param string $text
-	 * @return string
+	 * @return array|string
 	 */
 	public static function utf8($text) {
 		if (is_array($text)) {

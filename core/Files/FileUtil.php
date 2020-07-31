@@ -10,7 +10,7 @@ use ManiaControl\Utils\WebReader;
  * Files Utility Class
  *
  * @author    ManiaControl Team <mail@maniacontrol.com>
- * @copyright 2014-2019 ManiaControl Team
+ * @copyright 2014-2020 ManiaControl Team
  * @license   http://www.gnu.org/licenses/ GNU General Public License, Version 3
  */
 abstract class FileUtil {
@@ -244,7 +244,7 @@ abstract class FileUtil {
 	 * @param string $path
 	 * @return string
 	 */
-	public static function shortenPath(string $path) {
+	public static function shortenPath($path) {
 		$root = substr($path, 0, 1) === '/';
 		$path = str_replace(array('/', '\\'), DIRECTORY_SEPARATOR, $path);
 		$parts = array_filter(explode(DIRECTORY_SEPARATOR, $path), 'strlen');
