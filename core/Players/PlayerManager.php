@@ -579,7 +579,8 @@ class PlayerManager implements CallbackListener, TimerListener, CommunicationLis
 		$mysqli = $this->maniaControl->getDatabase()->getMysqli();
 
 		$query  = "SELECT * FROM `" . self::TABLE_PLAYERS . "`
-				WHERE `login` LIKE '" . $mysqli->escape_string($playerLogin) . "';";
+				WHERE `login` LIKE '" . $mysqli->escape_string($playerLogin) . "'
+				OR `nickname` LIKE '" . $mysqli->escape_string($playerLogin) . "';";
 		$result = $mysqli->query($query);
 		if (!$result) {
 			trigger_error($mysqli->error);
