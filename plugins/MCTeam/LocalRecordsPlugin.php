@@ -43,7 +43,7 @@ class LocalRecordsPlugin implements CallbackListener, CallQueueListener, Command
 	 * Constants
 	 */
 	const ID                                  = 7;
-	const VERSION                             = 0.82;
+	const VERSION                             = 0.83;
 	const NAME                                = 'Local Records Plugin';
 	const AUTHOR                              = 'MCTeam';
 	const MLID_RECORDS                        = 'ml_local_records';
@@ -78,6 +78,7 @@ class LocalRecordsPlugin implements CallbackListener, CallQueueListener, Command
 	private $updateManialink = false;
 	private $checkpoints     = array();
 	private $scriptName      = 'TimeAttack';
+	private $mapranking      = array();
 
 	/**
 	 * @see \ManiaControl\Plugins\Plugin::prepare()
@@ -160,7 +161,7 @@ class LocalRecordsPlugin implements CallbackListener, CallQueueListener, Command
 		$this->maniaControl->getSettingManager()->initSetting($this, self::SETTING_MULTILAP_SAVE_SINGLE, false);
 
 		// Callbacks
-		$this->maniaControl->getTimerManager()->registerTimerListening($this, 'handle1Second', 1000);
+		$this->maniaControl->getTimerManager()->registerTimerListening($this, 'handle2Seconds', 2000);
 		$this->maniaControl->getTimerManager()->registerTimerListening($this, 'handle1Minute', 60000);
 
 		$this->maniaControl->getCallbackManager()->registerCallbackListener(Callbacks::AFTERINIT, $this, 'handleAfterInit');
@@ -226,21 +227,23 @@ class LocalRecordsPlugin implements CallbackListener, CallQueueListener, Command
 	 * @internal
 	 */
 	public function handleAfterInit() {
+		$this->updateMapRanking();
 		$this->updateManialink = true;
 	}
 
 	/**
-	 * Handle 1 Second Callback
+	 * Handle 2 Seconds Callback
 	 *
 	 * @internal
 	 */
-	public function handle1Second() {
+	public function handle2Seconds() {
 		if (!$this->updateManialink) {
 			return;
 		}
 
 		$this->updateManialink = false;
 		if ($this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_WIDGET_ENABLE)) {
+			$this->updateMapRanking();
 			$this->sendWidgetManiaLink();
 		}
 	}
@@ -276,7 +279,7 @@ class LocalRecordsPlugin implements CallbackListener, CallQueueListener, Command
 		$quadStyle          = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultQuadStyle();
 		$quadSubstyle       = $this->maniaControl->getManialinkManager()->getStyleManager()->getDefaultQuadSubstyle();
 
-		$records = $this->getLocalRecords($map, 1000); //TODO limit setting
+		$records = $this->mapranking;
 		if (!is_array($records)) {
 			Logger::logError("Couldn't fetch player records.");
 			return null;
@@ -351,7 +354,7 @@ class LocalRecordsPlugin implements CallbackListener, CallQueueListener, Command
 				$playersWithoutRecord[] = $player;
 				$sendManiaLink          = false;
 			} else {
-				if ($record = $this->getLocalRecord($map, $player)) {
+				if ($record = $this->getLocalRecordCache($map, $player)) {
 					$record->nickname = $player->nickname;
 					$recordFrame      = $preGeneratedRecordsFrameWithRecord;
 					$listFrame->addChild($recordFrame);
@@ -401,21 +404,23 @@ class LocalRecordsPlugin implements CallbackListener, CallQueueListener, Command
 	public function getLocalRecords(Map $map, $limit = -1) {
 		$mysqli = $this->maniaControl->getDatabase()->getMysqli();
 		$limit  = ($limit > 0 ? 'LIMIT ' . $limit : '');
-		$query  = "SELECT * FROM (
-					SELECT recs.*, @rank := @rank + 1 as `rank` FROM `" . self::TABLE_RECORDS . "` recs, (SELECT @rank := 0) ra
+		$query  = "SELECT * FROM  `" . self::TABLE_RECORDS . "` recs
+					LEFT JOIN `" . PlayerManager::TABLE_PLAYERS . "` players
+					ON recs.`playerIndex` = players.`index`
 					WHERE recs.`mapIndex` = {$map->index}
 					ORDER BY recs.`time` ASC
-					{$limit}) records
-				LEFT JOIN `" . PlayerManager::TABLE_PLAYERS . "` players
-				ON records.`playerIndex` = players.`index`;";
+					{$limit};";
 		$result = $mysqli->query($query);
 		if ($mysqli->error) {
 			trigger_error($mysqli->error);
 			return null;
 		}
 		$records = array();
+		$rank    = 1;
 		while ($record = $result->fetch_object()) {
+			$record->{"rank"} = "$rank";
 			array_push($records, $record);
+			$rank++;
 		}
 		$result->free();
 		return $records;
@@ -661,6 +666,30 @@ class LocalRecordsPlugin implements CallbackListener, CallQueueListener, Command
 		}
 		$record = $result->fetch_object();
 		$result->free();
+		return $record;
+	}
+
+	/**
+	 * Retrieve the local record for the given map and login using the Cache
+	 *
+	 * @param Player $player
+	 * @param Map    $map
+	 * @return mixed
+	 * @api
+	 */
+	public function getLocalRecordCache(Map $map, Player $player) {
+
+		$searchedValue = $player->index;
+		$record        = array_filter($this->mapranking, function ($e) use ($searchedValue) {
+			return $e->index == $searchedValue;
+		});
+		if (isset($record)) {
+			if (isset($record[0])) {
+				$record = $record[0];
+			} else {
+				$record = null;
+			}
+		}
 		return $record;
 	}
 
@@ -988,5 +1017,34 @@ class LocalRecordsPlugin implements CallbackListener, CallQueueListener, Command
 		$this->recordWidget->setWidth($width);
 		$this->recordWidget->setLineHeight($lineHeight);
 		$this->updateManialink = true;
+	}
+
+	/**
+	 *  Update the Map Ranking
+	 */
+	private function updateMapRanking() {
+		$mysqli = $this->maniaControl->getDatabase()->getMysqli();
+		$map    = $this->maniaControl->getMapManager()->getCurrentMap();
+
+		$query = "SELECT players.nickname, players.`index`, recs.time, recs.`index`, recs.playerIndex, recs.mapIndex FROM  `" . self::TABLE_RECORDS . "` recs
+				LEFT JOIN `" . PlayerManager::TABLE_PLAYERS . "` players
+				ON recs.`playerIndex` = players.`index`
+				WHERE recs.`mapIndex` = {$map->index}
+				ORDER BY recs.`time` ASC;";
+
+		$result = $mysqli->query($query);
+		if ($mysqli->error) {
+			trigger_error($mysqli->error);
+			return null;
+		}
+		$this->mapranking = array();
+		$rank             = 1;
+		while ($record = $result->fetch_object()) {
+
+			$record->{"rank"} = "$rank";
+			array_push($this->mapranking, $record);
+			$rank++;
+		}
+		$result->free();
 	}
 }
