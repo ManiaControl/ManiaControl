@@ -55,7 +55,7 @@ class Database implements TimerListener {
 		$this->getMysqli()->set_charset("utf8");
 
 		$this->initDatabase();
-		$this->optimizeTables();
+//		$this->optimizeTables();
 
 		// Register Method which checks the Database Connection every 5 seconds
 		$this->maniaControl->getTimerManager()->registerTimerListening($this, 'checkConnection', 5000);
