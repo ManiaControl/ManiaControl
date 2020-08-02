@@ -78,7 +78,15 @@ class SettingManager implements CallbackListener, UsageInformationAble {
 				trigger_error($mysqli->error, E_USER_ERROR);
 			}
 		}
-
+		
+		// Grow the size limit for plugins settings
+		$mysqli->query("ALTER TABLE `" . self::TABLE_SETTINGS . "` MODIFY `value` VARCHAR(500);");
+		if ($mysqli->error) {
+			// If not Duplicate
+			if ($mysqli->errno !== 1060) {
+				trigger_error($mysqli->error, E_USER_ERROR);
+			}
+		}
 		return $result;
 	}
 
