@@ -100,10 +100,15 @@ class ManiaExchangeMapSearch implements UsageInformationAble {
 	public function __construct(ManiaControl $maniaControl) {
 		$this->maniaControl = $maniaControl;
 
-		$this->titlePrefix = $this->maniaControl->getMapManager()->getCurrentMap()->getGame();
-
-		$this->url = 'https://' . $this->titlePrefix . '.mania-exchange.com/tracksearch2/search?api=on';
-
+		// For TM2020
+		if ($this->maniaControl->getServer()->titleId == "Trackmania")
+		{
+			$this->titlePrefix = "trackmania.exchange";
+			$this->url = 'https://trackmania.exchange/tracksearch2/search?api=on';
+		}else {
+			$this->titlePrefix = $this->maniaControl->getMapManager()->getCurrentMap()->getGame() . '.mania-exchange.com';
+			$this->url = 'https://' . $this->titlePrefix . '.mania-exchange.com/tracksearch2/search?api=on';
+		}
 		/*if ($key = $this->maniaControl->getSettingManager()->getSettingValue($this->maniaControl->getMapManager()->getMXManager(), ManiaExchangeManager::SETTING_MX_KEY)) {
 			$this->url .= "&key=" . $key;
 		}*/
@@ -160,7 +165,7 @@ class ManiaExchangeMapSearch implements UsageInformationAble {
 			$parameters .= "&tpack=" . urlencode($this->titlePack);
 		}
 		if ($this->replayType) {
-			$parameters .= "&rytpe=" . $this->replayType;
+			$parameters .= "&rtype=" . $this->replayType;
 		}
 		if ($this->style) {
 			$parameters .= "&style=" . $this->style;

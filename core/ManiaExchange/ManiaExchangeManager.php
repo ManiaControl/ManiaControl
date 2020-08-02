@@ -160,11 +160,19 @@ class ManiaExchangeManager implements UsageInformationAble {
 	 * @param string $string
 	 */
 	public function fetchMaplistByMixedUidIdString($string) {
-		// Get Title Prefix
-		$titlePrefix = $this->maniaControl->getMapManager()->getCurrentMap()->getGame();
 
+		// For TM2020
+		if ($this->maniaControl->getServer()->titleId == "Trackmania") {
+			// Get Title Prefix
+			$titlePrefix = "trackmania.exchange";
+
+		} else {
+			// Get Title Prefix
+			$titlePrefix = $this->maniaControl->getMapManager()->getCurrentMap()->getGame() . ".mania-exchange.com";
+
+		}
 		// compile search URL
-		$url = "https://api.mania-exchange.com/{$titlePrefix}/maps/?ids={$string}";
+		$url = "https://{$titlePrefix}/api/maps/get_map_info/multi/{$string}";
 
 		/*if ($key = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_MX_KEY)) {
 			$url .= "&key=" . $key;
@@ -261,11 +269,18 @@ class ManiaExchangeManager implements UsageInformationAble {
 	 * @param callable $function
 	 */
 	public function fetchMapInfo($mapId, callable $function) {
-		// Get Title Prefix
-		$titlePrefix = $this->maniaControl->getMapManager()->getCurrentMap()->getGame();
+		// For TM2020
+		if ($this->maniaControl->getServer()->titleId == "Trackmania") {
+			// Get Title Prefix
+			$titlePrefix = "trackmania.exchange";
 
+		} else {
+			// Get Title Prefix
+			$titlePrefix = $this->maniaControl->getMapManager()->getCurrentMap()->getGame() . ".mania-exchange.com";
+
+		}
 		// compile search URL
-		$url = 'https://api.mania-exchange.com/' . $titlePrefix . '/maps/?ids=' . $mapId;
+		$url = "https://{$titlePrefix}/api/maps/get_map_info/multi/{$mapId}";
 
 		/*if ($key = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_MX_KEY)) {
 			$url .= "&key=" . $key;
@@ -292,8 +307,15 @@ class ManiaExchangeManager implements UsageInformationAble {
 	}
 
 	/**
-	 * @deprecated
+	 * @param callable $function
+	 * @param string   $name
+	 * @param string   $author
+	 * @param string   $env
+	 * @param int      $maxMapsReturned
+	 * @param int      $searchOrder
+	 * @return bool
 	 * @see \ManiaControl\ManiaExchange\ManiaExchangeMapSearch
+	 * @deprecated
 	 */
 	public function getMapsAsync(callable $function, $name = '', $author = '', $env = '', $maxMapsReturned = 100, $searchOrder = ManiaExchangeMapSearch::SEARCH_ORDER_UPDATED_NEWEST) {
 		$this->fetchMapsAsync($function, $name, $author, $env, $maxMapsReturned, $searchOrder);
@@ -308,7 +330,7 @@ class ManiaExchangeManager implements UsageInformationAble {
 	 * @param string   $author
 	 * @param string   $env
 	 * @param int      $maxMapsReturned
-	 * @param int      $searchOrder
+	 * @param int      $sortOrder
 	 * @deprecated
 	 * @see \ManiaControl\ManiaExchange\ManiaExchangeMapSearch
 	 */

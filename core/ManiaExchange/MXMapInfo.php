@@ -37,7 +37,7 @@ class MXMapInfo {
 			return;
 		}
 
-		if ($this->prefix === 'tm') {
+		if ($this->prefix === 'tm.mania-exchange.com' OR $this->prefix === 'trackmania.exchange') {
 			$this->dir = 'tracks';
 			$this->id  = $mx->TrackID;
 			$this->uid = isset($mx->TrackUID) ? $mx->TrackUID : '';
@@ -93,23 +93,23 @@ class MXMapInfo {
 			$this->lbrating = $this->trkvalue;
 		}
 
-		$this->pageurl     = 'https://' . $this->prefix . '.mania-exchange.com/' . $this->dir . '/view/' . $this->id;
-		$this->downloadurl = 'https://' . $this->prefix . '.mania-exchange.com/' . $this->dir . '/download/' . $this->id;
+		$this->pageurl     = 'https://' . $this->prefix . '/' . $this->dir . '/view/' . $this->id;
+		$this->downloadurl = 'https://' . $this->prefix . '/' . $this->dir . '/download/' . $this->id;
 
 		if ($mx->HasScreenshot) {
-			$this->imageurl = 'https://' . $this->prefix . '.mania-exchange.com/' . $this->dir . '/screenshot/normal/' . $this->id;
+			$this->imageurl = 'https://' . $this->prefix . '/' . $this->dir . '/screenshot/normal/' . $this->id;
 		} else {
 			$this->imageurl = '';
 		}
 
 		if ($mx->HasThumbnail) {
-			$this->thumburl = 'https://' . $this->prefix . '.mania-exchange.com/' . $this->dir . '/thumbnail/' . $this->id;
+			$this->thumburl = 'https://' . $this->prefix . '/' . $this->dir . '/thumbnail/' . $this->id;
 		} else {
 			$this->thumburl = '';
 		}
 
 		if ($this->prefix === 'tm' && $this->replayid > 0) {
-			$this->replayurl = 'https://' . $this->prefix . '.mania-exchange.com/replays/download/' . $this->replayid;
+			$this->replayurl = 'https://' . $this->prefix . '/replays/download/' . $this->replayid;
 		} else {
 			$this->replayurl = '';
 		}
