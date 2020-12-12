@@ -79,7 +79,7 @@ class DedimaniaWebHandler implements TimerListener {
 				}
 
 			} else {
-				Logger::logError("Error while opening Dedimania Connection");
+				Logger::logError("Error while opening Dedimania Connection : ".$responseData['Error']);
 			}
 		});
 

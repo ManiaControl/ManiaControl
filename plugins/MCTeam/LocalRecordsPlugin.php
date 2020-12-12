@@ -959,11 +959,19 @@ class LocalRecordsPlugin implements CallbackListener, CallQueueListener, Command
 			$this->maniaControl->getChat()->sendError('You have no personal record to remove!', $player);
 			return;
 		}
+		
+		for($i=0;$i<count($records);$i++)
+		{
+			$record_to_delete = $records[$i];
+			if($record_to_delete->rank == $recordId){
+				break;
+			}
+		}
 
 		$mysqli = $this->maniaControl->getDatabase()->getMysqli();
 		$query  = "DELETE FROM `" . self::TABLE_RECORDS . "`
 				WHERE `mapIndex` = {$currentMap->index}
-				AND `playerIndex` = {$player->index};";
+				AND `index` = {$record_to_delete->index};";
 		$mysqli->query($query);
 		if ($mysqli->error) {
 			trigger_error($mysqli->error);
