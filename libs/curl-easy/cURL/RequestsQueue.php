@@ -128,10 +128,8 @@ class RequestsQueue extends EventDispatcher implements RequestsQueueInterface, \
 
 	/**
 	 * Returns count of handles in queue
-	 *
-	 * @return int    Handles count
 	 */
-	public function count() {
+	public function count(): int {
 		return count($this->queue);
 	}
 

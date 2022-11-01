@@ -44,6 +44,9 @@ class Database implements TimerListener {
 		// Enable mysqli Reconnect
 		ini_set('mysqli.reconnect', 'on');
 
+		// Change error report mechanism -> used to set compatibility to php < 8.1
+                mysqli_report(MYSQLI_REPORT_OFF);
+
 		// Open database connection
 		$this->loadConfig();
 		$this->mysqli = @new \mysqli($this->config->host, $this->config->user, $this->config->pass, null, $this->config->port);
