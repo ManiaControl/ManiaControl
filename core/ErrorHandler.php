@@ -155,7 +155,7 @@ class ErrorHandler {
 
 			if ($this->maniaControl->getSettingManager() && $this->maniaControl->getUpdateManager()) {
 				$report['UpdateChannel']       = $this->maniaControl->getSettingManager()->getSettingValue($this->maniaControl->getUpdateManager(), UpdateManager::SETTING_UPDATECHECK_CHANNEL);
-				$report['ManiaControlVersion'] = ManiaControl::VERSION . ' ' . $this->maniaControl->getUpdateManager()->getBuildDate();
+				$report['ManiaControlVersion'] = ManiaControl::VERSION;
 			} else {
 				$report['ManiaControlVersion'] = ManiaControl::VERSION;
 			}
@@ -505,7 +505,7 @@ class ErrorHandler {
 
 			if (($settingManager = $this->maniaControl->getSettingManager()) && ($updateManager = $this->maniaControl->getUpdateManager())) {
 				$report['UpdateChannel']       = $settingManager->getSettingValue($updateManager, $updateManager::SETTING_UPDATECHECK_CHANNEL);
-				$report['ManiaControlVersion'] = ManiaControl::VERSION . ' #' . $updateManager->getBuildDate();
+				$report['ManiaControlVersion'] = ManiaControl::VERSION;
 			} else {
 				$report['ManiaControlVersion'] = ManiaControl::VERSION;
 			}
