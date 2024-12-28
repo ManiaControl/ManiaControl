@@ -44,7 +44,7 @@ class MXMapInfo {
 		} else {
 			$this->dir = 'maps';
 			$this->id  = $mx->MapID;
-			$this->uid = isset($mx->MapUID) ? $mx->MapUID : '';
+			$this->uid = isset($mx->TrackUID) ? $mx->TrackUID : ''; // TODO: fix when migrating to new api; TrackUID is equal to MapUID
 		}
 
 		if (!isset($mx->GbxMapName) || $mx->GbxMapName === '?') {
