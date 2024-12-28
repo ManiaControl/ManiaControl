@@ -23,7 +23,7 @@ class ManiaExchangeManager implements UsageInformationAble {
 	 * Constants
 	 * @deprecated SEARCH Constants
 	 */
-	//Search orders (prior parameter) https://api.mania-exchange.com/documents/enums#orderings
+	//Search orders (prior parameter) https://api2.mania.exchange/documents/enums#orderings
 	const SEARCH_ORDER_NONE               = -1;
 	const SEARCH_ORDER_TRACK_NAME         = 0;
 	const SEARCH_ORDER_AUTHOR             = 1;
@@ -164,7 +164,7 @@ class ManiaExchangeManager implements UsageInformationAble {
 		$titlePrefix = $this->maniaControl->getMapManager()->getCurrentMap()->getGame();
 
 		// compile search URL
-		$url = "https://api.mania-exchange.com/{$titlePrefix}/maps/?ids={$string}";
+		$url = 'https://' . $titlePrefix . ".mania.exchange/api/maps/get_map_info/multi/{$string}";
 
 		/*if ($key = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_MX_KEY)) {
 			$url .= "&key=" . $key;
@@ -265,7 +265,7 @@ class ManiaExchangeManager implements UsageInformationAble {
 		$titlePrefix = $this->maniaControl->getMapManager()->getCurrentMap()->getGame();
 
 		// compile search URL
-		$url = 'https://api.mania-exchange.com/' . $titlePrefix . '/maps/?ids=' . $mapId;
+		$url = 'https://' . $titlePrefix . '.mania.exchange/' . 'api/maps/get_map_info/multi/' . $mapId;
 
 		/*if ($key = $this->maniaControl->getSettingManager()->getSettingValue($this, self::SETTING_MX_KEY)) {
 			$url .= "&key=" . $key;
