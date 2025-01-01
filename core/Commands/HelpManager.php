@@ -280,7 +280,7 @@ class HelpManager implements CommandListener, CallbackListener, ManialinkPageAns
 	 * @param string $description
 	 * @param string $method
 	 */
-	public function registerCommand($name, $adminCommand = false, $description = '', $method) {
+	public function registerCommand($name, $adminCommand, $description, $method) {
 		// TODO replace with new class Command
 		if ($adminCommand) {
 			array_push($this->adminCommands, array("Name" => $name, "Description" => $description, "Method" => $method));

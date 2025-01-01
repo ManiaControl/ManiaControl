@@ -18,7 +18,7 @@ use Maniaplanet\DedicatedServer\Xmlrpc\GameModeException;
 class ManiaExchangeMapSearch implements UsageInformationAble {
 	use UsageInformationTrait;
 
-	//Search orders (prior parameter) https://api.mania-exchange.com/documents/enums#orderings
+	//Search orders (prior parameter) https://api2.mania.exchange/documents/enums#orderings
 	const SEARCH_ORDER_NONE               = -1;
 	const SEARCH_ORDER_TRACK_NAME         = 0;
 	const SEARCH_ORDER_AUTHOR             = 1;
@@ -41,7 +41,7 @@ class ManiaExchangeMapSearch implements UsageInformationAble {
 	const SEARCH_ORDER_ONLINE_RATING_LTH  = 26;
 	const SEARCH_ORDER_ONLINE_RATING_HTL  = 27;
 
-	//Special Search Orders (mode parameter): https://api.mania-exchange.com/documents/enums#modes
+    //Special Search Orders (mode parameter): https://api2.mania.exchange/documents/enums#modes
 	const SEARCH_ORDER_SPECIAL_DEFAULT                  = 0;
 	const SEARCH_ORDER_SPECIAL_USER_TRACKS              = 1;
 	const SEARCH_ORDER_SPECIAL_LATEST_TRACKS            = 2;

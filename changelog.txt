@@ -1,3 +1,11 @@
+###v0.258###
+#Changes
+- MC compatibility with MX v2 api
+
+###v0.257###
+#Changes
+- MC now supports php 8.0 and 8.1
+
 ###v0.255###
 #Additions
 - added optional descriptions to Settings (but no MC-settings have descriptions yet)
